@@ -1,5 +1,21 @@
-{ "dependencies": { "bunrest": "^1.3.5", "react": "^18.2.0" }, "name": "pasma", "module": "index.ts", "type": "module", "devDependencies": {
-  "bun-types": "latest"
-}, "peerDependencies": {
-  "typescript": "^5.0.0"
-} }
+{ 
+  "dependencies": { 
+    "bunrest": "^1.3.5", 
+    "react": "^18.2.0" 
+  }, 
+  "name": "pasma", 
+  "module": "server/main.ts", 
+  "type": "module",
+  "scripts": {
+    "client" : "bun build ./client/Main.tsx --outdir ./build --minify",
+    "client:dev" : "bun build ./client/Main.tsx --outdir ./build --watch --sourcemap=external",
+    "server" : "bun run server/main.ts",
+    "server:dev" : "bun run --watch server/main.ts",
+    "clean" : "rm ./public/*"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }, "peerDependencies": {
+    "typescript": "^5.0.0"
+  } 
+}
