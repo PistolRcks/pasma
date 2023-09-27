@@ -7,8 +7,8 @@
   "module": "server/main.ts", 
   "type": "module",
   "scripts": {
-    "client" : "bun build ./client/Main.tsx --outdir ./build --minify",
-    "client:dev" : "bun build ./client/Main.tsx --outdir ./build --watch --sourcemap=external",
+    "client" : "bun build ./client/Main.tsx --outdir ./public --minify",
+    "client:dev" : "bun build ./client/Main.tsx --outdir ./public --watch --sourcemap=external",
     "server" : "bun run server/main.ts",
     "server:dev" : "bun run --watch server/main.ts",
     "clean" : "rm ./public/*"
