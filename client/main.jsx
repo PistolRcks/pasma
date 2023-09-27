@@ -1,13 +1,11 @@
-// Here is the file which will act as the launching point for our React frontend.
+// import 'bootstrap/dist/css/bootstrap.min.css'
 
 import React from 'react'
-import ProfilePicture from './components/ProfilePicture.jsx'
+import { createRoot } from 'react-dom/client'
 
-export default function Main (props) {
-  
-    return (
-      <div>
-        <ProfilePicture></ProfilePicture>
-      </div>
-    )
-}
+import App from './components/App.jsx'
+
+const root = createRoot(document.getElementById('root'))
+root.render(
+    <App />
+)

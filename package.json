@@ -2,14 +2,15 @@
   "dependencies": {
     "bunrest": "^1.3.5",
     "prop-types": "^15.8.1",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "name": "pasma",
   "module": "server/main.ts",
   "type": "module",
   "scripts": {
-    "client": "bun build ./client/Main.jsx --outdir ./build --minify",
-    "client:dev": "bun build ./client/Main.jsx --outdir ./build --watch --sourcemap=external",
+    "client": "bun build ./client/Main.jsx --outdir ./public --minify",
+    "client:dev": "bun build ./client/Main.jsx --outdir ./public --watch --sourcemap=external",
     "server": "bun run server/main.ts",
     "server:dev": "bun run --watch server/main.ts",
     "clean": "rm ./public/*"
