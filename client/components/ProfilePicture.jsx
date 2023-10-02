@@ -1,23 +1,25 @@
 import React from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 import { Avatar } from "@nextui-org/react";
 
-export default function ProfilePicture () {
+export default function ProfilePicture (props) {
+    const { name, userImage, size } = props
   
     return (
       <div>
-        <h1>Hello World</h1>
-        <Avatar showFallback name= "Jared" src="./images/jared.png" size="lg"/>
+        <Avatar showFallback name= {`${name}`} src={`./images/${userImage}`} size={`${size}`}/>
       </div>
     )
 }
-/*
+
 ProfilePicture.propTypes = {
-    userID: PropTypes.number.isRequired,
-    userPicture: PropTypes.number,
+    name: PropTypes.string.isRequired,
+    userImage: PropTypes.string,
+    size: PropTypes.string
 }
 
 ProfilePicture.defaultProps = {
-    userPicture: -1
-}*/
+    userImage: "default.png",
+    size: "md"
+}
