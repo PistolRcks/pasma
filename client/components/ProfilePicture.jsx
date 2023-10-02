@@ -8,7 +8,7 @@ export default function ProfilePicture () {
     return (
       <div>
         <h1>Hello World</h1>
-        <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
+        <Avatar showFallback name= "Jared" src="./images/jared.png" size="lg"/>
       </div>
     )
 }

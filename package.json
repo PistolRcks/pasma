@@ -15,10 +15,13 @@
     "client:dev": "bun build ./client/Main.jsx --outdir ./public --watch --sourcemap=external",
     "server": "bun run server/main.ts",
     "server:dev": "bun run --watch server/main.ts",
-    "clean": "rm ./public/*"
+    "css": "bunx tailwindcss -i ./public/styles.css -o ./public/main.css",
+    "css:dev": "bunx tailwindcss -i ./public/styles.css -o ./public/main.css --watch",
+    "clean": "rm ./public/main.*"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "tailwindcss": "^3.3.3"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
