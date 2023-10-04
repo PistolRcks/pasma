@@ -13,9 +13,10 @@
     "type": "module",
     "main": "dist/index.js",
     "scripts": {
-        "build-css": "npx tailwindcss -i ./client/input.css -o ./public/output.css --watch",
+        "build-css": "npx tailwindcss -i ./client/input.css -o ./public/output.css",
         "build-back": "tsc",
         "build-front": "node ./esbuild.config.mjs",
+        "build": "npm run build-css && npm run build-back && npm run build-front",
         "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
         "start:dev": "node .",
         "test": "jest --coverage"

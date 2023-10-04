@@ -1,19 +1,21 @@
 // Here is the file which will act as the launching point for our Bun backend.
 
-import server from "bunrest";
+import express, { Express, NextFunction, Request, Response } from 'express';
 import { login } from "./api/login";
 import { sessions, addSession } from "./types/Session";
-
 
 /**
  * The actual app. Set request handlers to this object.
  */
-const app = server();
+export const app : Express = express();
 
 /**
  * The specific router for API calls.
  */
-const api = app.router();
+const api = express.Router();
+
+// Translate to JSON whenever possible
+app.use(express.json());
 
 // Log all requests
 app.use((req, res, next) => {
@@ -21,13 +23,11 @@ app.use((req, res, next) => {
     console.log(`[${Date.now().toLocaleString("en-us")}] ${req.method} at ${req.path}`);
     
     // propagate if possible
-    if (next) {
-        next();
-    }
+    next();
 });
 
 // Propagate errors to the frontend
-app.use((req, res, next, err) => {
+app.use((err : any, req : Request, res : Response, next : NextFunction) => {
     const errorMsg: string = `Error occurred at "${err?.name}": ${err?.message}\n\t${err?.stack}`;
     res.status(500).send(errorMsg);
     // FIXME: Not displaying date correctly?
