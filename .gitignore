@@ -171,5 +171,4 @@ dist
 # IntelliJ based IDEs
 .idea
 
-# Bun Lock File
-bun.lockb
+package-lock.json
