@@ -1,21 +1,44 @@
-{ 
-  "dependencies": { 
-    "bunrest": "^1.3.5", 
-    "react": "^18.2.0" 
-  }, 
-  "name": "pasma", 
-  "module": "server/main.ts", 
-  "type": "module",
-  "scripts": {
-    "client" : "bun build ./client/Main.tsx --outdir ./public --minify",
-    "client:dev" : "bun build ./client/Main.tsx --outdir ./public --watch --sourcemap=external",
-    "server" : "bun run server/main.ts",
-    "server:dev" : "bun run --watch server/main.ts",
-    "clean" : "rm ./public/*"
-  },
-  "devDependencies": {
-    "bun-types": "latest"
-  }, "peerDependencies": {
-    "typescript": "^5.0.0"
-  } 
+{
+    "dependencies": {
+        "@nextui-org/react": "^2.1.13",
+        "express": "^4.18.2",
+        "framer-motion": "^10.16.4",
+        "prop-types": "^15.8.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.16.0",
+        "sqlite3": "^5.1.6"
+    },
+    "name": "pasma",
+    "type": "module",
+    "main": "dist/index.js",
+    "scripts": {
+        "build-css": "npx tailwindcss -i ./client/input.css -o ./public/output.css --watch",
+        "build-back": "tsc",
+        "build-front": "node ./esbuild.config.mjs",
+        "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+        "start:dev": "node .",
+        "test": "jest --coverage"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.23.0",
+        "@babel/core": "^7.23.0",
+        "@babel/preset-env": "^7.22.20",
+        "@testing-library/react": "^14.0.0",
+        "@types/express": "^4.17.18",
+        "@types/jest": "^29.5.5",
+        "@types/node": "^20.8.2",
+        "@types/sqlite3": "^3.1.9",
+        "esbuild": "0.19.4",
+        "esbuild-plugin-babel": "^0.2.3",
+        "eslint": "^8.50.0",
+        "jest": "^29.7.0",
+        "supertest": "^6.3.3",
+        "tailwindcss": "^3.3.3",
+        "ts-jest": "^29.1.1",
+        "typescript": "^5.2.2"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    }
 }
