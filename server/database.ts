@@ -43,8 +43,8 @@ export function initDB(dbFile: string): Database {
     const db = new Database(dbFile);
 
     // create tables for database if they do not exist.
-    db.query(`CREATE TABLE if not exists "Users" (ID TEXT PRIMARY KEY, Username TEXT, Password TEXT NOT NULL, Salt TEXT, ProfilePicture BLOB);`).run();
-    db.query(`CREATE TABLE if not exists "Posts" (Username TEXT, Content TEXT, Picture BLOB, Timestamp INTEGER, FOREIGN KEY(Username) REFERENCES Users(Username));`).run();
+    db.query(`CREATE TABLE if not exists "Users" (Username TEXT PRIMARY KEY, Password TEXT NOT NULL, Salt TEXT, ProfilePicture BLOB);`).run();
+    db.query(`CREATE TABLE if not exists "Posts" (ID TEXT PRIMARY KEY, Username TEXT, Content TEXT, Picture BLOB, Timestamp INTEGER, FOREIGN KEY(Username) REFERENCES Users(Username));`).run();
 
     return db;
 }
