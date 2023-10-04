@@ -1,17 +1,62 @@
 import { expect, test } from "bun:test";
 import { Database } from "bun:sqlite";
-import { getDB } from "../../server/database.ts";
+import { User, isUser, Post, isPost, initDB } from "../../server/database.ts";
 
-const testingDB = getDB();
+// fakeUser has the field "fakeName" instead of "Username", meaning isUser should return false.
+let fakeUser = {
+    fakeName: "bob",
+    Password: "securepassword",
+    Salt: "123abc",
+    ProfilePicture: "data"
+}
 
-// first, check to make sure our Database is in fact a database.
-test("Checking database type", () => {
-    expect(testingDB instanceof Database).toBe(true);
+// realUser has all the necessary fields for a User and should return true from isUser.
+let realUser = {
+    Username: "bob",
+    Password: "securepassword",
+    Salt: "123abc",
+    ProfilePicture: "data"
+}
+
+// fakePost has the field "fakeContent" instead of "Content", meaning isPost should return false.
+let fakePost = {
+    Username: "bob",
+    fakeContent: "some content",
+    Picture: "data",
+    Timestamp: "time posted"
+}
+
+// realPost has all the necessary fields for a Post and should return true from isPost.
+let realPost = {
+    Username: "bob",
+    Content: "some content",
+    Picture: "data",
+    Timestamp: "time posted"
+}
+
+// making sure our isUser function can identify an incorrect field.
+test("Check fake user", () => {
+    expect(isUser(fakeUser)).toBe(false);
 });
 
-/* then, list out the tables. make sure we have the Users and Posts tables, since they should be
-   created by getDB() */
+// making sure our isUser function can correctly identify all matching fields.
+test("Check real user", () => {
+    expect(isUser(realUser)).toBe(true);
+});
+
+// making sure our isPost function can identify an incorrect field.
+test("Check fake post", () => {
+    expect(isPost(fakePost)).toBe(false);
+});
+
+// making sure our isPost function can correctly identify all matching fields.
+test("Check real post", () => {
+    expect(isPost(realPost)).toBe(true);
+});
+
+/* list out the tables. make sure we have the Users and Posts tables, since they should be
+   created by initDB() */
 test("Checking database structure", () => {
-    let testQuery = testingDB.query("SELECT name FROM sqlite_master WHERE type='table';").values();
-    expect(testQuery).toEqual([["Users"],["Posts"]]);
+    let testDBTables = initDB("server/db.sqlite").query("SELECT name FROM sqlite_master WHERE type='table';").values();
+    expect(testDBTables).toEqual([["Users"],["Posts"]]);
 });
