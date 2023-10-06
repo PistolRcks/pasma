@@ -7,7 +7,7 @@ export default function App (props) {
   
     return (
       <div>
-        <ProfilePicture name='Jared'/>
+        <ProfilePicture username='Jared'/>
       </div>
     )
 }
