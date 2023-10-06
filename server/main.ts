@@ -3,6 +3,14 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { login } from "./api/login";
 import { sessions, addSession } from "./types/Session";
+import { Database } from 'sqlite3';
+import { initDB } from './database';
+
+/**
+ * The database.
+ * @see database#initDB 
+ */
+export const db : Database = initDB("./db.sqlite");
 
 /**
  * The actual app. Set request handlers to this object.

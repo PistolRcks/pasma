@@ -1,22 +1,10 @@
 // This file handles session token handling caused by logins. Also handles logins.
 
 import crypto from "crypto";
-import { Database } from "sqlite3";
 import { addSession } from "../types/Session";
 import { Request, Response } from "express";
-
-// FIXME: Use actual DB and that kinda stuff later
-const db = new Database(":memory:");
-
-interface User {
-    username: string,
-    password: string,
-    salt: string
-}
-
-function isUser(x: any): x is User {
-    return "username" in x && "password" in x && "salt" in x;
-}
+import { isUser } from "../database"
+import { db } from "../main"
 
 /**
  * Logs in a user and stores the state, given that the username and password are correct.
@@ -44,9 +32,9 @@ export async function login(req: Request, res: Response) {
         // Need to narrow here or else we are not able to use the result we got
         } else if (isUser(user)) {
             // Verify (assuming sent password is plaintext)
-            const inputHash = crypto.pbkdf2Sync(req.body.password, user.salt, 1000, 64, "sha512").toString('hex'); 
-            if (user.password === inputHash) {
-                const token = addSession({ username : user.username });
+            const inputHash = crypto.pbkdf2Sync(req.body.password, user.Salt, 1000, 64, "sha512").toString('hex'); 
+            if (user.Password === inputHash) {
+                const token = addSession({ username : user.Username });
                 res.status(200).send(token);
                 return;
             } else {
