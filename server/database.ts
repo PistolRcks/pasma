@@ -1,4 +1,6 @@
-import { Database } from "bun:sqlite";
+import { Database } from "sqlite3";
+
+const sqlite3 = require('sqlite3').verbose();
 
 export interface User {
     Username: string;
@@ -17,7 +19,7 @@ export interface Post {
 /**
  * Type guard for a User object
  * @param {User} x User object to check
- * @returns {boolean} Is x a Uost object?
+ * @returns {boolean} Is x a User object?
  */
 export function isUser(x: any): x is User {
     return "Username" in x && "Password" in x && "Salt" in x && "ProfilePicture" in x;
@@ -40,11 +42,11 @@ export function isPost(x: any): x is Post {
  */
 export function initDB(dbFile: string): Database {
     // open database "db.sqlite". create if it does not exist
-    const db = new Database(dbFile);
+    const db = new sqlite3.Database(dbFile);
 
     // create tables for database if they do not exist.
-    db.query(`CREATE TABLE if not exists "Users" (Username TEXT PRIMARY KEY, Password TEXT NOT NULL, Salt TEXT, ProfilePicture BLOB);`).run();
-    db.query(`CREATE TABLE if not exists "Posts" (ID TEXT PRIMARY KEY, Username TEXT, Content TEXT, Picture BLOB, Timestamp INTEGER, FOREIGN KEY(Username) REFERENCES Users(Username));`).run();
+    db.exec(`CREATE TABLE if not exists "Users" (Username TEXT PRIMARY KEY, Password TEXT NOT NULL, Salt TEXT, ProfilePicture BLOB);`);
+    db.exec(`CREATE TABLE if not exists "Posts" (ID TEXT PRIMARY KEY, Username TEXT, Content TEXT, Picture BLOB, Timestamp INTEGER, FOREIGN KEY(Username) REFERENCES Users(Username));`);
 
     return db;
 }

@@ -1,6 +1,4 @@
-import { expect, test } from "bun:test";
-import { Database } from "bun:sqlite";
-import { User, isUser, Post, isPost, initDB } from "../../server/database.ts";
+import { User, isUser, Post, isPost, initDB } from "../../server/database";
 
 // fakeUser has the field "fakeName" instead of "Username", meaning isUser should return false.
 let fakeUser = {
@@ -34,29 +32,39 @@ let realPost = {
     Timestamp: "time posted"
 }
 
-// making sure our isUser function can identify an incorrect field.
-test("Check fake user", () => {
-    expect(isUser(fakeUser)).toBe(false);
+describe('User checks', () => {
+    // making sure our isUser function can identify an incorrect field.
+    test("Check fake user", () => {
+        expect(isUser(fakeUser)).toBe(false);
+    });
+
+    // making sure our isUser function can correctly identify all matching fields.
+    test("Check real user", () => {
+        expect(isUser(realUser)).toBe(true);
+    });
 });
 
-// making sure our isUser function can correctly identify all matching fields.
-test("Check real user", () => {
-    expect(isUser(realUser)).toBe(true);
-});
+describe('Post checks', () => {
+    // making sure our isPost function can identify an incorrect field.
+    test("Check fake post", () => {
+        expect(isPost(fakePost)).toBe(false);
+    });
 
-// making sure our isPost function can identify an incorrect field.
-test("Check fake post", () => {
-    expect(isPost(fakePost)).toBe(false);
-});
-
-// making sure our isPost function can correctly identify all matching fields.
-test("Check real post", () => {
-    expect(isPost(realPost)).toBe(true);
+    // making sure our isPost function can correctly identify all matching fields.
+    test("Check real post", () => {
+        expect(isPost(realPost)).toBe(true);
+    });
 });
 
 /* list out the tables. make sure we have the Users and Posts tables, since they should be
    created by initDB() */
-test("Checking database structure", () => {
-    let testDBTables = initDB("server/db.sqlite").query("SELECT name FROM sqlite_master WHERE type='table';").values();
-    expect(testDBTables).toEqual([["Users"],["Posts"]]);
+describe('Database checks', () => {
+    test("Checking database structure", done => {
+        let testDBTables = initDB(":memory:");
+        
+        testDBTables.all("SELECT name FROM sqlite_master WHERE type='table';", [], function (err: Error, rows: any[]) {
+            expect(rows).toEqual([{name: 'Users'}, {name: 'Posts'}]);
+            done();
+        });
+    });
 });
