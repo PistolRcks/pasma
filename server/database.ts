@@ -1,7 +1,5 @@
 import { Database } from "sqlite3";
 
-const sqlite3 = require('sqlite3').verbose();
-
 export interface User {
     Username: string;
     Password: string;
@@ -42,11 +40,25 @@ export function isPost(x: any): x is Post {
  */
 export function initDB(dbFile: string): Database {
     // open database "db.sqlite". create if it does not exist
-    const db = new sqlite3.Database(dbFile);
+    const db = new Database(dbFile);
 
     // create tables for database if they do not exist.
-    db.exec(`CREATE TABLE if not exists "Users" (Username TEXT PRIMARY KEY, Password TEXT NOT NULL, Salt TEXT, ProfilePicture BLOB);`);
-    db.exec(`CREATE TABLE if not exists "Posts" (ID TEXT PRIMARY KEY, Username TEXT, Content TEXT, Picture BLOB, Timestamp INTEGER, FOREIGN KEY(Username) REFERENCES Users(Username));`);
+    db.serialize(function () {
+        db.exec(`CREATE TABLE if not exists "Users" (
+            Username TEXT PRIMARY KEY, 
+            Password TEXT NOT NULL, 
+            Salt TEXT, 
+            ProfilePicture BLOB
+        );`);
+        db.exec(`CREATE TABLE if not exists "Posts" (
+            ID TEXT PRIMARY KEY, 
+            Username TEXT, 
+            Content TEXT, 
+            Picture BLOB, 
+            Timestamp INTEGER, 
+            FOREIGN KEY(Username) REFERENCES Users(Username)
+        );`);
+    });
 
     return db;
 }
