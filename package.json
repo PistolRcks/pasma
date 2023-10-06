@@ -10,7 +10,7 @@
         "sqlite3": "^5.1.6"
     },
     "name": "pasma",
-    "type": "module",
+    "type": "commonjs",
     "main": "dist/main.js",
     "scripts": {
         "build-css": "npx tailwindcss -i ./public/styles.css -o ./public/main.css --watch",
