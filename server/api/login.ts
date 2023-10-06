@@ -39,19 +39,18 @@ export async function login(req: Request, res: Response) {
         const user = stmt.get(req.body.username);
 
         if (typeof user === "undefined" || user === null) {
-            res.status(401).send(`Error: Username or password does not exist.`);
+            res.status(401).send("Error: Username or password does not exist.");
             return;
         // Need to narrow here or else we are not able to use the result we got
         } else if (isUser(user)) {
             // Verify (assuming sent password is plaintext)
-            var inputHash = crypto.pbkdf2Sync(req.body.password, user.salt, 1000, 64, `sha512`).toString(`hex`); 
-
+            const inputHash = crypto.pbkdf2Sync(req.body.password, user.salt, 1000, 64, "sha512").toString('hex'); 
             if (user.password === inputHash) {
                 const token = addSession({ username : user.username });
                 res.status(200).send(token);
                 return;
             } else {
-                res.status(401).send(`Error: Username or password does not exist.`);
+                res.status(401).send("Error: Username or password does not exist.");
                 return;            
             }            
         }
