@@ -1,9 +1,11 @@
 // Here is the file which will act as the launching point for our Bun backend.
 
 import express, { Express, NextFunction, Request, Response } from 'express';
-import { login } from "./api/login";
 import { Database } from 'sqlite3';
 import { initDB } from './database';
+
+import { login } from "./api/login";
+import { dbProfilePicture } from './api/getProfilePicture';
 
 /**
  * The database.
@@ -44,6 +46,11 @@ app.use((err : any, req : Request, res : Response, next : NextFunction) => {
 api.post("/login", login);
 
 app.use("/api", api);
+
+api.get('/getProfilePicture/:Username', dbProfilePicture)
+
+// Create static route to serve the public folder
+app.use(express.static('./public'))
 
 app.listen(3000, () => {
     console.log('App initialized and is listening on port 3000.');
