@@ -1,5 +1,4 @@
-import { db } from '../main';
-import { isPost, isUser } from '../database';
+import { db } from '../database';
 import { Request, Response } from 'express';
 
 export function dbProfilePicture (req: Request, res: Response) {
