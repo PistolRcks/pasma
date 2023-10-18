@@ -3,8 +3,7 @@
 import crypto from "crypto";
 import { addSession } from "../types/Session";
 import { Request, Response } from "express";
-import { isUser } from "../database"
-import { db } from "../main"
+import { db, isUser } from "../database"
 
 /**
  * Logs in a user and stores the state, given that the username and password are correct.
@@ -27,6 +26,7 @@ export function login(req: Request, res: Response) {
         db.get(`select * from Users where username = "${req.body.username}"`, function (err, user) {
             if (err) {
                 res.status(500).send(`Server Error: ${err}`);
+                return;
             }
 
             if (typeof user === "undefined" || user === null) {
@@ -46,7 +46,6 @@ export function login(req: Request, res: Response) {
                 }            
             }
         });
-
     } else {
         res.status(400).send("Error: Request body was not able to be transformed into JSON.");
         return;
