@@ -1,5 +1,3 @@
-import { type } from "os";
-
 /**
  * Contains pertinent session information as provided by {@link login#login}.
  */
