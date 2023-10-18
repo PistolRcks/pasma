@@ -3,7 +3,7 @@ import { isPost, isUser } from '../database';
 import { Request, Response } from 'express';
 
 export function dbProfilePicture (req: Request, res: Response) {
-    if(1===1) {
+    if(req.params.Username) {
         let profilePicture: string;
         db.get(`SELECT ProfilePicture FROM Users WHERE Username = '${req.params.Username}'`, (err,row: any) => {
             profilePicture = row.ProfilePicture;
