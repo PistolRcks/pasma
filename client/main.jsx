@@ -1,10 +1,12 @@
 // import 'bootstrap/dist/css/bootstrap.min.css'
 
-import React from 'react'
-import { createRoot } from 'react-dom/client'
+// mport React from 'react'
+const React = require('react')
+// import { createRoot } from 'react-dom/client'
+const { createRoot } = require('react-dom/client')
 
-import App from './components/App.jsx'
-import { NextUIProvider } from '@nextui-org/react'
+const { App } = require('./components/App.jsx')
+const { NextUIProvider } = require('@nextui-org/react')
 
 const root = createRoot(document.getElementById('root'))
 root.render(

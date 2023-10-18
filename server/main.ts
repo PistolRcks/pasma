@@ -1,35 +1,36 @@
-// Here is the file which will act as the launching point for our Bun backend.
+import Express from 'express'
+import { Request, Response } from 'express'
+import { isPost, initDB, Post } from './database'
+import { dbProfilePicture } from './api/getProfilePicture'
 
-//import server from "bunrest";
-import { serve, file } from 'bun';
-//const app = server();
+// create databse
+export const db = initDB(":memory:")
 
 // Set port
-//const port = 3000
+const port = 3000
+
+// Create a new express app
+const app = Express()
+const api = Express.Router()
 
 // Create a universal route that logs all request
-/*
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`)
-    next()
+  console.log(`${req.method} ${req.url}`)
+  next()
 })
-*/
+
+// Router
+app.use('/api', api)
+app.use(Express.json());
+api.use(Express.json());
+api.get('/getProfilePicture/:Username', dbProfilePicture)
 
 // Create static route to serve the public folder
-serve({
-    fetch(req) {
-      const rootFilePath = "./public"
-      const url = new URL(req.url);
-      console.log (url.pathname)
-      if (url.pathname == "/") {
-        return new Response(file(rootFilePath+"/index.html"))
-      } else {
-        return new Response(file(rootFilePath+url.pathname))
-      }
-    }
-  })
+app.use(Express.static('./public'))
 
 // Start listening
-//app.listen(port, () => {
-//    console.log(`Server started at http://localhost:${port}`)
-//})
+app.listen(port, () => {
+  console.log(`Server started at http://localhost:${port}`)
+})
+
+db.exec(`INSERT INTO Users VALUES ('jared', 'jaredpass', 'some random salt', 'JaredD-2023.png');`);

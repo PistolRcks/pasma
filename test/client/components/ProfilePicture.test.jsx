@@ -1,28 +1,35 @@
-import renderer from 'react-test-renderer';
-import ProfilePicture from '../../../client/components/ProfilePicture.jsx';
+import React from 'react';
+import { ProfilePicture } from '../../../client/components/ProfilePicture.jsx';
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import '@testing-library/jest-dom';
+import '@testing-library/react';
 
-it('displays a profile picture', () => {
-  const component = renderer.create(
-    <ProfilePicture username="jareddoran" />,
-  );
-  let tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
 
+// jest.mock('../../../client/dataHelper.js')
+
+describe("Tests for Profile Picture", () => {
+  beforeAll(() => {
+    jest.spyOn(console, "log").mockImplementation();
+    jest.spyOn(console, "error").mockImplementation();
+  });
   /*
-  // manually trigger the callback
-  renderer.act(() => {
-    tree.props.onMouseEnter();
+  test("Loads and Displays Landing Page", async () => {
+    render(<BrowserRouter><GoogleOAuthProvider><LandingPage url="/" /></GoogleOAuthProvider></BrowserRouter>);
+    const landingPage = screen.getByTestId("landing-1");
+    expect(landingPage).toBeInTheDocument();
   });
-  // re-rendering
-  tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
-
-  // manually trigger the callback
-  renderer.act(() => {
-    tree.props.onMouseLeave();
+  */
+  test("Checks for Profile Picture", () => {
+    const wrapper = render(<BrowserRouter><ProfilePicture username="test" size="md" /></BrowserRouter>);
+    expect(wrapper.baseElement.outerHTML).toContain(
+      "test"
+    );
   });
-  // re-rendering
-  tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  /*
+  test("Checks for Log In Button", () => {
+    const wrapper = render(<BrowserRouter><GoogleOAuthProvider><LandingPage /></GoogleOAuthProvider></BrowserRouter>);
+    expect(wrapper.baseElement.outerHTML).toContain("Log In");
+  });
   */
 });

@@ -48,13 +48,13 @@ export function initDB(dbFile: string): Database {
             Username TEXT PRIMARY KEY, 
             Password TEXT NOT NULL, 
             Salt TEXT, 
-            ProfilePicture BLOB
+            ProfilePicture TEXT
         );`);
         db.exec(`CREATE TABLE if not exists "Posts" (
             ID TEXT PRIMARY KEY, 
             Username TEXT, 
             Content TEXT, 
-            Picture BLOB, 
+            Picture TEXT, 
             Timestamp INTEGER, 
             FOREIGN KEY(Username) REFERENCES Users(Username)
         );`);

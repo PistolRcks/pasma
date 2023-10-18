@@ -1,13 +1,17 @@
 // Here is the file which will act as the launching point for our React frontend.
 
-import React from 'react'
-import ProfilePicture from './ProfilePicture.jsx'
+const React = require('react')
+const { ProfilePicture } = require('./ProfilePicture.jsx')
 
-export default function App (props) {
+function App (props) {
   
     return (
       <div>
-        <ProfilePicture username='Jared'/>
+        <ProfilePicture username='jared'/>
       </div>
     )
+}
+
+module.exports = {
+    App
 }
