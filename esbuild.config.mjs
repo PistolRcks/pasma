@@ -5,7 +5,7 @@ import * as esbuild from "esbuild";
 await esbuild
   .build({
     entryPoints: ["client/main.jsx"],
-    outfile: "public/bundle.js",
+    outfile: "public/main.js",
     bundle: true,
     minify: true,
     target: "ES6",
@@ -13,7 +13,7 @@ await esbuild
       '.png': 'file',
       '.jpg': 'file'
      },
-    plugins: [esbuildEnvfilePlugin],
+    plugins: [],
   })
   .then((r) => console.log("Build succeeded."))
   .catch((e) => {
