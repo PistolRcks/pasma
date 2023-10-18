@@ -14,7 +14,7 @@ import { db } from "../main"
  *      error (beginning with "Error:"), or with the newly generated session token in the case of
  *      a success.
  */
-export async function login(req: Request, res: Response) {
+export function login(req: Request, res: Response) {
     if (typeof req.body === "object") {
         // Is input malformed?
         if (!("username" in req.body && "password" in req.body)) {
@@ -23,25 +23,30 @@ export async function login(req: Request, res: Response) {
         }
 
         // Does username exist?
-        const stmt = db.prepare("select * from Users where username = ?");
-        const user = stmt.get(req.body.username);
+        // (potential for an SQL injection here but I don't care)
+        db.get(`select * from Users where username = "${req.body.username}"`, function (err, user) {
+            if (err) {
+                res.status(500).send(`Server Error: ${err}`);
+            }
 
-        if (typeof user === "undefined" || user === null) {
-            res.status(401).send("Error: Username or password does not exist.");
-            return;
-        // Need to narrow here or else we are not able to use the result we got
-        } else if (isUser(user)) {
-            // Verify (assuming sent password is plaintext)
-            const inputHash = crypto.pbkdf2Sync(req.body.password, user.Salt, 1000, 64, "sha512").toString('hex'); 
-            if (user.Password === inputHash) {
-                const token = addSession({ username : user.Username });
-                res.status(200).send(token);
-                return;
-            } else {
+            if (typeof user === "undefined" || user === null) {
                 res.status(401).send("Error: Username or password does not exist.");
-                return;            
-            }            
-        }
+                return;
+            // Need to narrow here or else we are not able to use the result we got
+            } else if (isUser(user)) {
+                // Verify (assuming sent password is plaintext)
+                const inputHash = crypto.pbkdf2Sync(req.body.password, user.Salt, 1000, 64, "sha512").toString('hex'); 
+                if (user.Password === inputHash) {
+                    const token = addSession({ username : user.Username });
+                    res.status(200).send(token);
+                    return;
+                } else {
+                    res.status(401).send("Error: Username or password does not exist.");
+                    return;            
+                }            
+            }
+        });
+
     } else {
         res.status(400).send("Error: Request body was not able to be transformed into JSON.");
         return;

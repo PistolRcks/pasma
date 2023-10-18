@@ -2,7 +2,6 @@
 
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { login } from "./api/login";
-import { sessions, addSession } from "./types/Session";
 import { Database } from 'sqlite3';
 import { initDB } from './database';
 
@@ -49,7 +48,3 @@ app.use("/api", api);
 app.listen(3000, () => {
     console.log('App initialized and is listening on port 3000.');
 });
-
-addSession({ username: "blah" });
-
-console.log(`Sessions: ${sessions}`);

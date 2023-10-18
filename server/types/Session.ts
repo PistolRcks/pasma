@@ -1,3 +1,5 @@
+import { type } from "os";
+
 /**
  * Contains pertinent session information as provided by {@link login#login}.
  */
@@ -27,7 +29,7 @@ export const sessions: Map<string, Session> = new Map();
  */
 export function isSession(x: any): x is Session {
     // Not sure if I can do any more?
-    return "username" in x;
+    return "username" in x && typeof x.username === "string";
 }
 
 /**
@@ -51,7 +53,7 @@ export function addSession(newSession: Session): string {
     // add to map
     sessions.set(token, newSession);
 
-    console.log(`Generated new token: "${token}"`);
+    console.log(`Generated new token for user "${newSession.username}": "${token}"`);
 
     return token;
 }
