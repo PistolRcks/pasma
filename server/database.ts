@@ -1,4 +1,5 @@
 import { Database } from "sqlite3";
+import crypto from "crypto";
 
 export interface User {
     Username: string;
@@ -43,14 +44,15 @@ export function initDB(dbFile: string): Database {
     const db = new Database(dbFile);
 
     // create tables for database if they do not exist.
-    db.serialize(function () {
-        db.exec(`CREATE TABLE if not exists "Users" (
+    db.serialize(() => {
+        db.run(`CREATE TABLE if not exists "Users" (
             Username TEXT PRIMARY KEY, 
             Password TEXT NOT NULL, 
-            Salt TEXT, 
+            Salt BLOB, 
             ProfilePicture TEXT
         );`);
-        db.exec(`CREATE TABLE if not exists "Posts" (
+
+        db.run(`CREATE TABLE if not exists "Posts" (
             ID TEXT PRIMARY KEY, 
             Username TEXT, 
             Content TEXT, 
@@ -58,6 +60,14 @@ export function initDB(dbFile: string): Database {
             Timestamp INTEGER, 
             FOREIGN KEY(Username) REFERENCES Users(Username)
         );`);
+        
+        // insert test user (for now)
+        const salt = crypto.randomBytes(16);
+        const testPassword = crypto.pbkdf2Sync("password", salt, 1000, 64, "sha512").toString('hex'); 
+        db.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt)
+            VALUES(?, ?, ?);
+        `, 
+        ["alice", testPassword, salt]);
     });
 
     return db;

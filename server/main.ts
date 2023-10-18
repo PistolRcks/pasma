@@ -1,36 +1,57 @@
-import Express from 'express'
-import { Request, Response } from 'express'
-import { isPost, initDB, Post } from './database'
-import { dbProfilePicture } from './api/getProfilePicture'
+// Here is the file which will act as the launching point for our Bun backend.
 
-// create databse
-export const db = initDB(":memory:")
+import express, { Express, NextFunction, Request, Response } from 'express';
+import { Database } from 'sqlite3';
+import { initDB } from './database';
 
-// Set port
-const port = 3000
+import { login } from "./api/login";
+import { dbProfilePicture } from './api/getProfilePicture';
 
-// Create a new express app
-const app = Express()
-const api = Express.Router()
+/**
+ * The database.
+ * @see database#initDB 
+ */
+export const db : Database = initDB("./db.sqlite");
 
-// Create a universal route that logs all request
+/**
+ * The actual app. Set request handlers to this object.
+ */
+export const app : Express = express();
+
+/**
+ * The specific router for API calls.
+ */
+const api = express.Router();
+
+// Translate to JSON whenever possible
+app.use(express.json());
+
+// Log all requests
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`)
-  next()
-})
+    // FIXME: Not displaying date correctly?
+    console.log(`[${Date.now().toLocaleString("en-us")}] ${req.method} at ${req.path}`);
+    
+    // propagate if possible
+    next();
+});
 
-// Router
-app.use('/api', api)
-app.use(Express.json());
-api.use(Express.json());
+// Propagate errors to the frontend
+app.use((err : any, req : Request, res : Response, next : NextFunction) => {
+    const errorMsg: string = `Error occurred at "${err?.name}": ${err?.message}\n\t${err?.stack}`;
+    res.status(500).send(errorMsg);
+    // FIXME: Not displaying date correctly?
+    console.log(`[${Date.now().toLocaleString("en-us")}] ${errorMsg}`);
+ });
+
+api.post("/login", login);
+
+app.use("/api", api);
+
 api.get('/getProfilePicture/:Username', dbProfilePicture)
 
 // Create static route to serve the public folder
-app.use(Express.static('./public'))
+app.use(express.static('./public'))
 
-// Start listening
-app.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`)
-})
-
-db.exec(`INSERT INTO Users VALUES ('jared', 'jaredpass', 'some random salt', 'JaredD-2023.png');`);
+app.listen(3000, () => {
+    console.log('App initialized and is listening on port 3000.');
+});
