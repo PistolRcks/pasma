@@ -21,7 +21,7 @@
         "build": "npm run build-css && npm run build-back && npm run build-front",
         "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
         "start:dev": "node .",
-        "test": "jest --coverage"
+        "test": "jest --config ./jest-back.config.js --testPathPattern=test/server && jest --config ./jest-front.config.js --testPathPattern=test/client"
     },
     "devDependencies": {
         "@babel/cli": "^7.23.0",

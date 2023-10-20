@@ -1,4 +1,6 @@
-import { User, isUser, Post, isPost, initDB } from "../../server/database";
+import { before } from "node:test";
+import { initDB } from "../../server/database";
+import { isUser, isPost } from "../../server/types/DatabaseTypes";
 
 // fakeUser has the field "fakeName" instead of "Username", meaning isUser should return false.
 let fakeUser = {
@@ -31,6 +33,12 @@ let realPost = {
     Picture: "data",
     Timestamp: "time posted"
 }
+
+beforeAll(() => {
+    jest.spyOn(console, "log").mockImplementation();
+    jest.spyOn(console, "error").mockImplementation();
+
+})
 
 describe('User checks', () => {
     // making sure our isUser function can identify an incorrect field.
