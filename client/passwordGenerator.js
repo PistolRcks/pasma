@@ -7,10 +7,10 @@ function generatePassword(numWords) {
     if (numWords < 2) {
         numWords = 2
     }
-    let wordArray = generate(numWords)
+    const wordArray = generate(numWords)
     let tempPass = wordArray.join('-')
     tempPass = tempPass.concat(Math.floor(Math.random() * 10))
-    while(tempPass.length < 12) {
+    while (tempPass.length < 12) {
         tempPass = tempPass.concat(Math.floor(Math.random() * 10))
     }
     return tempPass
