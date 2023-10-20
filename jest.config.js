@@ -3,7 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   transformIgnorePatterns: [
-    "node_modules/(?!axis)"
+    "node_modules/(?!random-words)"
   ],
   transform: {
     '^.+\\.(ts|tsx)?$': 'ts-jest',
