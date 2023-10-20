@@ -1,4 +1,5 @@
 import { Database } from "sqlite3";
+import crypto from "crypto";
 
 export interface User {
     Username: string;
@@ -40,17 +41,18 @@ export function isPost(x: any): x is Post {
  */
 export function initDB(dbFile: string): Database {
     // open database "db.sqlite". create if it does not exist
-    const db = new Database(dbFile);
+    const newDB = new Database(dbFile);
 
     // create tables for database if they do not exist.
-    db.serialize(function () {
-        db.exec(`CREATE TABLE if not exists "Users" (
+    newDB.serialize(() => {
+        newDB.run(`CREATE TABLE if not exists "Users" (
             Username TEXT PRIMARY KEY, 
             Password TEXT NOT NULL, 
-            Salt TEXT, 
+            Salt BLOB, 
             ProfilePicture TEXT
         );`);
-        db.exec(`CREATE TABLE if not exists "Posts" (
+
+        newDB.run(`CREATE TABLE if not exists "Posts" (
             ID TEXT PRIMARY KEY, 
             Username TEXT, 
             Content TEXT, 
@@ -58,7 +60,26 @@ export function initDB(dbFile: string): Database {
             Timestamp INTEGER, 
             FOREIGN KEY(Username) REFERENCES Users(Username)
         );`);
+        
+        // insert test user (for now)
+        let salt: Buffer = crypto.randomBytes(16);
+        let testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
+        
+        // In a testing environment, testPassword will be undefined...
+        // ...unless you console.log it (and then it will become undefined after the fact...)
+        if (testPassword) {
+            newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt)
+                VALUES(?, ?, ?);
+            `, 
+            ["alice", testPassword.toString("hex"), salt]);
+        }
     });
 
-    return db;
+    return newDB;
 }
+
+/**
+ * The database.
+ * @see database#initDB 
+ */
+export const db = initDB("./db.sqlite");
