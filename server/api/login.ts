@@ -35,7 +35,6 @@ export function login(req: Request, res: Response) {
                 return;
             // Need to narrow here or else we are not able to use the result we got
             } else if (isUser(user)) {
-                console.log("Getting through typeguard")
                 // Verify (assuming sent password is plaintext)
                 const inputHash = crypto.pbkdf2Sync(req.body.password, user.Salt, 1000, 64, "sha512").toString('hex'); 
                 if (user.Password === inputHash) {

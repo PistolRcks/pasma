@@ -20,18 +20,6 @@ export interface Post {
  * @returns {boolean} Is x a User object?
  */
 export function isUser(x: any): x is User {
-    if (!("Username" in x)) {
-        console.log("Username not in object");
-    }
-    if (!("Password" in x)) {
-        console.log("Password not in object");
-    }
-    if (!("Salt" in x)) {
-        console.log("Salt not in object");
-    }
-    if (!("ProfilePicture" in x)) {
-        console.log("ProfilePicture not in object");
-    }
     return "Username" in x && "Password" in x && "Salt" in x && "ProfilePicture" in x;
 }
 
