@@ -36,10 +36,10 @@ export function initDB(dbFile: string): Database {
         // In a testing environment, testPassword will be undefined...
         // ...unless you console.log it (and then it will become undefined after the fact...)
         if (testPassword) {
-            newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt)
-                VALUES(?, ?, ?);
+            newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, ProfilePicture)
+                VALUES(?, ?, ?, ?);
             `, 
-            ["alice", testPassword.toString("hex"), salt]);
+            ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png"]);
         }
     });
 

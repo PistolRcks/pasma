@@ -3,7 +3,6 @@
  * @returns {Promise}
  */
 export async function retrieveProfilePicture (username) {
-    console.log('Retrieving profile picture')
     try {
       // Send an AJAX request
       const response = await fetch(`api/getProfilePicture/${username}`, {
