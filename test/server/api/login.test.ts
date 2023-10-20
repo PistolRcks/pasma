@@ -10,15 +10,14 @@ jest.mock("crypto", () => {
         ...jest.requireActual("crypto"),
 
         // Output what we put in instead of actually hashing
-        pbkdf2Sync: jest.fn(() => {
+        pbkdf2Sync: jest.fn(
             (password: crypto.BinaryLike, salt: crypto.BinaryLike, iterations: number, keylen: number, digest: string): Buffer => {
                 if (typeof password === 'string') {
                     return Buffer.from(password);
                 } else {
                     return Buffer.from("something");
                 }
-            }
-        })
+            })
     }
 });
 jest.mock("../../../server/database");
@@ -27,17 +26,26 @@ const req = supertest(app);
 
 // block console logging so it doesn't get annoying
 beforeAll(() => {
-    //jest.spyOn(console, "log").mockImplementation();
+    jest.spyOn(console, "log").mockImplementation();
     jest.spyOn(console, "error").mockImplementation();
 
 })
 
 describe("Tests for the /api/login endpoint", () => {
+    beforeEach(() => {
+        db.get = jest.fn();
+    });
+
     // Create dummy user 
     test("200 - Normal Login", async () => {
         db.get = jest.fn((stmt, callback) => {
             // @ts-ignore
-            callback(null, { Username: "username", Salt: "blah", Password: Buffer.from("password").toString("hex") });
+            callback(null, { 
+                Username: "username", 
+                Salt: "blah", 
+                Password: Buffer.from("password").toString("hex"), 
+                ProfilePicture: "picture.jpeg" 
+            });
         }) as jest.MockedFunction<DBGetType>;
 
         // Send a request to the /api/login endpoint
@@ -61,7 +69,7 @@ describe("Tests for the /api/login endpoint", () => {
     test("401 - Username doesn't exist", async () => {
         db.get = jest.fn((stmt, callback) => {
             // @ts-ignore
-            callback(null, {});
+            callback(null, null);
         }) as jest.MockedFunction<DBGetType>;
         
         const response = await req
@@ -75,7 +83,7 @@ describe("Tests for the /api/login endpoint", () => {
     test("401 - Password isn't valid", async () => {
         db.get = jest.fn((stmt, callback) => {
             // @ts-ignore
-            callback(null, {});
+            callback(null, null);
         }) as jest.MockedFunction<DBGetType>;
 
         const response = await req

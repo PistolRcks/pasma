@@ -3,7 +3,8 @@
 import crypto from "crypto";
 import { addSession } from "../types/Session";
 import { Request, Response } from "express";
-import { db, isUser } from "../database"
+import { db } from "../database"
+import { isUser } from "../types/DatabaseTypes";
 
 /**
  * Logs in a user and stores the state, given that the username and password are correct.
@@ -23,7 +24,7 @@ export function login(req: Request, res: Response) {
 
         // Does username exist?
         // (potential for an SQL injection here but I don't care)
-        db.get(`select * from Users where username = "${req.body.username}"`, function (err, user) {
+        db.get(`select * from Users where Username = "${req.body.username}"`, function (err, user) {
             if (err) {
                 res.status(500).send(`Server Error: ${err}`);
                 return;
@@ -34,6 +35,7 @@ export function login(req: Request, res: Response) {
                 return;
             // Need to narrow here or else we are not able to use the result we got
             } else if (isUser(user)) {
+                console.log("Getting through typeguard")
                 // Verify (assuming sent password is plaintext)
                 const inputHash = crypto.pbkdf2Sync(req.body.password, user.Salt, 1000, 64, "sha512").toString('hex'); 
                 if (user.Password === inputHash) {
