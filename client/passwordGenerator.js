@@ -1,7 +1,7 @@
 // Purpose: Generate a random password for the user
 const { generate } = require('random-words')
 
-async function generatePassword (length) {
+function generatePassword (length) {
     if (length < 2) {
         length = 2
     }
