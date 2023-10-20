@@ -3,7 +3,8 @@
 import crypto from "crypto";
 import { addSession } from "../types/Session";
 import { Request, Response } from "express";
-import { db, isUser } from "../database"
+import { db } from "../database"
+import { isUser } from "../types/DatabaseTypes";
 
 /**
  * Logs in a user and stores the state, given that the username and password are correct.
@@ -23,7 +24,7 @@ export function login(req: Request, res: Response) {
 
         // Does username exist?
         // (potential for an SQL injection here but I don't care)
-        db.get(`select * from Users where username = "${req.body.username}"`, function (err, user) {
+        db.get(`select * from Users where Username = "${req.body.username}"`, function (err, user) {
             if (err) {
                 res.status(500).send(`Server Error: ${err}`);
                 return;
