@@ -30,17 +30,13 @@ export function initDB(dbFile: string): Database {
         );`);
         
         // insert test user (for now)
-        let salt: Buffer = crypto.randomBytes(16);
-        let testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
+        const salt: Buffer = crypto.randomBytes(16);
+        const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
         
-        // In a testing environment, testPassword will be undefined...
-        // ...unless you console.log it (and then it will become undefined after the fact...)
-        if (testPassword) {
-            newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt)
-                VALUES(?, ?, ?);
-            `, 
-            ["alice", testPassword.toString("hex"), salt]);
-        }
+        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt)
+            VALUES(?, ?, ?);
+        `, 
+        ["alice", testPassword.toString("hex"), salt]);
     });
 
     return newDB;
