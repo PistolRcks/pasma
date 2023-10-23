@@ -1,9 +1,9 @@
 // This file handles signing a user up to the website, as well as password validation.
 
+import crypto from "crypto";
+import { Request, Response } from "express";
 import { db } from "../database";
 import { addSession } from "../types/Session";
-import { Request, Response } from "express";
-import crypto from "crypto";
 
 /**
  * Signs up a user and stores the state, given a unique username and valid password. 
@@ -47,11 +47,17 @@ export function register(req: Request, res: Response) {
             db.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt)
                 VALUES(?, ?, ?);
             `, 
-            [req.body.username, hashedPassword.toString("hex"), salt]);
+            [req.body.username, hashedPassword.toString("hex"), salt], (err) => {
+                if (err) {
+                    res.status(500).send(`Sever Error: ${err}`);
+                    return;
+                }
+                
+                // Log the new user in
+                const token = addSession({ username: req.body.username });
+                res.status(200).send(token);
+            });
             
-            // Log the new user in
-            const token = addSession({ username: req.body.username });
-            res.status(200).send(token);
         });
     } else {
         res.status(400).send("Error: Request body was not able to be transformed into JSON.");

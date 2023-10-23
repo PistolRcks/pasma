@@ -2,13 +2,11 @@ import supertest from "supertest";
 import crypto from "crypto";
 import app from "../../../server/server";
 import { db } from "../../../server/database";
-import { DBGetType } from "../../utils/types";
+import { DBGetType, DBRunTypeWithCallback } from "../../utils/types";
 
 jest.mock("crypto", () => {
     return {
         ...jest.requireActual("crypto"),
-
-        // Output what we put in instead of actually hashing
         pbkdf2Sync: jest.fn(
             (password: crypto.BinaryLike, salt: crypto.BinaryLike, iterations: number, keylen: number, digest: string): Buffer => {
                 if (typeof password === 'string') {
@@ -19,37 +17,40 @@ jest.mock("crypto", () => {
             })
     }
 });
+
 jest.mock("../../../server/database");
 
 const req = supertest(app);
 
-// block console logging so it doesn't get annoying
 beforeAll(() => {
     jest.spyOn(console, "log").mockImplementation();
     jest.spyOn(console, "error").mockImplementation();
+
 })
 
-describe("Tests for the /api/login endpoint", () => {
+describe("Tests for the /api/register endpoint", () => {
+    const endpoint = "/api/register";
+
     beforeEach(() => {
         db.get = jest.fn();
     });
-
-    // Create dummy user 
-    test("200 - Normal Login", async () => {
+    
+    // 200 - Standard execution
+    test("200 - Normal Registration", async () => {
         db.get = jest.fn((stmt, callback) => {
             // @ts-ignore
-            callback(null, { 
-                Username: "username", 
-                Salt: "blah", 
-                Password: Buffer.from("password").toString("hex"), 
-                ProfilePicture: "picture.jpeg" 
-            });
+            callback(null, null);
         }) as jest.MockedFunction<DBGetType>;
-
+        
+        db.run = jest.fn((stmt, params, callback) => {
+            // @ts-ignore
+            callback(null);
+        }) as jest.MockedFunction<DBRunTypeWithCallback>;
+        
         // Send a request to the /api/login endpoint
         const response = await req
-            .post("/api/login")
-            .send({ username: "username", password: "password" });
+            .post(endpoint)
+            .send({ username: "username", password: "Password123$$$" });
 
         expect(response.status).toBe(200);
         expect(response.text).toHaveLength(32);
@@ -57,49 +58,63 @@ describe("Tests for the /api/login endpoint", () => {
 
     test("400 - Request malformed", async () => {
         const response = await req
-            .post("/api/login")
+            .post(endpoint)
             .send({}); // Empty request body, which should trigger a 400 response
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: \"username\" and/or \"password\" not in request JSON.")
     });
 
-    test("401 - Username doesn't exist", async () => {
+    test("400 - Username already exists", async () => {
         db.get = jest.fn((stmt, callback) => {
             // @ts-ignore
-            callback(null, null);
-        }) as jest.MockedFunction<DBGetType>;
-        
-        const response = await req
-            .post("/api/login")
-            .send({ username: "nonexistent", password: "password" });
-
-        expect(response.status).toBe(401);
-        expect(response.text).toBe("Error: Username or password does not exist.")
-    });
-
-    test("401 - Password isn't valid", async () => {
-        db.get = jest.fn((stmt, callback) => {
-            // @ts-ignore
-            callback(null, null);
+            callback(null, { username: "exists" });
         }) as jest.MockedFunction<DBGetType>;
 
         const response = await req
-            .post("/api/login")
-            .send({ username: "username", password: "password" });
+            .post(endpoint)
+            .send({ username: "exists", password: "password" });
 
-        expect(response.status).toBe(401);
-        expect(response.text).toBe("Error: Username or password does not exist.")
+        expect(response.status).toBe(400);
+        expect(response.text).toBe("Error: Username was already taken.")
     });
 
-    test("500 - SQL error", async () => {
+    test("400 - Password isn't valid", async () => {
+        const response = await req
+            .post(endpoint)
+            .send({ username: "username", password: "badpassword" });
+
+        expect(response.status).toBe(400);
+        expect(response.text).toBe("Error: Password is insecure. It must have at least 12 characters, one digit, and one special character.");
+    });
+
+    test("500 - SQL error during db.get", async () => {
         db.get = jest.fn((stmt, callback) => {
             // @ts-ignore
             callback(new Error("Database Error"), null);
         }) as jest.MockedFunction<DBGetType>;
         
         const response = await req
-            .post("/api/login")
+            .post(endpoint)
+            .send({ username: "username", password: "password" });
+
+        expect(response.status).toBe(500);
+        expect(response.text).toBe("Server Error: Error: Database Error")
+    });
+
+    test("500 - SQL error during db.run", async () => {
+        db.get = jest.fn((stmt, callback) => {
+            // @ts-ignore
+            callback(null, null);
+        }) as jest.MockedFunction<DBGetType>;
+        
+        db.run = jest.fn((stmt, params, callback) => {
+            // @ts-ignore
+            callback(new Error("Database Error"), null);
+        }) as jest.MockedFunction<DBRunTypeWithCallback>;
+        
+        const response = await req
+            .post(endpoint)
             .send({ username: "username", password: "password" });
 
         expect(response.status).toBe(500);
