@@ -49,7 +49,7 @@ export function register(req: Request, res: Response) {
             `, 
             [req.body.username, hashedPassword.toString("hex"), salt], (err) => {
                 if (err) {
-                    res.status(500).send(`Sever Error: ${err}`);
+                    res.status(500).send(`Server Error: ${err}`);
                     return;
                 }
                 

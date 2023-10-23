@@ -30,9 +30,13 @@ beforeAll(() => {
 
 describe("Tests for the /api/register endpoint", () => {
     const endpoint = "/api/register";
+    const goodPassword = "Password123$$$";
+    const badPassword = "password";
+
 
     beforeEach(() => {
         db.get = jest.fn();
+        db.run = jest.fn();
     });
     
     // 200 - Standard execution
@@ -50,7 +54,7 @@ describe("Tests for the /api/register endpoint", () => {
         // Send a request to the /api/login endpoint
         const response = await req
             .post(endpoint)
-            .send({ username: "username", password: "Password123$$$" });
+            .send({ username: "username", password: goodPassword });
 
         expect(response.status).toBe(200);
         expect(response.text).toHaveLength(32);
@@ -73,7 +77,7 @@ describe("Tests for the /api/register endpoint", () => {
 
         const response = await req
             .post(endpoint)
-            .send({ username: "exists", password: "password" });
+            .send({ username: "exists", password: goodPassword });
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: Username was already taken.")
@@ -82,7 +86,7 @@ describe("Tests for the /api/register endpoint", () => {
     test("400 - Password isn't valid", async () => {
         const response = await req
             .post(endpoint)
-            .send({ username: "username", password: "badpassword" });
+            .send({ username: "username", password: badPassword });
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: Password is insecure. It must have at least 12 characters, one digit, and one special character.");
@@ -96,7 +100,7 @@ describe("Tests for the /api/register endpoint", () => {
         
         const response = await req
             .post(endpoint)
-            .send({ username: "username", password: "password" });
+            .send({ username: "username", password: goodPassword });
 
         expect(response.status).toBe(500);
         expect(response.text).toBe("Server Error: Error: Database Error")
@@ -110,12 +114,12 @@ describe("Tests for the /api/register endpoint", () => {
         
         db.run = jest.fn((stmt, params, callback) => {
             // @ts-ignore
-            callback(new Error("Database Error"), null);
+            callback(new Error("Database Error"));
         }) as jest.MockedFunction<DBRunTypeWithCallback>;
         
         const response = await req
             .post(endpoint)
-            .send({ username: "username", password: "password" });
+            .send({ username: "username", password: goodPassword });
 
         expect(response.status).toBe(500);
         expect(response.text).toBe("Server Error: Error: Database Error")
