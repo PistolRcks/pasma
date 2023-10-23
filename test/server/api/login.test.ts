@@ -1,6 +1,5 @@
-// FIXME: For the time being, these tests *still* don't work. Gotta work on that...
 import supertest from "supertest";
-import { app } from "../../../server/main";
+import app from "../../../server/server";
 import { db } from "../../../server/database";
 import { DBGetType, PBKDF2SyncType } from "../../utils/types";
 import crypto from "crypto";
@@ -53,7 +52,6 @@ describe("Tests for the /api/login endpoint", () => {
             .post("/api/login")
             .send({ username: "username", password: "password" });
 
-        console.log("test: " + response.text)
         expect(response.status).toBe(200);
     });
 
