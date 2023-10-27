@@ -42,7 +42,8 @@ describe("Tests for the /api/login endpoint", () => {
                 Username: "username", 
                 Salt: "blah", 
                 Password: Buffer.from("password").toString("hex"), 
-                ProfilePicture: "picture.jpeg" 
+                ProfilePicture: "picture.jpeg",
+                UserType: "standard"
             });
         }) as jest.MockedFunction<DBGetType>;
 

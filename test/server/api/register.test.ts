@@ -3,6 +3,8 @@ import crypto from "crypto";
 import app from "../../../server/server";
 import { db } from "../../../server/database";
 import { DBGetType, DBRunTypeWithCallback } from "../../utils/types";
+import { userTypes } from "../../../server/types/DatabaseTypes";
+import { verifyPassword } from "../../../server/api/register";
 
 jest.mock("crypto", () => {
     return {
@@ -32,7 +34,12 @@ describe("Tests for the /api/register endpoint", () => {
     const endpoint = "/api/register";
     const goodPassword = "Password123$$$";
     const badPassword = "password";
-
+    const goodUser = {
+        username: "username",
+        password: goodPassword,
+        userType: "standard",
+        profilePicture: "blah.jpeg"
+    }
 
     beforeEach(() => {
         db.get = jest.fn();
@@ -54,19 +61,28 @@ describe("Tests for the /api/register endpoint", () => {
         // Send a request to the /api/login endpoint
         const response = await req
             .post(endpoint)
-            .send({ username: "username", password: goodPassword });
+            .send(goodUser);
 
         expect(response.status).toBe(200);
         expect(response.text).toHaveLength(32);
     });
 
-    test("400 - Request malformed", async () => {
+    test("400 - Request malformed: required field missing", async () => {
         const response = await req
             .post(endpoint)
             .send({}); // Empty request body, which should trigger a 400 response
 
         expect(response.status).toBe(400);
-        expect(response.text).toBe("Error: \"username\" and/or \"password\" not in request JSON.")
+        expect(response.text).toBe("Error: \"username\",  \"password\", and/or \"userType\" not in request JSON.")
+    });
+    
+    test("400 - Request malformed: required 'userType' invalid", async () => {
+        const response = await req
+            .post(endpoint)
+            .send({ username: "username", password: "password", userType: "bad"});
+
+        expect(response.status).toBe(400);
+        expect(response.text).toBe(`Error: "userType" was not one of the following: ${userTypes}`)
     });
 
     test("400 - Username already exists", async () => {
@@ -77,7 +93,7 @@ describe("Tests for the /api/register endpoint", () => {
 
         const response = await req
             .post(endpoint)
-            .send({ username: "exists", password: goodPassword });
+            .send({ username: "exists", password: goodPassword, userType: "standard" });
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: Username was already taken.")
@@ -86,7 +102,7 @@ describe("Tests for the /api/register endpoint", () => {
     test("400 - Password isn't valid", async () => {
         const response = await req
             .post(endpoint)
-            .send({ username: "username", password: badPassword });
+            .send({ username: "username", password: badPassword, userType: "standard" });
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: Password is insecure. It must have at least 12 characters, one digit, and one special character.");
@@ -100,7 +116,7 @@ describe("Tests for the /api/register endpoint", () => {
         
         const response = await req
             .post(endpoint)
-            .send({ username: "username", password: goodPassword });
+            .send(goodUser);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe("Server Error: Error: Database Error")
@@ -119,9 +135,27 @@ describe("Tests for the /api/register endpoint", () => {
         
         const response = await req
             .post(endpoint)
-            .send({ username: "username", password: goodPassword });
+            .send(goodUser);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe("Server Error: Error: Database Error")
     });
 });
+
+describe("Tests for the verifyPassword method", () => {
+    test("Valid password", () => {
+        expect(verifyPassword("Passw0rdY3s!")).toBeTruthy();
+    });
+    
+    test("Invalid password - Short length", () => {
+        expect(verifyPassword("Passw0rd!")).toBeFalsy();
+    });
+
+    test("Invalid password - No digits", () => {
+        expect(verifyPassword("PasswordYes!")).toBeFalsy();
+    });
+
+    test("Invalid password - No special characters", () => {
+        expect(verifyPassword("Passw0rdY3ss")).toBeFalsy();
+    });
+})

@@ -15,11 +15,10 @@
     "type": "commonjs",
     "main": "dist/main.js",
     "scripts": {
-        "build-css": "npx tailwindcss -i ./public/styles.css -o ./public/main.css --watch",
+        "build-css": "npx tailwindcss -i ./public/styles.css -o ./public/main.css",
         "build-back": "tsc",
         "build-front": "node ./esbuild.config.mjs",
         "build": "npm run build-css && npm run build-back && npm run build-front",
-        "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
         "start:dev": "node .",
         "test-back": "jest --config ./jest-back.config.js --testPathPattern=test/server",
         "test-front": "jest --config ./jest-front.config.js --testPathPattern=test/client",

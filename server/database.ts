@@ -17,7 +17,8 @@ export function initDB(dbFile: string): Database {
             Username TEXT PRIMARY KEY, 
             Password TEXT NOT NULL, 
             Salt BLOB, 
-            ProfilePicture TEXT
+            ProfilePicture TEXT,
+            UserType TEXT NOT NULL CHECK (UserType IN ('standard', 'brand', 'moderator'))
         );`);
 
         newDB.run(`CREATE TABLE if not exists "Posts" (
@@ -33,10 +34,10 @@ export function initDB(dbFile: string): Database {
         const salt: Buffer = crypto.randomBytes(16);
         const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
         
-        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt)
-            VALUES(?, ?, ?);
+        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, UserType)
+            VALUES(?, ?, ?, ?);
         `, 
-        ["alice", testPassword.toString("hex"), salt]);
+        ["alice", testPassword.toString("hex"), salt, "standard"]);
     });
 
     return newDB;
