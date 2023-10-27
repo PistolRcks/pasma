@@ -30,11 +30,11 @@ export type DBGetType = (
 ) => any;
 
 /**
- * Type for `db.exec`. 
+ * Type for `db.run`. 
  * 
- * Seems to be identical in structure to the db.get call, maybe we can merge these?
+ * While identical in structure, we are keeping distinguished types for each database function.
  */
-export type DBExecType = (
+export type DBRunType = (
     sql: string, 
     callback?: (this: Statement, err: Error | null, row: any) => void
 ) => any;

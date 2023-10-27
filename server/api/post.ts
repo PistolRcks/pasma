@@ -11,11 +11,16 @@ let postID: number;
  * @param {Response} res Responds with the post ID in the text field if successful, otherwise returns status code 500.
  */
 function createPost(req: Request, res: Response) {
-    if(isPost(req.body)) {
-        db.exec(`INSERT INTO Posts VALUES ('${postID}', '${req.body.Username}', '${req.body.Content}', '${req.body.Picture}', '${req.body.Timestamp}')`);
-        console.log('[API] Post ' + postID + ' created');
-        res.status(200).send("" + postID);
-        ++postID;
+    if (isPost(req.body)) {
+        db.run(`INSERT INTO Posts VALUES ('$', '$', '$', '$', '$')`, [ postID, req.body.Username, req.body.Content, req.body.Picture, req.body.Timestamp ], function (err: any) {
+            if (err) {
+                console.log("[API] Error: " + err);
+                res.status(500).send();
+            }
+            console.log('[API] Post ' + postID + ' created');
+            res.status(200).send("" + postID);
+            ++postID;
+        });
     } else {
         console.log('[API] Post request failed!');
         res.status(500).send();
@@ -28,8 +33,11 @@ function createPost(req: Request, res: Response) {
  * @param {Response} res Responds with the post ID in the text field if successful, otherwise returns status code 500.
  */
 export function post(req: Request, res: Response) {
-    if(firstPost) {
+    if (firstPost) {
         db.get(`SELECT COUNT(*) as 'count' FROM Posts`, function(err: any,row: any) {
+            if (err) {
+                console.log("[API] Error: " + err);
+            }
             postID = row.count;
             createPost(req, res)
         });
