@@ -30,6 +30,16 @@ export type DBGetType = (
 ) => any;
 
 /**
+ * Type for `db.exec`. 
+ * 
+ * Seems to be identical in structure to the db.get call, maybe we can merge these?
+ */
+export type DBExecType = (
+    sql: string, 
+    callback?: (this: Statement, err: Error | null, row: any) => void
+) => any;
+
+/**
  * Type for `Crypto.pbkdf2Sync`.
  */
 export type PBKDF2SyncType = (
