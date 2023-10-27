@@ -2,12 +2,13 @@
 
 const React = require('react')
 const { ProfilePicture } = require('./ProfilePicture.jsx')
+const { AccountCreationCard } = require('./AccountCreationCard.jsx')
 
 function App (props) {
   
     return (
       <div>
-        <ProfilePicture username='jared'/>
+        <AccountCreationCard/>
       </div>
     )
 }
