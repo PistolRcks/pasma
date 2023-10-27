@@ -6,6 +6,7 @@ function AccountCreationCard (props) {
     const [username, setUsername] = React.useState("");
     const [emailAddress, setEmailAddress] = React.useState("");
     const [password, setPassword] = React.useState("");
+
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
 
@@ -20,62 +21,61 @@ function AccountCreationCard (props) {
             <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
             <ModalContent>
             {(onClose) => (
-                <div>
+                <React.Fragment>
                     <ModalHeader className="flex flex-col gap-1"></ModalHeader>
                     <ModalBody>
-                    <div className="w-full flex flex-row flex-wrap gap-4">
-                        <Popover showArrow placement="bottom">
-                        <PopoverTrigger>
-                            <Avatar src="profile_pictures/botttsNeutral-1695826814739.png" className="w-20 h-20 text-large" />
-                        </PopoverTrigger>
-                        <PopoverContent className="p-1">
-                            <h1>Profile pictures will go here.</h1>
-                        </PopoverContent>
-                        </Popover>
-                    </div>
-                    <div className="w-full flex flex-row flex-wrap gap-4">
-                        <Input
-                            isRequired
-                            label="Username"
-                            labelPlacement="outside"
-                            onValueChange={setUsername}
-                            size="lg"
-                            placeholder=" "
-                            description="This is your unique identifier across pasma. It cannot be changed."
+                        <div className="w-full flex flex-row flex-wrap gap-4">
+                            <Popover showArrow placement="bottom">
+                            <PopoverTrigger>
+                                <Avatar src="profile_pictures/botttsNeutral-1695826814739.png" className="w-20 h-20 text-large" />
+                            </PopoverTrigger>
+                            <PopoverContent className="p-1">
+                                <h1>Profile pictures will go here.</h1>
+                            </PopoverContent>
+                            </Popover>
+                        </div>
+                        <div className="w-full flex flex-row flex-wrap gap-4">
+                            <Input
+                                isRequired
+                                label="Username"
+                                labelPlacement="outside"
+                                onValueChange={setEmailAddress}
+                                size="lg"
+                                placeholder=" "
+                                description="This is your unique identifier across pasma. It cannot be changed."
+                                />
+                            <Input
+                                isRequired
+                                type="email"
+                                label="Email Address"
+                                labelPlacement="outside"
+                                isInvalid={isInvalid}
+                                color={isInvalid ? "danger" : "default"}
+                                errorMessage={isInvalid && "Please enter a valid email address."}
+                                onValueChange={setEmailAddress}
+                                size="lg"
+                                placeholder=" "
+                                description="This is used for email notifications. It can be changed later."
                             />
-                        <Input
-                            isRequired
-                            type="email"
-                            label="Email Address"
-                            labelPlacement="outside"
-                            isInvalid={isInvalid}
-                            color={isInvalid ? "danger" : "default"}
-                            errorMessage={isInvalid && "Please enter a valid email address."}
-                            onValueChange={setEmailAddress}
-                            size="lg"
-                            placeholder=" "
-                            description="This is used for email notifications. It can be changed later."
-                        />
-                        <Input
-                            isReadOnly
-                            isRequired
-                            type="password"
-                            label="Password"
-                            labelPlacement="outside"
-                            size="lg"
-                            defaultValue="CHANGE THIS LATER"
-                            placeholder=" "
-                            description="This will be generated for you. A new one can be generated later."
-                        />
-                        
-                    </div>
+                            <Input
+                                isReadOnly
+                                isRequired
+                                type="password"
+                                label="Password"
+                                labelPlacement="outside"
+                                size="lg"
+                                defaultValue="CHANGE THIS LATER"
+                                placeholder=" "
+                                description="This will be generated for you. A new one can be generated later."
+                            />
+                        </div>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="default" onPress={() => {/* TODO: Make appropriate API call. */console.log("You triggered an API call!")}}>
                             Create account
                         </Button>
                     </ModalFooter>
-                </div>
+                </React.Fragment>
             )}
             </ModalContent>
         </Modal>
