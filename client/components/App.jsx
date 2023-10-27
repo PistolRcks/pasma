@@ -2,12 +2,14 @@
 
 const React = require('react')
 const { ProfilePicture } = require('./ProfilePicture.jsx')
+const { ChangePassword } = require('./ChangePassword.jsx')
 
 function App (props) {
   
     return (
       <div>
-        <ProfilePicture username='jared'/>
+        <ProfilePicture username='alice'/>
+        <ChangePassword username='alice'/>
       </div>
     )
 }
