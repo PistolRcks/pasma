@@ -2,20 +2,24 @@ const React = require('react')
 const { useState, useEffect } = require('react');
 const PropTypes = require('prop-types')
 const { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, useDisclosure } = require("@nextui-org/react");
+const { generatePassword } = require('../passwordGenerator.js');
 
 function ChangePassword (props) {
     const { username } = props
-    // const [visible, setVisible] = useState(false);
+
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-
-    // const handleClose = () => setVisible(false);
-    // const handleOpen = () => setVisible(true);
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [newPasswordsMatch, setNewPasswordsMatch] = useState(false);
 
     const handleSubmit = () => {
         console.log('Handle Submit Here')
+        
+        setOldPassword('');
+        setNewPassword('');
+        setConfirmNewPassword('');
+        setNewPasswordsMatch(false);
     };
 
     return (
@@ -25,48 +29,63 @@ function ChangePassword (props) {
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+                            <ModalHeader className="flex flex-col gap-1">Change your Password</ModalHeader>
                             <ModalBody>
-                                {/*
-                                <Input.Password
+                                <Input
+                                    label="Old Password"
                                     placeholder="Old Password"
                                     value={oldPassword}
-                                    onChange={(e) => setOldPassword(e.target.value)}
+                                    onChange={(e) => {
+                                        setOldPassword(e.target.value)
+                                    }}
                                 />
-                                <Input.Password
-                                    placeholder="New Password"
+                                <Button
+                                    color="primary"
+                                    onPress={() => {   
+                                        const temp = generatePassword(3)
+                                        setNewPassword(temp)
+                                    }}
+                                >
+                                    Generate New Password
+                                </Button>
+                                <Input
+                                    label="New Password"
+                                    isReadOnly
                                     value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
                                 />
-                                <Input.Password
+                                <Input
+                                    isDisabled={newPassword === '' || oldPassword === ''}
                                     placeholder="Confirm New Password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    value={confirmNewPassword}
+                                    color={newPasswordsMatch ? 'success' : 'danger' }
+                                    onChange={(e) => {
+                                        setConfirmNewPassword(e.target.value)
+                                        if (newPassword === e.target.value) {
+                                            setNewPasswordsMatch(true)
+                                        } else {
+                                            setNewPasswordsMatch(false)
+                                        }
+                                    }}
                                 />
-                                */}
-                                <p> 
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    Nullam pulvinar risus non risus hendrerit venenatis.
-                                    Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                                </p>
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>
-                                    Close
+                                    Cancel
                                 </Button>
-                                <Button color="primary" onPress={onClose}>
-                                    Action
+                                <Button
+                                    isDisabled={!newPasswordsMatch}
+                                    color="primary"
+                                    onPress={() => {
+                                        handleSubmit();
+                                        onClose();
+                                    }}
+                                >
+                                    Change Password
                                 </Button>
                             </ModalFooter>  
                         </>
                     )}
                 </ModalContent>
-                {/*
-                <Modal.Action passive onClick={() => setVisible(false)}>
-                    Cancel
-                </Modal.Action>
-                <Modal.Action onClick={handleSubmit}>Submit</Modal.Action>
-                    */}
             </Modal>
         </>
     );
