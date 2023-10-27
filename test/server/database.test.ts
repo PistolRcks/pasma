@@ -7,7 +7,7 @@ let fakeUser = {
     fakeName: "bob",
     Password: "securepassword",
     Salt: "123abc",
-    UserType: "bad"
+    ProfilePicture: "data"
 }
 
 // realUser has all the necessary fields for a User and should return true from isUser.
@@ -15,7 +15,7 @@ let realUser = {
     Username: "bob",
     Password: "securepassword",
     Salt: "123abc",
-    UserType: "standard"
+    ProfilePicture: "data"
 }
 
 // fakePost has the field "fakeContent" instead of "Content", meaning isPost should return false.

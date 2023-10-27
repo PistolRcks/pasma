@@ -4,8 +4,7 @@ export interface User {
     Username: string;
     Password: string;
     Salt: string;
-    ProfilePicture?: string;
-    UserType: "standard" | "brand" | "moderator";
+    ProfilePicture: string;
 }
 
 export interface Post {
@@ -16,21 +15,12 @@ export interface Post {
 }
 
 /**
- * Contains the possible values for the `UserType` field in the table `User`.
- */
-export const userTypes = ["standard", "brand", "moderator"];
-
-/**
  * Type guard for a User object
  * @param {User} x User object to check
  * @returns {boolean} Is x a User object?
  */
 export function isUser(x: any): x is User {
-    return ("Username" in x 
-        && "Password" in x 
-        && "Salt" in x
-        && "UserType" in x
-        && userTypes.includes(x.UserType));
+    return "Username" in x && "Password" in x && "Salt" in x && "ProfilePicture" in x;
 }
 
 /**

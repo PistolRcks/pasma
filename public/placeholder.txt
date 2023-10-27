@@ -1,0 +1,1 @@
+This folder acts as the output directory for our buildfiles. Routing will also happen here.

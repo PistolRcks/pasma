@@ -17,8 +17,7 @@ export function initDB(dbFile: string): Database {
             Username TEXT PRIMARY KEY, 
             Password TEXT NOT NULL, 
             Salt BLOB, 
-            ProfilePicture TEXT,
-            UserType TEXT NOT NULL CHECK (UserType IN ('standard', 'brand', 'moderator'))
+            ProfilePicture TEXT
         );`);
 
         newDB.run(`CREATE TABLE if not exists "Posts" (
@@ -31,13 +30,17 @@ export function initDB(dbFile: string): Database {
         );`);
         
         // insert test user (for now)
-        const salt: Buffer = crypto.randomBytes(16);
-        const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
+        let salt: Buffer = crypto.randomBytes(16);
+        let testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
         
-        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, UserType)
-            VALUES(?, ?, ?, ?);
-        `, 
-        ["alice", testPassword.toString("hex"), salt, "standard"]);
+        // In a testing environment, testPassword will be undefined...
+        // ...unless you console.log it (and then it will become undefined after the fact...)
+        if (testPassword) {
+            newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, ProfilePicture)
+                VALUES(?, ?, ?, ?);
+            `, 
+            ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png"]);
+        }
     });
 
     return newDB;

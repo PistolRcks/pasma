@@ -38,7 +38,6 @@ export function login(req: Request, res: Response) {
                 // Verify (assuming sent password is plaintext)
                 const inputHash = crypto.pbkdf2Sync(req.body.password, user.Salt, 1000, 64, "sha512").toString('hex'); 
                 if (user.Password === inputHash) {
-                    console.log(`[API] Logged in user "${user.Username}"`);
                     const token = addSession({ username : user.Username });
                     res.status(200).send(token);
                     return;

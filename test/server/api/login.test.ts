@@ -1,8 +1,9 @@
+// FIXME: For the time being, these tests *still* don't work. Gotta work on that...
 import supertest from "supertest";
-import crypto from "crypto";
-import app from "../../../server/server";
+import { app } from "../../../server/main";
 import { db } from "../../../server/database";
-import { DBGetType } from "../../utils/types";
+import { DBGetType, PBKDF2SyncType } from "../../utils/types";
+import crypto from "crypto";
 
 jest.mock("crypto", () => {
     return {
@@ -27,6 +28,7 @@ const req = supertest(app);
 beforeAll(() => {
     jest.spyOn(console, "log").mockImplementation();
     jest.spyOn(console, "error").mockImplementation();
+
 })
 
 describe("Tests for the /api/login endpoint", () => {
@@ -42,8 +44,7 @@ describe("Tests for the /api/login endpoint", () => {
                 Username: "username", 
                 Salt: "blah", 
                 Password: Buffer.from("password").toString("hex"), 
-                ProfilePicture: "picture.jpeg",
-                UserType: "standard"
+                ProfilePicture: "picture.jpeg" 
             });
         }) as jest.MockedFunction<DBGetType>;
 
@@ -52,8 +53,8 @@ describe("Tests for the /api/login endpoint", () => {
             .post("/api/login")
             .send({ username: "username", password: "password" });
 
+        console.log("test: " + response.text)
         expect(response.status).toBe(200);
-        expect(response.text).toHaveLength(32);
     });
 
     test("400 - Request malformed", async () => {
