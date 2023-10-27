@@ -1,8 +1,8 @@
 import supertest from "supertest";
+import crypto from "crypto";
 import app from "../../../server/server";
 import { db } from "../../../server/database";
-import { DBGetType, PBKDF2SyncType } from "../../utils/types";
-import crypto from "crypto";
+import { DBGetType } from "../../utils/types";
 
 jest.mock("crypto", () => {
     return {
@@ -27,7 +27,6 @@ const req = supertest(app);
 beforeAll(() => {
     jest.spyOn(console, "log").mockImplementation();
     jest.spyOn(console, "error").mockImplementation();
-
 })
 
 describe("Tests for the /api/login endpoint", () => {
@@ -43,7 +42,8 @@ describe("Tests for the /api/login endpoint", () => {
                 Username: "username", 
                 Salt: "blah", 
                 Password: Buffer.from("password").toString("hex"), 
-                ProfilePicture: "picture.jpeg" 
+                ProfilePicture: "picture.jpeg",
+                UserType: "standard"
             });
         }) as jest.MockedFunction<DBGetType>;
 
@@ -53,6 +53,7 @@ describe("Tests for the /api/login endpoint", () => {
             .send({ username: "username", password: "password" });
 
         expect(response.status).toBe(200);
+        expect(response.text).toHaveLength(32);
     });
 
     test("400 - Request malformed", async () => {

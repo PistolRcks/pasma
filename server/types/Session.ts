@@ -51,7 +51,7 @@ export function addSession(newSession: Session): string {
     // add to map
     sessions.set(token, newSession);
 
-    console.log(`Generated new token for user "${newSession.username}": "${token}"`);
+    console.log(`[Session] Generated new token for user "${newSession.username}": "${token}"`);
 
     return token;
 }
