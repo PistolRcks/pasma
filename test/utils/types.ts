@@ -32,8 +32,7 @@ export type DBGetType = (
 /**
  * Type for `db.run`, with `params` and `callback` variable. 
  * 
- * Doesn't work *perfectly* well since the output is something we can't actually
- * match the `this` output.
+ * While identical in structure, we are keeping distinguished types for each database function.
  */
 export type DBRunTypeWithCallback = (
     sql: string, 

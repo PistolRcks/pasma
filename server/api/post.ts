@@ -12,18 +12,20 @@ let postID: number;
  */
 function createPost(req: Request, res: Response) {
     if (isPost(req.body)) {
-        db.run(`INSERT INTO Posts VALUES ('$', '$', '$', '$', '$')`, [ postID, req.body.Username, req.body.Content, req.body.Picture, req.body.Timestamp ], function (err: any) {
-            if (err) {
-                console.log("[API] Error: " + err);
-                res.status(500).send();
-            }
-            console.log('[API] Post ' + postID + ' created');
-            res.status(200).send("" + postID);
-            ++postID;
-        });
+        db.run(`INSERT INTO Posts VALUES (?, ?, ?, ?, ?)`,
+            [postID, req.body.Username, req.body.Content, req.body.Picture, req.body.Timestamp],
+            function (err) {
+                if (err) {
+                    console.log("[SQL] Error!");
+                    res.status(500).send("Database error!");
+                }
+                console.log('[API] Post ' + postID + ' created');
+                res.status(200).send("" + postID);
+                ++postID;
+            });
     } else {
         console.log('[API] Post request failed!');
-        res.status(500).send();
+        res.status(500).send("Invalid post request!");
     }
 }
 
@@ -34,15 +36,16 @@ function createPost(req: Request, res: Response) {
  */
 export function post(req: Request, res: Response) {
     if (firstPost) {
-        db.get(`SELECT COUNT(*) as 'count' FROM Posts`, function(err: any,row: any) {
+        db.get(`SELECT COUNT(*) as 'count' FROM Posts`, function (err: any, row: any) {
             if (err) {
-                console.log("[API] Error: " + err);
+                console.log("[SQL] Error!");
+                res.status(500).send("Database error!");
             }
             postID = row.count;
             createPost(req, res)
         });
         firstPost = false;
     } else {
-        createPost(req,res)
+        createPost(req, res)
     }
 }
