@@ -8,7 +8,7 @@ import { Request, Response } from "express";
  */
 export function edit(req: Request, res: Response) {
     if ("id" in req.body && "content" in req.body) {
-        db.get(`SELECT * as 'post' FROM Posts WHERE ID=?`, [req.body.id], function (err: Error, row: any) {
+        db.get(`SELECT * FROM Posts WHERE ID=?`, [req.body.id], function (err: Error, row: any) {
             // error running query
             if (err) {
                 console.log("[SQL] Error: " + err);
