@@ -14,7 +14,7 @@ function ChangePassword (props) {
     const [newPasswordsMatch, setNewPasswordsMatch] = useState(false);
 
     const handleSubmit = () => {
-        console.log('Handle Submit Here')
+        // TODO: send request to server to change password
         
         setOldPassword('');
         setNewPassword('');
