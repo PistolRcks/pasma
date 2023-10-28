@@ -29,7 +29,7 @@ export function edit(req: Request, res: Response) {
                         res.status(500).send("Database error!");
                         return;
                     }
-                    console.log('[API] Post ' + req.body.id + ' editted');
+                    console.log('[API] Post ' + req.body.id + ' edited');
                     res.status(200).send();
                     return;
                 });

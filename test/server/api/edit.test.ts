@@ -11,16 +11,16 @@ const fakeEdit = {
 
 let realEdit = {
     "id": "0",
-    "content": "editted message!"
+    "content": "edited message!"
 }
 
 let realEditBadID = {
     "id": "1337",
-    "content": "editted message!"
+    "content": "edited message!"
 }
 
 // instead of actually reflecting changes in the database, we simply keep track of the
-// a string and ID that is the "post" we are editting
+// a string and ID that is the "post" we are editing
 let postContent = "";
 let postID = "0";
 
@@ -65,7 +65,7 @@ describe('[API] /edit: database', () => {
         db.run = jest.fn();
 
         // need to reset this for each test
-        postContent = "uneditted message";
+        postContent = "unedited message";
     });
 
     test("'get' error", async () => {
@@ -76,7 +76,7 @@ describe('[API] /edit: database', () => {
 
         expect(res.status).toBe(500);
         expect(res.text).toBe("Database error!");
-        expect(postContent).toBe("uneditted message");
+        expect(postContent).toBe("unedited message");
     });
 
     test("'run' error", async () => {
@@ -87,7 +87,7 @@ describe('[API] /edit: database', () => {
 
         expect(res.status).toBe(500);
         expect(res.text).toBe("Database error!")
-        expect(postContent).toBe("uneditted message");
+        expect(postContent).toBe("unedited message");
     });
 });
 
@@ -98,7 +98,7 @@ describe('[API] /post: request', () => {
         db.run = jest.fn();
 
         // need to reset this for each test
-        postContent = "uneditted message";
+        postContent = "unedited message";
     });
 
     test("Test valid edit", async () => {
@@ -109,7 +109,7 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(200);
         expect(res.text).toBe("");
-        expect(postContent).toBe("editted message!");
+        expect(postContent).toBe("edited message!");
     });
 
     test("Test invalid post ID", async () => {
@@ -120,7 +120,7 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(403);
         expect(res.text).toBe("Invalid post ID!");
-        expect(postContent).toBe("uneditted message");
+        expect(postContent).toBe("unedited message");
     });
 
     test("Test invalid request", async () => {
@@ -131,6 +131,6 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(500);
         expect(res.text).toBe("Invalid edit request!");
-        expect(postContent).toBe("uneditted message");
+        expect(postContent).toBe("unedited message");
     });
 });
