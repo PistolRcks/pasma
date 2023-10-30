@@ -17,7 +17,7 @@ export function react(req: Request, res: Response) {
             const username = sessions.get(req.body.token).username;
 
             // first, lets make sure the post exists
-            db.get(`SELECT * FROM Posts WHERE ID=?`, [req.body.id], function (err: Error, postRow: any) {
+            db.get(`SELECT * FROM Posts WHERE ID=?`, [req.body.id], function (err: Error, row: any) {
                 // error running query
                 if (err) {
                     console.log("[SQL] Error: " + err);
@@ -26,45 +26,22 @@ export function react(req: Request, res: Response) {
                 }
 
                 // if no post is found
-                if (!postRow || !postRow.test_validpost) {
-                    console.log('[API] Edit request failed! (invalid post ID)');
+                if (!row) {
+                    console.log('[API] React request failed! (invalid post ID)');
                     res.status(400).send("Invalid post ID!");
                     return;
                 }
 
-                // then, check if we have already disliked this post (we want to remove the dislike if that is the case)
-                db.get(`SELECT * FROM PostDislikes WHERE ID=? AND Username=?`, [req.body.id, username], function (err: Error, dislikeRow: any) {
+                // otherwise, dislike or remove the dislike, depending on it's previous state.
+                db.run(`INSERT INTO PostDislikes VALUES (?, ?, 1) ON CONFLICT(ID, Username) DO UPDATE SET Disliked = NOT Disliked`, [req.body.id, username], function (err: Error) {
                     if (err) {
                         console.log("[SQL] Error: " + err);
                         res.status(500).send("Database error!");
                         return;
                     }
-                    if (!dislikeRow || !dislikeRow.test_disliked) {
-                        // no dislike yet, we can dislike this post
-                        db.run(`INSERT INTO PostDislikes VALUES (?, ?)`, [req.body.id, username], function (err: Error) {
-                            if (err) {
-                                console.log("[SQL] Error: " + err);
-                                res.status(500).send("Database error!");
-                                return;
-                            }
-                            // successfully disliked post
-                            console.log("[API] " + username + " disliked post " + req.body.id);
-                            res.status(200).send();
-                        });
-                        return;
-                    }
-                    // post already disliked! remove dislike from the post
-                    db.run(`DELETE FROM PostDislikes WHERE ID=? AND Username=?`, [req.body.id, username], function (err: Error) {
-                        if (err) {
-                            console.log("[SQL] Error: " + err);
-                            res.status(500).send("Database error!");
-                            return;
-                        }
-                        // successfully removed dislike from post
-                        console.log("[API] " + username + " removed dislike from post " + req.body.id);
-                        res.status(200).send();
-                    });
-                    return;
+                    // successfully disliked or removed dislike from a post
+                    console.log("[API] " + username + " toggled dislike on post " + req.body.id);
+                    res.status(200).send();
                 });
             });
         } else {

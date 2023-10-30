@@ -31,8 +31,11 @@ export function initDB(dbFile: string): Database {
         );`);
 
         newDB.run(`CREATE TABLE if not exists "PostDislikes" (
-            ID TEXT PRIMARY KEY, 
-            Username TEXT
+            ID TEXT, 
+            Username TEXT,
+            Disliked INTEGER,
+            FOREIGN KEY (ID) REFERENCES Posts(ID),
+            FOREIGN KEY (Username) REFERENCES Users(Username)
         );`);
         
         // insert test user (for now)

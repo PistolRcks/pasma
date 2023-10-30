@@ -31,12 +31,10 @@ let realReactBadToken = {
 }
 
 const mockGet = jest.fn((stmt, params, callback) => {
-    let row = {
-        test_validpost: true,
-        test_disliked: bobDisliked
-    };
-    if (params[0] != postID) {
-        row.test_validpost = false;
+    // we don't put anything in this value unless the post ID matches our test post ID
+    let row;
+    if (params[0] == postID) {
+        row = { some: "content" }
     }
     // @ts-ignore
     callback(null, row);
@@ -60,10 +58,10 @@ const mockRunError = jest.fn((stmt, params, callback) => {
 }) as jest.MockedFunction<DBRunTypeWithCallback>;
 
 // block console logging so it doesn't get annoying
-// beforeAll(() => {
-//     jest.spyOn(console, "log").mockImplementation();
-//     jest.spyOn(console, "error").mockImplementation();
-// });
+beforeAll(() => {
+    jest.spyOn(console, "log").mockImplementation();
+    jest.spyOn(console, "error").mockImplementation();
+});
 
 describe('[API] /edit: database', () => {
 
@@ -115,7 +113,7 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(200);
         expect(res.text).toBe("");
-        expect(bobDisliked).toBe(true);
+        expect(bobDisliked).toBeTruthy();
     });
 
     test("Test remove dislike", async () => {
@@ -128,7 +126,7 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(200);
         expect(res.text).toBe("");
-        expect(bobDisliked).toBe(false);
+        expect(bobDisliked).toBeFalsy();
     });
 
     test("Test invalid post ID", async () => {
@@ -141,7 +139,7 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(400);
         expect(res.text).toBe("Invalid post ID!");
-        expect(bobDisliked).toBe(false);
+        expect(bobDisliked).toBeFalsy();
     });
 
     test("Test invalid user token", async () => {
@@ -154,7 +152,7 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(500);
         expect(res.text).toBe("Invalid token provided!");
-        expect(bobDisliked).toBe(false);
+        expect(bobDisliked).toBeFalsy();
     });
 
     test("Test invalid request", async () => {
@@ -165,6 +163,6 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(500);
         expect(res.text).toBe("Invalid dislike request!");
-        expect(bobDisliked).toBe(false);
+        expect(bobDisliked).toBeFalsy();
     });
 });
