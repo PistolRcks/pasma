@@ -34,6 +34,7 @@ export function initDB(dbFile: string): Database {
             ID TEXT, 
             Username TEXT,
             Disliked INTEGER,
+            PRIMARY KEY (ID, Username),
             FOREIGN KEY (ID) REFERENCES Posts(ID),
             FOREIGN KEY (Username) REFERENCES Users(Username)
         );`);
