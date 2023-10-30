@@ -1,5 +1,5 @@
 import { db } from "../database";
-import { isPost } from "../../server/types/DatabaseTypes";
+import { isPost } from "../types/DatabaseTypes";
 import { Request, Response } from "express";
 
 let firstPost: boolean = true;
