@@ -112,7 +112,7 @@ describe('[API] /post: request', () => {
         const res = await supertest(app).post("/api/react").send(realReact);
 
         expect(res.status).toBe(200);
-        expect(res.text).toBe("");
+        expect(res.text).toBe("OK");
         expect(bobDisliked).toBeTruthy();
     });
 
@@ -125,7 +125,7 @@ describe('[API] /post: request', () => {
         const res = await supertest(app).post("/api/react").send(realReact);
 
         expect(res.status).toBe(200);
-        expect(res.text).toBe("");
+        expect(res.text).toBe("OK");
         expect(bobDisliked).toBeFalsy();
     });
 

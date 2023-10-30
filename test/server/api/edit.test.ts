@@ -1,8 +1,16 @@
 import supertest from "supertest";
 import app from "../../../server/server";
 import { db } from "../../../server/database";
-import { DBGetType, DBGetTypeWithParams, DBRunTypeWithCallback } from "../../utils/types";
+import { DBGetTypeWithParams, DBRunTypeWithCallback } from "../../utils/types";
+import { addSession } from "../../../server/types/Session";
 jest.mock('../../../server/database');
+
+// instead of actually reflecting changes in the database, we simply keep track of the
+// a string and ID that is the "post" we are editing
+let postContent = "";
+let postID = "0";
+let bobsToken = addSession({ username: "bob" });
+let sarahsToken = addSession({ username: "sarah" });
 
 const fakeEdit = {
     "invalid": "data",
@@ -11,25 +19,33 @@ const fakeEdit = {
 
 let realEdit = {
     "id": "0",
-    "content": "edited message!"
+    "content": "edited message!",
+    "token": bobsToken
 }
 
 let realEditBadID = {
     "id": "1337",
-    "content": "edited message!"
+    "content": "edited message!",
+    "token": bobsToken
 }
 
-// instead of actually reflecting changes in the database, we simply keep track of the
-// a string and ID that is the "post" we are editing
-let postContent = "";
-let postID = "0";
+let realEditBadToken = {
+    "id": "0",
+    "content": "edited message!",
+    "token": "imtryingtohackbobsrobloxaccount"
+}
+
+let realEditWrongUser = {
+    "id": "0",
+    "content": "edited message!",
+    "token": sarahsToken
+}
 
 const mockGet = jest.fn((stmt, params, callback) => {
-    // nothing super specific needed here, just can't be empty
-    let row = { test: "pass" };
-    // however, if the ID isn't valid, change it to something the code can recognize as a fail
-    if (params[0] != postID) {
-        row = { test: "fail" };
+    // keep this empty unless the ID provided matches our post ID
+    let row;
+    if (params[0] == postID) {
+        row = { Username: "bob" };
     }
     // @ts-ignore
     callback(null, row);
@@ -120,6 +136,28 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(403);
         expect(res.text).toBe("Invalid post ID!");
+        expect(postContent).toBe("unedited message");
+    });
+
+    test("Test invalid user token", async () => {
+        db.get = mockGet;
+        db.run = mockRun;
+
+        const res = await supertest(app).post("/api/edit").send(realEditBadToken);
+
+        expect(res.status).toBe(500);
+        expect(res.text).toBe("Invalid token provided!");
+        expect(postContent).toBe("unedited message");
+    });
+
+    test("Test valid user token on post made by someone else", async () => {
+        db.get = mockGet;
+        db.run = mockRun;
+
+        const res = await supertest(app).post("/api/edit").send(realEditWrongUser);
+
+        expect(res.status).toBe(500);
+        expect(res.text).toBe("Invalid token provided!");
         expect(postContent).toBe("unedited message");
     });
 
