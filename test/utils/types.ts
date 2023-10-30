@@ -30,6 +30,16 @@ export type DBGetType = (
 ) => any;
 
 /**
+ * Type for `db.get` (with additional parameters). 
+ * 
+ */
+export type DBGetTypeWithParams = (
+    sql: string,
+    params: any,
+    callback?: (this: Statement, err: Error | null, row: any) => void
+) => any;
+
+/**
  * Type for `db.run`, with `params` and `callback` variable. 
  * 
  * While identical in structure, we are keeping distinguished types for each database function.
