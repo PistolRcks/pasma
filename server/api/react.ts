@@ -41,7 +41,7 @@ export function react(req: Request, res: Response) {
                     }
                     // successfully disliked or removed dislike from a post
                     console.log("[API] " + username + " toggled dislike on post " + req.body.id);
-                    res.status(200).send();
+                    res.status(200).send("OK");
                 });
             });
         } else {
