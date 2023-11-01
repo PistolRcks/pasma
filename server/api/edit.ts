@@ -47,7 +47,7 @@ export function edit(req: Request, res: Response) {
             });
         } else {
             console.log("[API] Edit request failed! (invalid token provided)");
-            res.status(500).send("Invalid token provided!");
+            res.status(401).send("Invalid token provided!");
             return;
         }
     } else {

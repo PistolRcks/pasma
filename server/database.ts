@@ -61,6 +61,7 @@ export function initDB(dbFile: string): Database {
         
 
         // Generate random posts based on lorem ipsum text
+        const lipsum_sublength = Math.floor(LIPSUM.length / 10);
         for (let i = 0; i < 10; i++) {
             newDB.run(`INSERT OR IGNORE INTO Posts(ID, Username, Content, Picture, Timestamp, Private)
                 VALUES(?, ?, ?, ?, ?, ?)
@@ -68,9 +69,9 @@ export function initDB(dbFile: string): Database {
             [
                 i, 
                 "alice", 
-                LIPSUM.slice(i * LIPSUM.length, (i + 1) * LIPSUM.length), 
+                LIPSUM.slice(i * lipsum_sublength, (i + 1) * lipsum_sublength), 
                 null, 
-                (new Date).getMilliseconds(),
+                Date.now(),
                 false
             ]);
         }

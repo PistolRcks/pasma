@@ -8,6 +8,7 @@ import { post } from "./api/post";
 import { dbProfilePicture } from './api/getProfilePicture';
 import { react } from './api/react';
 import { register } from './api/register';
+import { feed } from './api/feed';
 
 
 /**
@@ -47,6 +48,8 @@ api.post("/login", login);
 api.post("/react", react);
 api.post("/register", register);
 api.post("/post", post);
+
+api.get("/feed", feed);
 api.get('/getProfilePicture/:Username', dbProfilePicture)
 
 app.use("/api", api);
