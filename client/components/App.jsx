@@ -8,7 +8,7 @@ function App (props) {
   
     return (
       <div>
-        <ProfilePicture username='alice'/>
+        <ProfilePicture username='alice' size="lg"/>
         <ChangePassword username='alice'/>
       </div>
     )

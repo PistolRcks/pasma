@@ -15,7 +15,7 @@ function ChangePassword (props) {
 
     const handleSubmit = () => {
         // TODO: send request to server to change password
-        
+
         setOldPassword('');
         setNewPassword('');
         setConfirmNewPassword('');
@@ -55,7 +55,8 @@ function ChangePassword (props) {
                                 />
                                 <Input
                                     isDisabled={newPassword === '' || oldPassword === ''}
-                                    placeholder="Confirm New Password"
+                                    label="Confirm Password"
+                                    placeholder="Confirm Password"
                                     value={confirmNewPassword}
                                     color={newPasswordsMatch ? 'success' : 'danger' }
                                     onChange={(e) => {

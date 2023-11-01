@@ -9,7 +9,7 @@ import { Request, Response } from 'express';
 export function dbProfilePicture (req: Request, res: Response) {
     db.get(`SELECT ProfilePicture FROM Users WHERE Username = '${req.params.Username}'`, function (err,row: any) {
         if (row) {
-            res.status(200).send("" + row.profilePicture);
+            res.status(200).send("" + row.ProfilePicture);
         }
         else {
             res.status(400).type('txt').send("User does not exist");
