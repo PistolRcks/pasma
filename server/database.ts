@@ -27,6 +27,7 @@ export function initDB(dbFile: string): Database {
             Content TEXT, 
             Picture TEXT, 
             Timestamp INTEGER, 
+            Private BOOLEAN,
             FOREIGN KEY(Username) REFERENCES Users(Username)
         );`);
 
