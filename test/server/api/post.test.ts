@@ -2,17 +2,26 @@ import supertest from "supertest";
 import app from "../../../server/server";
 import { db } from "../../../server/database";
 import { DBGetType, DBRunTypeWithCallback } from "../../utils/types";
+import { addSession } from "../../../server/types/Session";
 jest.mock('../../../server/database');
 
+let alexsToken = addSession({ username: "alex_jones45" });
+
 const fakePost = {
-    "evil": "virus"
+    "doyou": "remember",
+    "thetwentyfirstnight": "ofseptember"
 }
 
 let realPost = {
-    "Username": "bob",
-    "Content": "some content",
-    "Picture": "data",
-    "Timestamp": "time posted"
+    "token": alexsToken,
+    "content": "blah blah blah",
+    "picture": "johnsepicphoto.jpg"
+}
+
+let realPostBadToken = {
+    "token": "floodingpasmawithposts",
+    "content": "mwahahahaha, im so evil!",
+    "picture": "reallybadimage.png"
 }
 
 // instead of actually reflecting changes in the database, we simply keep track of the
@@ -116,5 +125,15 @@ describe('[API] /post: request', () => {
 
         expect(res.status).toBe(500);
         expect(res.text).toBe("Invalid post request!");
+    });
+
+    test("Test valid post with invalid token", async () => {
+        db.get = mockGet;
+        db.run = mockRun;
+
+        const res = await supertest(app).post("/api/post").send(realPostBadToken);
+
+        expect(res.status).toBe(500);
+        expect(res.text).toBe("Invalid token provided!");
     });
 });
