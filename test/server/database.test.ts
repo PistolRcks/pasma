@@ -71,7 +71,7 @@ describe('Database checks', () => {
         let testDBTables = initDB(":memory:");
         
         testDBTables.all("SELECT name FROM sqlite_master WHERE type='table';", [], function (err: Error, rows: any[]) {
-            expect(rows).toEqual([{name: 'Users'}, {name: 'Posts'}]);
+            expect(rows).toEqual([{name: 'Users'}, {name: 'Posts'}, {name: 'PostDislikes'}]);
             done();
         });
     });

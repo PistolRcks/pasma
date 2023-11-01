@@ -29,6 +29,15 @@ export function initDB(dbFile: string): Database {
             Timestamp INTEGER, 
             FOREIGN KEY(Username) REFERENCES Users(Username)
         );`);
+
+        newDB.run(`CREATE TABLE if not exists "PostDislikes" (
+            ID TEXT, 
+            Username TEXT,
+            Disliked INTEGER,
+            PRIMARY KEY (ID, Username),
+            FOREIGN KEY (ID) REFERENCES Posts(ID),
+            FOREIGN KEY (Username) REFERENCES Users(Username)
+        );`);
         
         // insert test user (for now)
         const salt: Buffer = crypto.randomBytes(16);
