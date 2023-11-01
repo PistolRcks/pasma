@@ -1,31 +1,39 @@
 import { db } from "../database";
-import { isPost } from "../types/DatabaseTypes";
 import { Request, Response } from "express";
+import { sessions } from "../types/Session";
 
 let firstPost: boolean = true;
 let postID: number;
 
 /**
- * Creates a post, given valid Post information.
- * @param {Request} req Requires a valid Post in the JSON body.
+ * Creates a post.
+ * @param {Request} req Requires a JSON body which includes 'token', 'content', and 'picture' fields.
  * @param {Response} res Responds with the post ID in the text field if successful, otherwise returns status code 500.
  */
 function createPost(req: Request, res: Response) {
-    if (isPost(req.body)) {
-        db.run(`INSERT INTO Posts VALUES (?, ?, ?, ?, ?)`,
-            [postID, req.body.Username, req.body.Content, req.body.Picture, req.body.Timestamp],
-            function (err: Error) {
-                if (err) {
-                    console.log("[SQL] Error: " + err);
-                    res.status(500).send("Database error!");
+    if ("token" in req.body && "content" in req.body && "picture" in req.body) {
+        if (sessions.has(req.body.token)) {
+            const username = sessions.get(req.body.token).username;
+            const timestamp = Date.now();
+            db.run(`INSERT INTO Posts VALUES (?, ?, ?, ?, ?)`,
+                [postID, username, req.body.content, req.body.picture, timestamp],
+                function (err: Error) {
+                    if (err) {
+                        console.log("[SQL] Error: " + err);
+                        res.status(500).send("Database error!");
+                        return;
+                    }
+                    console.log('[API] Post ' + postID + ' created');
+                    res.status(200).send("" + postID);
+                    ++postID;
+                    firstPost = false;
                     return;
-                }
-                console.log('[API] Post ' + postID + ' created');
-                res.status(200).send("" + postID);
-                ++postID;
-                firstPost = false;
-                return;
-            });
+                });
+        } else {
+            console.log('[API] Edit request failed! (invalid token provided)');
+            res.status(500).send("Invalid token provided!");
+            return;
+        }
     } else {
         console.log('[API] Post request failed!');
         res.status(500).send("Invalid post request!");
@@ -34,8 +42,8 @@ function createPost(req: Request, res: Response) {
 }
 
 /**
- * Checks if this is the initial post before second it off to createPost, which does the work.
- * @param {Request} req Requires a valid Post in the JSON body.
+ * Checks if this is the initial post before sending it off to createPost, which does the interaction with the database.
+ * @param {Request} req Requires a JSON body which includes 'token', 'content', and 'picture' fields.
  * @param {Response} res Responds with the post ID in the text field if successful, otherwise returns status code 500.
  */
 export function post(req: Request, res: Response) {
@@ -47,9 +55,9 @@ export function post(req: Request, res: Response) {
                 return;
             }
             postID = row.count;
-            createPost(req, res)
+            createPost(req, res);
         });
     } else {
-        createPost(req, res)
+        createPost(req, res);
     }
 }
