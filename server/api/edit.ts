@@ -4,7 +4,7 @@ import { sessions } from "../types/Session";
 
 /**
  * Edits a post.
- * @param {Request} req Requires a JSON body which includes a 'content' and 'id' field. id must be the ID of a valid post.
+ * @param {Request} req Requires a JSON body which includes 'id', 'content', and 'token' fields.
  * @param {Response} res Response to request (200 if success, 403 if post does not exist, and 500 if failed for other reason)
  */
 export function edit(req: Request, res: Response) {
