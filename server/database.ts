@@ -1,6 +1,16 @@
 import { Database } from "sqlite3";
 import crypto from "crypto";
 
+// Lorem ipsum for dummytext
+const LIPSUM = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porttitor sagittis neque sed gravida. Nullam porta tristique maximus. 
+Nulla in mi eu magna cursus pellentesque ac at lectus. Phasellus euismod pulvinar faucibus. Quisque felis enim, feugiat eget est eget, aliquam fringilla magna. 
+In viverra, leo nec ornare luctus, ligula risus aliquet nibh, nec porttitor ligula metus vel risus. Sed ut massa ut lorem viverra laoreet at ac est. 
+Sed et felis fermentum, efficitur est eget, dapibus lacus. Etiam tempor gravida dictum. In ullamcorper tortor non cursus hendrerit. 
+Donec at ultrices tellus, at pharetra neque. Nulla commodo nunc non gravida auctor. Mauris ac tortor mauris. Nullam euismod at nunc eu iaculis. 
+Vestibulum venenatis tellus pharetra maximus gravida. Etiam fermentum maximus ante et semper. Nullam sed consequat justo. Vivamus dignissim purus vel suscipit scelerisque. 
+Nullam ultricies, ante at aliquet porttitor, eros lectus interdum neque, a sollicitudin leo massa et leo. Ut nec lorem quis massa sodales pellentesque. 
+Nulla risus quam, finibus vitae venenatis eu, scelerisque ut quam.`;
+
 /**
  * Initializes SQLite database from a file, and creates the Users and Posts tables
  * if they do not yet exist.
@@ -48,6 +58,22 @@ export function initDB(dbFile: string): Database {
             VALUES(?, ?, ?, ?);
         `, 
         ["alice", testPassword.toString("hex"), salt, "standard"]);
+        
+
+        // Generate random posts based on lorem ipsum text
+        for (let i = 0; i < 10; i++) {
+            newDB.run(`INSERT OR IGNORE INTO Posts(ID, Username, Content, Picture, Timestamp, Private)
+                VALUES(?, ?, ?, ?, ?, ?)
+            `,
+            [
+                i, 
+                "alice", 
+                LIPSUM.slice(i * LIPSUM.length, (i + 1) * LIPSUM.length), 
+                null, 
+                (new Date).getMilliseconds(),
+                false
+            ]);
+        }
     });
 
     return newDB;
