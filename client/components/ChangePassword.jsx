@@ -3,6 +3,7 @@ const { useState, useEffect } = require('react');
 const PropTypes = require('prop-types')
 const { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, useDisclosure } = require("@nextui-org/react");
 const { generatePassword } = require('../passwordGenerator.js');
+const { sendUpdatedPassword } = require('../dataHelper.js');
 
 function ChangePassword (props) {
     const { username } = props
@@ -14,7 +15,7 @@ function ChangePassword (props) {
     const [newPasswordsMatch, setNewPasswordsMatch] = useState(false);
 
     const handleSubmit = () => {
-        // TODO: send request to server to change password
+        sendUpdatedPassword(oldPassword, newPassword);
 
         setOldPassword('');
         setNewPassword('');
@@ -81,7 +82,7 @@ function ChangePassword (props) {
                                         onClose();
                                     }}
                                 >
-                                    Change Password
+                                    Update
                                 </Button>
                             </ModalFooter>  
                         </>

@@ -27,3 +27,7 @@ export async function retrieveProfilePicture (username) {
       return null
     }
   }
+
+export async function sendUpdatedPassword (oldPass, newPass) {
+    return true
+}
