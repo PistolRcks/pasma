@@ -24,7 +24,7 @@ let realPostBadToken = {
     "picture": "reallybadimage.png"
 }
 
-// instead of actually reflecti ng changes in the database, we simply keep track of the
+// instead of actually reflecting changes in the database, we simply keep track of the
 // number of posts made and return that value from that...
 let postCount = 0;
 
