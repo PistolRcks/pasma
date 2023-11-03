@@ -7,7 +7,7 @@ let fakeUser = {
     fakeName: "bob",
     Password: "securepassword",
     Salt: "123abc",
-    ProfilePicture: "data"
+    UserType: "bad"
 }
 
 // realUser has all the necessary fields for a User and should return true from isUser.
@@ -15,7 +15,7 @@ let realUser = {
     Username: "bob",
     Password: "securepassword",
     Salt: "123abc",
-    ProfilePicture: "data"
+    UserType: "standard"
 }
 
 // fakePost has the field "fakeContent" instead of "Content", meaning isPost should return false.
@@ -71,7 +71,7 @@ describe('Database checks', () => {
         let testDBTables = initDB(":memory:");
         
         testDBTables.all("SELECT name FROM sqlite_master WHERE type='table';", [], function (err: Error, rows: any[]) {
-            expect(rows).toEqual([{name: 'Users'}, {name: 'Posts'}]);
+            expect(rows).toEqual([{name: 'Users'}, {name: 'Posts'}, {name: 'PostDislikes'}]);
             done();
         });
     });

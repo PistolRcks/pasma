@@ -171,6 +171,8 @@ dist
 # IntelliJ based IDEs
 .idea
 
-# Other crap
+# Other generated crap
 package-lock.json
 db.sqlite
+public/main.css
+public/main.js

@@ -4,7 +4,7 @@
 // Here are just a few. Feel free to add your own, 
 // alongside a JSDoc describing which function it's supposed to be for.
 
-import { Statement } from "sqlite3";
+import { RunResult, Statement } from "sqlite3";
 import { BinaryLike } from "crypto";
 
 export type TypedArray =
@@ -27,6 +27,27 @@ export type TypedArray =
 export type DBGetType = (
     sql: string, 
     callback?: (this: Statement, err: Error | null, row: any) => void
+) => any;
+
+/**
+ * Type for `db.get` (with additional parameters). 
+ * 
+ */
+export type DBGetTypeWithParams = (
+    sql: string,
+    params: any,
+    callback?: (this: Statement, err: Error | null, row: any) => void
+) => any;
+
+/**
+ * Type for `db.run`, with `params` and `callback` variable. 
+ * 
+ * While identical in structure, we are keeping distinguished types for each database function.
+ */
+export type DBRunTypeWithCallback = (
+    sql: string, 
+    params: any,
+    callback?: (this: RunResult, err: Error | null) => void
 ) => any;
 
 /**
