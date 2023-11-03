@@ -2,7 +2,11 @@
 const { nextui } = require("@nextui-org/react");
 
 export default {
-  content: ["./public/*.{html, js}", "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",],
+  content: [
+    "./client/**/*.jsx",
+    "./public/*.{html, js}", 
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+],
   theme: {
     extend: {},
   },
