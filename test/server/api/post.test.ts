@@ -133,7 +133,7 @@ describe('[API] /post: request', () => {
 
         const res = await supertest(app).post("/api/post").send(realPostBadToken);
 
-        expect(res.status).toBe(500);
+        expect(res.status).toBe(401);
         expect(res.text).toBe("Invalid token provided!");
     });
 });
