@@ -8,15 +8,6 @@ export function logout(req: Request, res: Response) {
         // we use this enough in the code that this is justifiable
         const token = req.body.token;
 
-        /* because in keyword returns true even if value for field is empty, we need an 
-        additional check to make sure it is not empty. we will assume that empty means
-        not logged in, while token not existing in the sessions map means invalid token */
-        if (!token) {
-            console.log('[API] Logout request failed! (not logged in)');
-            res.status(400).send("Not logged in!");
-            return;
-        }
-
         if (sessions.has(token)) {
             const username = sessions.get(token).username;
             if (sessions.delete(token)) {
@@ -25,17 +16,17 @@ export function logout(req: Request, res: Response) {
                 return;
             } else {
                 console.log('[NJS] Logout request failed! (failed to delete session)');
-                res.status(500).send("Error removing session!");
+                res.status(500).send("Error: Server couldn't remove session!");
                 return;
             }
         } else {
-            console.log('[API] Logout request failed! (invalid token provided)');
-            res.status(500).send("Invalid token provided!");
+            console.log('[API] Logout request failed! (not logged in)');
+            res.status(400).send("Error: Not logged in!");
             return;
         }
     } else {
         console.log('[API] Logout request failed! (invalid request)');
-        res.status(500).send("Invalid logout request!");
+        res.status(500).send("Error: Invalid logout request!");
         return;
     }
 }
