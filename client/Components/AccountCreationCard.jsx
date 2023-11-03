@@ -1,6 +1,6 @@
 const React = require('react')
 const PropTypes = require('prop-types')
-const { Avatar, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, useDisclosure } = require("@nextui-org/react")
+const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, useDisclosure } = require("@nextui-org/react")
 
 function AccountCreationCard (props) {
     const [username, setUsername] = React.useState("");
@@ -22,24 +22,24 @@ function AccountCreationCard (props) {
             <ModalContent>
             {(onClose) => (
                 <React.Fragment>
-                    <ModalHeader className="flex flex-col gap-1"></ModalHeader>
-                    <ModalBody>
-                        <div className="w-full flex flex-row flex-wrap gap-4">
+                    <ModalHeader></ModalHeader>
+                    <ModalBody className="">
+                        <div>
                             <Popover showArrow placement="bottom">
                             <PopoverTrigger>
-                                <Avatar src="profile_pictures/botttsNeutral-1695826814739.png" className="w-20 h-20 text-large" />
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={180} radius="full" />
                             </PopoverTrigger>
-                            <PopoverContent className="p-1">
+                            <PopoverContent className="container mx-auto px-4">
                                 <h1>Profile pictures will go here.</h1>
                             </PopoverContent>
                             </Popover>
                         </div>
-                        <div className="w-full flex flex-row flex-wrap gap-4">
+                        <div className="">
                             <Input
                                 isRequired
                                 label="Username"
                                 labelPlacement="outside"
-                                onValueChange={setEmailAddress}
+                                onValueChange={setUsername}
                                 size="lg"
                                 placeholder=" "
                                 description="This is your unique identifier across pasma. It cannot be changed."
@@ -65,6 +65,7 @@ function AccountCreationCard (props) {
                                 labelPlacement="outside"
                                 size="lg"
                                 defaultValue="CHANGE THIS LATER"
+                                onValueChange={setPassword}
                                 placeholder=" "
                                 description="This will be generated for you. A new one can be generated later."
                             />
