@@ -60,3 +60,10 @@ export type PBKDF2SyncType = (
     keylen: number,
     digest: string
 ) => Buffer;
+
+/**
+ * Type for `sessions.delete`, with `key` variable.
+ */
+export type SessionsDeleteType = (
+    key: string
+) => any;
