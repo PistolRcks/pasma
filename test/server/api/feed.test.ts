@@ -12,7 +12,7 @@ const req = supertest(app);
 // also generate session token
 let sessionToken: string;
 beforeAll(() => {
-    //jest.spyOn(console, "log").mockImplementation();
+    jest.spyOn(console, "log").mockImplementation();
     jest.spyOn(console, "error").mockImplementation();
 
     sessionToken = addSession({ username: "bob" });
