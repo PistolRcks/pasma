@@ -3,6 +3,7 @@ const PropTypes = require('prop-types')
 const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, useDisclosure } = require("@nextui-org/react")
 
 function AccountCreationCard (props) {
+    const [profilePicture, setProfilePicture] = React.useState("botttsNeutral-1695826814739.png");
     const [username, setUsername] = React.useState("");
     const [emailAddress, setEmailAddress] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -18,12 +19,12 @@ function AccountCreationCard (props) {
     return (
         <React.Fragment>
             <Button onPress={onOpen}>Create account</Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full">
             <ModalContent>
             {(onClose) => (
                 <React.Fragment>
                     <ModalHeader></ModalHeader>
-                    <ModalBody className="">
+                    <ModalBody className="grid grid-flow-col auto-cols-max">
                         <div>
                             <Popover showArrow placement="bottom">
                             <PopoverTrigger>
@@ -34,7 +35,7 @@ function AccountCreationCard (props) {
                             </PopoverContent>
                             </Popover>
                         </div>
-                        <div className="">
+                        <div className="max-w-xs">
                             <Input
                                 isRequired
                                 label="Username"
@@ -43,7 +44,7 @@ function AccountCreationCard (props) {
                                 size="lg"
                                 placeholder=" "
                                 description="This is your unique identifier across pasma. It cannot be changed."
-                                />
+                            />
                             <Input
                                 isRequired
                                 type="email"
