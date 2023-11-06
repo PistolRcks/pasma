@@ -51,6 +51,15 @@ export type DBRunTypeWithCallback = (
 ) => any;
 
 /**
+ * Type for `db.all`, with `params`. 
+ */
+export type DBAllTypeWithParams = (
+    sql: string,
+    params: any, 
+    callback?: (this: RunResult, err: Error | null, rows: any[]) => void
+) => any;
+
+/**
  * Type for `Crypto.pbkdf2Sync`.
  */
 export type PBKDF2SyncType = (
