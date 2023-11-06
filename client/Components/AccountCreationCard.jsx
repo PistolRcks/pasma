@@ -19,23 +19,48 @@ function AccountCreationCard (props) {
     return (
         <React.Fragment>
             <Button onPress={onOpen}>Create account</Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full">
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
             <ModalContent>
             {(onClose) => (
                 <React.Fragment>
                     <ModalHeader></ModalHeader>
                     <ModalBody className="grid grid-flow-col auto-cols-max">
-                        <div>
-                            <Popover showArrow placement="bottom">
+                        <div className="pl-2 pr-6">
+                            <Popover showArrow placement="right">
                             <PopoverTrigger>
-                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={180} radius="full" />
+                                <Image className="cursor-pointer" src="profile_pictures/botttsNeutral-1695826814739.png" width={180} radius="full" />
                             </PopoverTrigger>
-                            <PopoverContent className="container mx-auto px-4">
-                                <h1>Profile pictures will go here.</h1>
+                            <PopoverContent className="w-80 max-h-80">
+                                <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                <Image src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                <Image src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                <Image src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                <Image src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                <Image src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                <Image src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                <Image src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                <Image src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                <Image src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                <Image src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                <Image src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                <Image src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                <Image src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                <Image src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                <Image src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                <Image src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                <Image src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                </div>
                             </PopoverContent>
                             </Popover>
                         </div>
-                        <div className="max-w-xs">
+                        <div className="w-72">
                             <Input
                                 isRequired
                                 label="Username"
