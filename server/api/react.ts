@@ -47,7 +47,7 @@ export function react(req: Request, res: Response) {
         } else {
             // invalid user token
             console.log("[API] Dislike request failed! (invalid token provided)");
-            res.status(500).send("Invalid token provided!");
+            res.status(401).send("Invalid token provided!");
             return;
         }
     } else {
