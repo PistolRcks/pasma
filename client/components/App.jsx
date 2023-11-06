@@ -2,12 +2,17 @@
 
 const React = require('react')
 const { ProfilePicture } = require('./ProfilePicture.jsx')
+const { ChangePassword } = require('./ChangePassword.jsx')
+const { CookieTest } = require('./CookieTest.jsx')
 
 function App (props) {
   
     return (
       <div>
-        <ProfilePicture username='jared'/>
+        <ProfilePicture username='alice'/>
+        <ProfilePicture username='jared' size="lg"/>
+        <ChangePassword username='alice'/>
+        <CookieTest cookieName='token'/>
       </div>
     )
 }

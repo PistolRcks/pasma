@@ -54,8 +54,8 @@ export function initDB(dbFile: string): Database {
         const salt: Buffer = crypto.randomBytes(16);
         const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
         
-        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, UserType)
-            VALUES(?, ?, ?, ?);
+        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, ProfilePicture, UserType)
+            VALUES(?, ?, ?, ?, ?);
         `, 
         ["alice", testPassword.toString("hex"), salt, "standard"]);
         
