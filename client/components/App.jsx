@@ -9,7 +9,7 @@ function App (props) {
   
     return (
       <div>
-        <ProfilePicture username='jared'/>
+        <ProfilePicture username='alice'/>
         <ProfilePicture username='jared' size="lg"/>
         <ChangePassword username='alice'/>
         <CookieTest cookieName='token'/>
