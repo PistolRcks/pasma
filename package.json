@@ -19,6 +19,8 @@
         "build-back": "tsc",
         "build-front": "node ./esbuild.config.mjs",
         "build": "npm run build-css && npm run build-back && npm run build-front",
+        "watch-css": "npx tailwindcss -i ./public/styles.css -o ./public/main.css --watch",
+        "watch-front": "node ./esbuild.config.mjs --watch --no-minify",
         "start:dev": "node .",
         "test-back": "jest --config ./jest-back.config.js --testPathPattern=test/server",
         "test-front": "jest --config ./jest-front.config.js --testPathPattern=test/client",
