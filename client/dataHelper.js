@@ -28,6 +28,33 @@ export async function retrieveProfilePicture (username) {
     }
   }
 
-export async function sendUpdatedPassword (oldPass, newPass) {
-    return true
+export async function sendUpdatedPassword (token, newPass) {
+    try {
+        // Send an AJAX request
+        const response = await fetch(`api/profile/settings/password`, {
+          method: "POST",
+          body: JSON.stringify({
+            token: token,
+            password: newPass
+          }),
+          headers: {
+              "Content-type": "application/json; charset=UTF-8"
+          }
+        })
+  
+        if (response.status >= 400) {
+          throw new Error(`Error ${response.status} - Password update failed`)
+        }
+        else {
+          // Return the response
+          return await response.JSON()
+        }
+  
+    } catch (err) {
+        // something went wrong so return null
+        console.error('Failed to update password')
+        console.error(err)
+        return null
+    }
 }
+

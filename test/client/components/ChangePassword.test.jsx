@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, getByText } from '@testing-library/react';
+import { render, screen, fireEvent, getByText, getByLabelText, getByTitle } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ChangePassword } from '../../../client/components/ChangePassword.jsx';
 import '@testing-library/jest-dom';
@@ -40,7 +40,7 @@ describe("Tests for Change Password", () => {
     test("Checks Submit", () => {
         const wrapper = render(<BrowserRouter><ChangePassword /></BrowserRouter>);
         fireEvent.click(getByText(wrapper.baseElement, "Change Password"))
-        fireEvent.click(getByText(wrapper.baseElement, "Update"))
+        fireEvent.click(getByTitle(wrapper.baseElement, "changePasswordButton"))
         expect(wrapper.baseElement.outerHTML).toContain(
             'label="Confirm Password"'
       );

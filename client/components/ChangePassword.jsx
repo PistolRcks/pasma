@@ -4,6 +4,7 @@ const PropTypes = require('prop-types')
 const { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, useDisclosure } = require("@nextui-org/react");
 const { generatePassword } = require('../passwordGenerator.js');
 const { sendUpdatedPassword } = require('../dataHelper.js');
+const { useCookies } = require('react-cookie');
 
 function ChangePassword (props) {
     const { username } = props
@@ -14,8 +15,16 @@ function ChangePassword (props) {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [newPasswordsMatch, setNewPasswordsMatch] = useState(false);
 
+    // Set the cookie name that holds the session cookie
+    const [cookie, setCookie] = useCookies(['token']);
+
     const handleSubmit = () => {
-        sendUpdatedPassword(oldPassword, newPassword);
+        const passwordResponse = sendUpdatedPassword(cookie.token, newPassword)
+        if (passwordResponse.status === 200) {
+            alert("Password Updated!")
+        } else {
+            alert(`Password Update Failed!`)
+        }
 
         setOldPassword('');
         setNewPassword('');
@@ -75,6 +84,7 @@ function ChangePassword (props) {
                                     Cancel
                                 </Button>
                                 <Button
+                                    title="changePasswordButton"
                                     isDisabled={!newPasswordsMatch}
                                     color="primary"
                                     onPress={() => {
@@ -82,7 +92,7 @@ function ChangePassword (props) {
                                         onClose();
                                     }}
                                 >
-                                    Update
+                                    Change Password
                                 </Button>
                             </ModalFooter>  
                         </>
