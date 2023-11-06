@@ -2,6 +2,7 @@
 // This does NOT launch the app itself--`main.ts` handles that
 
 import express, { Express, NextFunction, Request, Response } from 'express';
+import { comment } from "./api/comment";
 import { edit } from "./api/edit";
 import { login } from "./api/login";
 import { logout } from "./api/logout";
@@ -43,6 +44,7 @@ app.use((err : any, req : Request, res : Response, next : NextFunction) => {
  });
 
 // Attach endpoints to API router
+api.post("/comment", comment);
 api.post("/edit", edit);
 api.post("/login", login);
 api.post("/logout", logout);
