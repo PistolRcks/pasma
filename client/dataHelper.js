@@ -47,7 +47,7 @@ export async function sendUpdatedPassword (token, newPass) {
         }
         else {
           // Return the response
-          return await response.JSON()
+          return await response.text()
         }
   
     } catch (err) {

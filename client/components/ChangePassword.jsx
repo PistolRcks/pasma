@@ -20,7 +20,7 @@ function ChangePassword (props) {
 
     const handleSubmit = () => {
         const passwordResponse = sendUpdatedPassword(cookie.token, newPassword)
-        if (passwordResponse.status === 200) {
+        if (passwordResponse == "OK") {
             alert("Password Updated!")
         } else {
             alert(`Password Update Failed!`)
