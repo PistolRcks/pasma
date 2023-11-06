@@ -67,7 +67,7 @@ export function register(req: Request, res: Response) {
             db.run(`INSERT INTO Users(${appliedFields})
                 VALUES(${questionMarks});
             `, 
-            params, (err) => {
+            params, function (err) {
                 if (err) {
                     res.status(500).send(`Server Error: ${err}`);
                     return;

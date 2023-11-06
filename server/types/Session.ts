@@ -26,7 +26,6 @@ export const sessions: Map<string, Session> = new Map();
  * Type guard for Session.
  */
 export function isSession(x: any): x is Session {
-    // Not sure if I can do any more?
     return "username" in x && typeof x.username === "string";
 }
 

@@ -19,6 +19,7 @@ jest.mock("crypto", () => {
             })
     }
 });
+
 jest.mock("../../../server/database");
 
 const req = supertest(app);
@@ -27,7 +28,7 @@ const req = supertest(app);
 beforeAll(() => {
     jest.spyOn(console, "log").mockImplementation();
     jest.spyOn(console, "error").mockImplementation();
-})
+});
 
 describe("Tests for the /api/login endpoint", () => {
     beforeEach(() => {
