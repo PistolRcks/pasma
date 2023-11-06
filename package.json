@@ -19,6 +19,7 @@
         "build-css": "npx tailwindcss -i ./public/styles.css -o ./public/main.css",
         "build-back": "tsc",
         "build-front": "node ./esbuild.config.mjs",
+        "build-front-all": "npx tailwindcss -i ./public/styles.css -o ./public/main.css && node ./esbuild.config.mjs",
         "build": "npm run build-css && npm run build-back && npm run build-front",
         "start:dev": "node .",
         "test-back": "jest --config ./jest-back.config.js --testPathPattern=test/server",
