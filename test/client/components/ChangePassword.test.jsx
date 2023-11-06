@@ -3,11 +3,12 @@ import { render, screen, fireEvent, getByText, getByLabelText, getByTitle, getBy
 import { BrowserRouter } from 'react-router-dom';
 import { ChangePassword } from '../../../client/components/ChangePassword.jsx';
 import * as dataHelper from '../../../client/dataHelper.js';
+import Cookies from 'js-cookie';
 import '@testing-library/jest-dom';
 import '@testing-library/react';
 jest.mock('../../../client/dataHelper.js')
 
-const mockPasswordUpdate = jest.fn((token, password) => {
+const mockPasswordUpdate = jest.fn((token, oldPass, newPass) => {
     return "OK"
 })
 
@@ -52,6 +53,8 @@ describe("Tests for Change Password", () => {
     test("Checks Submit", () => {
         window.alert = () => {};
         dataHelper.sendUpdatedPassword = mockPasswordUpdate
+        Cookies.set('token', 'aTokenValue', { expires: 1 });
+        
 
         const wrapper = render(<BrowserRouter><ChangePassword /></BrowserRouter>);
         fireEvent.click(getByText(wrapper.baseElement, "Change Password"))

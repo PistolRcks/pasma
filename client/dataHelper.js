@@ -28,14 +28,15 @@ export async function retrieveProfilePicture (username) {
     }
   }
 
-export async function sendUpdatedPassword (token, newPass) {
+export async function sendUpdatedPassword (token, oldPass, newPass) {
     try {
         // Send an AJAX request
         const response = await fetch(`api/profile/settings/password`, {
           method: "POST",
           body: JSON.stringify({
             token: token,
-            password: newPass
+            oldPassword: oldPass,
+            newPassword: newPass
           }),
           headers: {
               "Content-type": "application/json; charset=UTF-8"

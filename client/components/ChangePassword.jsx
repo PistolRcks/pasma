@@ -19,17 +19,17 @@ function ChangePassword (props) {
     const [cookie, setCookie] = useCookies(['token']);
 
     const handleSubmit = () => {
-        const passwordResponse = sendUpdatedPassword(cookie.token, newPassword)
+        const passwordResponse = sendUpdatedPassword(cookie.token, oldPassword, newPassword)
         if (passwordResponse == "OK") {
             alert("Password Updated!")
+
+            setOldPassword('');
+            setNewPassword('');
+            setConfirmNewPassword('');
+            setNewPasswordsMatch(false);
         } else {
             alert(`Password Update Failed!`)
         }
-
-        setOldPassword('');
-        setNewPassword('');
-        setConfirmNewPassword('');
-        setNewPasswordsMatch(false);
     };
 
     return (
@@ -85,7 +85,7 @@ function ChangePassword (props) {
                                 </Button>
                                 <Button
                                     title="changePasswordButton"
-                                    isDisabled={!newPasswordsMatch}
+                                    isDisabled={!newPasswordsMatch || !cookie.token}
                                     color="primary"
                                     onPress={() => {
                                         handleSubmit();
