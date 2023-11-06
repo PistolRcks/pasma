@@ -171,6 +171,11 @@ dist
 # IntelliJ based IDEs
 .idea
 
+# Test images
+public/profile_pictures/botttsNeutral-1695826814739.png
+public/profile_pictures/funEmoji-1695997904423.png
+public/profile_pictures/JaredD-2023.png
+
 # Other generated crap
 package-lock.json
 db.sqlite
