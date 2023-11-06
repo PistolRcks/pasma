@@ -1,14 +1,20 @@
 // Here is the file which will act as the launching point for our React frontend.
 
 const React = require('react');
-const ProfilePicture = require('../components/ProfilePicture.jsx');
-const FourOhFourPage = require('./404Page.jsx');
 const {
     createBrowserRouter,
     createRoutesFromElements,
     Route,
     RouterProvider
 } = require('react-router-dom');
+
+// Test components
+const ProfilePicture = require('../components/ProfilePicture.jsx');
+const CookieTest = require('../components/CookieTest.jsx');
+const ChangePassword = require('../components/ChangePassword.jsx');
+
+// Pages
+const FourOhFourPage = require('./404Page.jsx');
 
 const router = createBrowserRouter(
     createRoutesFromElements(

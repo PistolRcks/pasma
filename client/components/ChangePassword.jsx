@@ -103,9 +103,7 @@ function ChangePassword (props) {
     );
 };
 
-module.exports = {
-    ChangePassword
-}
+module.exports = ChangePassword
 
 ChangePassword.propTypes = {
     username: PropTypes.string,
