@@ -6,7 +6,7 @@ export async function retrieveProfilePicture (username) {
     console.log('Retrieving profile picture')
     try {
       // Send an AJAX request
-      const response = await fetch(`api/getProfilePicture/${username}`, {
+      const response = await fetch(`/api/getProfilePicture/${username}`, {
         method: "GET",
         headers: {
             "Content-type": "application/json; charset=UTF-8"
