@@ -35,7 +35,9 @@ function AccountCreationCard (props) {
                             </PopoverTrigger>
                             <PopoverContent className="w-80 max-h-80">
                                 <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
-                                    {/* TODO: Should contain one picture object for each image in directory, have to wait for an API */}
+                                    {
+                                        // TODO: Should contain one picture object for each image in directory, have to wait for an API 
+                                    }
                                     <Image onClick={() => {
                                         setProfilePicture("profile_pictures/botttsNeutral-1695826814739.png")
                                         setIsPopoverOpen(false)
@@ -98,7 +100,19 @@ function AccountCreationCard (props) {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="default" onPress={() => {/* TODO: Make appropriate API call. */console.log("You triggered an API call!")}}>
+                        <Button color="default" onPress={() => {
+                            // TODO: Make appropriate API call.
+                            // TODO: Add email to API
+                            console.log("You triggered an API call!")
+                            const accountDetails = {
+                                username: username,
+                                password: password,
+                                email: emailAddress,
+                                userType: "standard",
+                                profilePicture: profilePicture
+                            }
+                            console.log(accountDetails)
+                        }}>
                             Create account
                         </Button>
                     </ModalFooter>
