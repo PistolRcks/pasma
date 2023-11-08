@@ -14,16 +14,27 @@ const CookieTest = require('../components/CookieTest.jsx');
 const ChangePassword = require('../components/ChangePassword.jsx');
 
 // Pages
+const AccountPage = require('./AccountPage.jsx');
+const IndexPage = require('./IndexPage.jsx');
+const PostFeedPage = require('./PostFeedPage.jsx');
+const PostPage = require('./PostPage.jsx');
+const ProfilePage = require('./ProfilePage.jsx');
+
+// Error Pages
 const FourOhFourPage = require('./404Page.jsx');
 
 const router = createBrowserRouter(
     createRoutesFromElements(
         <>
-        <Route index element={ /** Eventually, the main page will be here */ <h1>Here's the main page!</h1>} />
+        <Route index element={<IndexPage />} />
+        <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
+        <Route path='/post/:id' element={<PostPage />} />
+        <Route path='/profile/:username' element={<ProfilePage />} />
+        <Route path='/account' element={/* Eventually, this should be a verified page */ <AccountPage />} />
         <Route path='/test/profile_picture' element={<ProfilePicture username='alice' />} />
         <Route path='/test/change_password' element={<ChangePassword username='alice' />} /> 
         <Route path='/test/cookie' element={<CookieTest cookieName='token' />} /> 
-        <Route path='api' />
+        <Route path='/api' />
         <Route path='*' element={<FourOhFourPage />} />
         </>
     )
