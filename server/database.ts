@@ -38,7 +38,12 @@ export function initDB(dbFile: string): Database {
             Picture TEXT, 
             Timestamp INTEGER, 
             Private BOOLEAN,
-            FOREIGN KEY(Username) REFERENCES Users(Username)
+            FOREIGN KEY(Username) REFERENCES Users(Username),
+            FOREIGN KEY(Picture) REFERENCES StockImages(Picture)
+        );`);
+
+        newDB.run(`CREATE TABLE if not exists "StockImages" (
+            Picture TEXT PRIMARY KEY
         );`);
 
         newDB.run(`CREATE TABLE if not exists "PostDislikes" (
@@ -58,7 +63,19 @@ export function initDB(dbFile: string): Database {
             VALUES(?, ?, ?, ?, ?);
         `, 
         ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png", "standard"]);
-        
+
+        // insert stock images from the stock_image directory
+        const fs = require("fs");
+        const path = require("path");
+        const stock_image_dir = path.join(__dirname, "../public/pictures/stock_images");
+        fs.readdir(stock_image_dir, (err: any, files: any) => {
+            files.forEach((file: any) => {
+                newDB.run(`INSERT OR IGNORE INTO StockImages(Picture)
+                    VALUES(?);
+                `, 
+                [file]);
+            });
+        });
 
         // Generate random posts based on lorem ipsum text
         const lipsum_sublength = Math.floor(LIPSUM.length / 10);
