@@ -2,7 +2,7 @@
 
 const React = require('react')
 const { ProfilePicture } = require('./ProfilePicture.jsx')
-const { AccountCreationCard } = require('./AccountCreationCard.jsx')
+const AccountCreationCard = require('./AccountCreationCard.jsx')
 const {Image} = require('@nextui-org/react')
 
 function App (props) {
