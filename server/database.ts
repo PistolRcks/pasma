@@ -57,7 +57,7 @@ export function initDB(dbFile: string): Database {
         newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, ProfilePicture, UserType)
             VALUES(?, ?, ?, ?, ?);
         `, 
-        ["alice", testPassword.toString("hex"), salt, "standard"]);
+        ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png", "standard"]);
         
 
         // Generate random posts based on lorem ipsum text

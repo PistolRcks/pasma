@@ -2,6 +2,7 @@
 // This does NOT launch the app itself--`main.ts` handles that
 
 import express, { Express, NextFunction, Request, Response } from 'express';
+import path from 'path';
 import { edit } from "./api/edit";
 import { login } from "./api/login";
 import { logout } from "./api/logout";
@@ -56,5 +57,12 @@ api.get('/getProfilePicture/:Username', dbProfilePicture)
 
 app.use("/api", api);
 
-// Create static route to serve the public folder
-app.use(express.static('./public'))
+// Create static route to serve (most of) the public folder (like static non-routed files)
+app.use(express.static("./public"));
+
+// Required for React Routing; serve routed files 
+app.use('*', (req : Request, res : Response) => {
+    // actually begins in the "dist" folder since that's where we're compiling typescript to
+    // thus, gotta go up a folder
+    res.sendFile(path.join(__dirname, "..", "public", "index.html"))
+})

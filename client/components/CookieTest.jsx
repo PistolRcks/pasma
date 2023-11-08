@@ -24,6 +24,4 @@ function CookieTest (props) {
 
 }
 
-module.exports = {
-    CookieTest
-}
+module.exports = CookieTest
