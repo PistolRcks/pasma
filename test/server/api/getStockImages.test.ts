@@ -38,24 +38,21 @@ describe("Tests for the /api/getStockImages endpoint", () => {
             .send({ token: sessionToken });
 
         // only going to check for properties once
-        // expect(response.text).toHaveProperty('[]'); 
+        expect(response.body[0]).toHaveProperty("Picture"); 
         expect(response.status).toBe(200);
     });
     
-/*
     test("200 - normal usage, handle null return from `db.all`", async () => {
-        db.all = jest.fn((stmt, params, callback) => {
-            // fake row
-            let row;
-            row = { Picture: "stockImage001.png" };
+        db.all = jest.fn((stmt, callback) => {
             // @ts-ignore
-            callback(null, row);
-        }) as jest.MockedFunction<DBAllTypeWithParams>;
+            callback(null, null);
+        }) as jest.MockedFunction<DBAllType>;
 
         const response = await req
             .get("/api/getStockImages")
             .send({ token: sessionToken });
 
+        expect(response.text).toBe("[]"); 
         expect(response.status).toBe(200);
     });
     
@@ -69,10 +66,10 @@ describe("Tests for the /api/getStockImages endpoint", () => {
     });
     
     test("500 - database error", async () => {
-        db.all = jest.fn((stmt, params, callback) => {
+        db.all = jest.fn((stmt, callback) => {
             // @ts-ignore
             callback(new Error("Error!"), null);
-        }) as jest.MockedFunction<DBAllTypeWithParams>;
+        }) as jest.MockedFunction<DBAllType>;
         
         const response = await req
             .get("/api/getStockImages")
@@ -81,5 +78,5 @@ describe("Tests for the /api/getStockImages endpoint", () => {
         expect(response.status).toBe(500);
         expect(response.text).toBe("Error: Database error!");
     });
-    */
+
 })
