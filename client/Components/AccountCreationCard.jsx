@@ -1,6 +1,7 @@
 const React = require('react')
 const PropTypes = require('prop-types')
-const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, useDisclosure } = require("@nextui-org/react")
+const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, useDisclosure } = require("@nextui-org/react");
+const { collapseTextChangeRangesAcrossMultipleVersions } = require('typescript');
 
 function AccountCreationCard (props) {
     const [profilePicture, setProfilePicture] = React.useState("profile_pictures/botttsNeutral-1695826814739.png");
@@ -9,6 +10,7 @@ function AccountCreationCard (props) {
     const [password, setPassword] = React.useState("");
 
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+    const [isFormDisabled, setIsFormDisabled] = React.useState(false);
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
 
@@ -17,12 +19,37 @@ function AccountCreationCard (props) {
         return validateEmail(emailAddress) ? false : true;
     }, [emailAddress]);
 
-    
+    async function createNewAccount(newAccount) {
+        console.log(newAccount)
+        try {
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newAccount)
+            })
+            if(response.status === 400  || response.status === 500) {
+                window.alert(response)
+                console.log("Response:")
+                console.log(response.body)
+                setIsFormDisabled(false)
+                throw new Error()
+            }
+            else if(response.status === 200) {
+                window.alert(`Your account was created successfully. Your session token is: ${response.text}`)
+                // TODO: Save session token, log in user
+            }
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <React.Fragment>
             <Button onPress={onOpen}>Create account</Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} hideCloseButton={isFormDisabled} isDismissable={!isFormDisabled} size="xl">
             <ModalContent>
             {(onClose) => (
                 <React.Fragment>
@@ -39,16 +66,22 @@ function AccountCreationCard (props) {
                                         // TODO: Should contain one picture object for each image in directory, have to wait for an API 
                                     }
                                     <Image onClick={() => {
-                                        setProfilePicture("profile_pictures/botttsNeutral-1695826814739.png")
-                                        setIsPopoverOpen(false)
+                                        if(!isFormDisabled) {
+                                            setProfilePicture("profile_pictures/botttsNeutral-1695826814739.png")
+                                            setIsPopoverOpen(false)
+                                        }
                                     }} className="cursor-pointer" src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
                                     <Image onClick={() => {
-                                        setProfilePicture("profile_pictures/funEmoji-1695997904423.png")
-                                        setIsPopoverOpen(false)
+                                        if(!isFormDisabled) {
+                                            setProfilePicture("profile_pictures/funEmoji-1695997904423.png")
+                                            setIsPopoverOpen(false)
+                                        }
                                     }} className="cursor-pointer" src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
-                                    <Image onClick={
-                                        () => {setProfilePicture("profile_pictures/JaredD-2023.png")
-                                        setIsPopoverOpen(false)
+                                    <Image onClick={() => {
+                                        if(!isFormDisabled) {
+                                            setProfilePicture("profile_pictures/JaredD-2023.png")
+                                            setIsPopoverOpen(false)
+                                        }
                                     }} className="cursor-pointer" src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
                                 </div>
                             </PopoverContent>
@@ -57,6 +90,7 @@ function AccountCreationCard (props) {
                         </div>
                         <div className="w-72">
                             <Input
+                                isReadOnly={isFormDisabled}
                                 isRequired
                                 label="Username"
                                 labelPlacement="outside"
@@ -66,6 +100,7 @@ function AccountCreationCard (props) {
                                 description="This is your unique identifier across pasma. It cannot be changed."
                             />
                             <Input
+                                isReadOnly={isFormDisabled}
                                 isRequired
                                 className="pt-2"
                                 type="email"
@@ -100,20 +135,22 @@ function AccountCreationCard (props) {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="default" onPress={() => {
+                        <Button color="default" radius="full" isLoading={isFormDisabled} onPress={() => {
                             // TODO: Make appropriate API call.
                             // TODO: Add email to API
-                            console.log("You triggered an API call!")
-                            const accountDetails = {
-                                username: username,
-                                password: password,
-                                email: emailAddress,
-                                userType: "standard",
-                                profilePicture: profilePicture
+                            setIsFormDisabled(true);
+                            const newAccount = {
+                                "username": username,
+                                "password": password,
+                                "email": emailAddress,
+                                "userType": "standard",
+                                "profilePicture": profilePicture
                             }
-                            console.log(accountDetails)
+                            console.log("newAccount")
+                            console.log(JSON.parse(JSON.stringify(newAccount)))
+                            createNewAccount(JSON.parse(JSON.stringify(newAccount)))
                         }}>
-                            Create account
+                            Create Account
                         </Button>
                     </ModalFooter>
                 </React.Fragment>
