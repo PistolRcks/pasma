@@ -60,6 +60,14 @@ export type DBAllTypeWithParams = (
 ) => any;
 
 /**
+ * Type for `db.all`, without `params`. 
+ */
+export type DBAllType = (
+    sql: string,
+    callback?: (this: RunResult, err: Error | null, rows: any[]) => void
+) => any;
+
+/**
  * Type for `Crypto.pbkdf2Sync`.
  */
 export type PBKDF2SyncType = (

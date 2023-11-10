@@ -12,6 +12,7 @@ import { dbProfilePicture } from './api/getProfilePicture';
 import { react } from './api/react';
 import { register } from './api/register';
 import { feed } from './api/feed';
+import { dbStockImages } from './api/getStockImages';
 
 
 /**
@@ -56,6 +57,7 @@ api.post("/post", post);
 
 api.get("/feed", feed);
 api.get('/getProfilePicture/:Username', dbProfilePicture)
+api.get('/getStockImages', dbStockImages)
 
 app.use("/api", api);
 
