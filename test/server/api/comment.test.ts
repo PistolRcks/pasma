@@ -5,7 +5,7 @@ import { DBGetType, DBGetTypeWithParams, DBRunTypeWithCallback } from "../../uti
 import { addSession } from "../../../server/types/Session";
 jest.mock('../../../server/database');
 
-let parentPostID = 0;
+let parentPostID = "0";
 let parentNumComments = 0;
 let postComment = "";
 let bobsToken = addSession({ username: "bob" });
