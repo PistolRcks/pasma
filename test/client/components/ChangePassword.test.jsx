@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, getByText, getByLabelText, getByTitle, getByPlaceholderText } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { ChangePassword } from '../../../client/components/ChangePassword.jsx';
+import ChangePassword from '../../../client/components/ChangePassword.jsx';
 import * as dataHelper from '../../../client/dataHelper.js';
 import Cookies from 'js-cookie';
 import '@testing-library/jest-dom';
