@@ -29,7 +29,7 @@ export function comment(req: Request, res: Response) {
             const username = sessions.get(req.body.token).username;
 
             // first, check if parent post exists...
-            db.get(`SELECT * FROM Posts WHERE ID=? AND ParentID IS NULL`, [req.body.id], function (err: Error, row: any) {
+            db.get(`SELECT * FROM Posts WHERE ID=?`, [req.body.id], function (err: Error, row: any) {
                 // error running query
                 if (err) {
                     console.log("[SQL] Error: " + err);
