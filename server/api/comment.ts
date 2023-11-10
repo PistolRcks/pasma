@@ -1,7 +1,7 @@
 import { db } from "../database";
 import { Request, Response } from "express";
 import { sessions } from "../types/Session";
-import { postID, addComment } from "./post";
+import { postID, setPost } from "./post";
 
 /**
  * Comments on a post.
@@ -9,12 +9,27 @@ import { postID, addComment } from "./post";
  * @param {Response} res Response to request (200 if success, 400 if post does not exist, and 500 if failed for other reason)
  */
 export function comment(req: Request, res: Response) {
+    /**
+     * if someone tries sending a valid comment request before the postID value is initialized,
+     * a database error will occur. if it is not, we can quickly fetch it to prevent issues.
+     */
+    if (!postID) {
+        db.get(`SELECT COUNT(*) as 'count' FROM Posts`, function (err: Error, row: any) {
+            if (err) {
+                console.log("[SQL] Error: " + err);
+                res.status(500).send("Database error!");
+                return;
+            }
+            setPost(row.count);
+        });
+    }
+
     if ("id" in req.body && "content" in req.body && "token" in req.body) {
         if (sessions.has(req.body.token)) {
             const username = sessions.get(req.body.token).username;
 
             // first, check if parent post exists...
-            db.get(`SELECT * FROM Posts WHERE ID=? AND ParentID IS NOT NULL`, [req.body.id], function (err: Error, row: any) {
+            db.get(`SELECT * FROM Posts WHERE ID=? AND ParentID IS NULL`, [req.body.id], function (err: Error, row: any) {
                 // error running query
                 if (err) {
                     console.log("[SQL] Error: " + err);
@@ -48,7 +63,7 @@ export function comment(req: Request, res: Response) {
                         // if all of that worked, we can finally return success status
                         console.log('[API] Comment ' + postID + ' created');
                         res.status(200).send("" + postID);
-                        addComment();
+                        setPost(postID + 1);
                         return;
                     });
                 });

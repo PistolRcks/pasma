@@ -6,10 +6,10 @@ let firstPost: boolean = true;
 export let postID: number;
 
 /**
- * Increments the postID value.
+ * Sets the postID value.
  */
-export function addComment() {
-    ++postID;
+export function setPost(n: number) {
+    postID = n;
 }
 
 /**
