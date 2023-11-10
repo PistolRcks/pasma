@@ -171,6 +171,9 @@ dist
 # IntelliJ based IDEs
 .idea
 
+# MacOS Generated Indexing File
+.DS_Store
+
 # Other generated crap
 package-lock.json
 db.sqlite

@@ -1,7 +1,6 @@
 import React from 'react';
-import { ProfilePicture } from '../../../client/components/ProfilePicture.jsx';
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import ProfilePicture from '../../../client/components/ProfilePicture.jsx';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import '@testing-library/react';
 
@@ -13,7 +12,7 @@ beforeAll(() => {
 
 describe("Tests for Profile Picture", () => {
   test("Checks for Profile Picture", () => {
-    const wrapper = render(<BrowserRouter><ProfilePicture username="test" size="md" /></BrowserRouter>);
+    const wrapper = render(<ProfilePicture username="test" size="md" />);
     expect(wrapper.baseElement.outerHTML).toContain(
       "test"
     );
