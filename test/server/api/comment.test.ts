@@ -51,7 +51,7 @@ const mockGetPosts = jest.fn((stmt, callback) => {
 const mockGet = jest.fn((stmt, params, callback) => {
     // keep this empty unless the ID provided matches our post ID
     let row;
-    if (params[0] == parentPostID) {
+    if (params[0] === parentPostID) {
         row = { some: "content" };
     }
     // @ts-ignore
@@ -60,7 +60,7 @@ const mockGet = jest.fn((stmt, params, callback) => {
 
 const mockRun = jest.fn((stmt, params, callback) => {
     // distinguish between run statements: 6 params is creating post, 1 param is updating CommentCount
-    if (params.length == 6) {
+    if (params.length === 6) {
         postComment = params[2];
     } else {
         ++parentNumComments;
