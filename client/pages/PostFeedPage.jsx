@@ -1,13 +1,30 @@
 const React = require('react');
+const { Button } = require('@nextui-org/button');
+const { Link } = require('react-router-dom')
+const { useCookies } = require('react-cookie');
+const PostFeed = require('../components/PostFeed')
 
 /**
  * Renders the post feed page.
  * @param {object} props - Unused.
  */
 function PostFeedPage(props) {
-    return (
-        <p>{`This page is "/feed" (the post feed page).`}</p>
-    );
+    const [cookies, setCookie, removeCookie] = useCookies();
+
+    if (!("token" in cookies)) {
+        return (
+            <>
+                <p>What are you doing here when you're not logged in?</p><br />
+                <Button color='primary'>
+                    <Link to={"/"}>Click here to return to the homepage.</Link>
+                </Button>
+            </>
+        )
+    } else {
+        return (
+            <PostFeed token={cookies.token} />
+        )
+    }
 }
 
 module.exports = PostFeedPage;
