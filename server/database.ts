@@ -36,10 +36,13 @@ export function initDB(dbFile: string): Database {
             Username TEXT, 
             Content TEXT, 
             Picture TEXT, 
-            Timestamp INTEGER, 
+            Timestamp INTEGER,
+            ParentID TEXT,
+            CommentCount INTEGER NOT NULL DEFAULT 0,
             Private BOOLEAN,
-            FOREIGN KEY(Username) REFERENCES Users(Username),
             FOREIGN KEY(Picture) REFERENCES StockImages(Picture)
+            FOREIGN KEY(Username) REFERENCES Users(Username),
+            FOREIGN KEY(ParentID) REFERENCES Posts(ID)
         );`);
 
         newDB.run(`CREATE TABLE if not exists "StockImages" (
