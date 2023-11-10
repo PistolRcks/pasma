@@ -45,7 +45,7 @@ export function comment(req: Request, res: Response) {
 
                 const timestamp = Date.now();
                 // ...if it does, create a comment
-                db.run(`INSERT INTO Posts VALUES (?, ?, ?, ?, ?, ?, 0)`, [postID, username, req.body.content, req.body.picture, timestamp, req.body.id], function (err: Error) {
+                db.run(`INSERT INTO Posts(ID, Username, Content, Picture, Timestamp, ParentID) VALUES (?, ?, ?, ?, ?, ?)`, [postID, username, req.body.content, req.body.picture, timestamp, req.body.id], function (err: Error) {
                     if (err) {
                         console.log("[SQL] Error: " + err);
                         res.status(500).send("Database error!");
