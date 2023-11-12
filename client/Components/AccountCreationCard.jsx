@@ -10,6 +10,7 @@ function AccountCreationCard (props) {
     const [password, setPassword] = React.useState("");
 
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+    const [isCreateButtonDisabled, setIsCreateButtonDisabled] = React.useState(false)
     const [isFormDisabled, setIsFormDisabled] = React.useState(false);
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
@@ -30,15 +31,14 @@ function AccountCreationCard (props) {
                 body: JSON.stringify(newAccount)
             })
             if(response.status === 400  || response.status === 500) {
-                window.alert(`Response code: ${response.status}`)
-                console.log("Response:")
-                console.log(response.body)
+                window.alert((await response.text()).toString())
                 setIsFormDisabled(false)
                 throw new Error()
             }
             else if(response.status === 200) {
-                window.alert(`Your account was created successfully.`)
+                window.alert(`Your account was created successfully.\nYour session token is:\n${(await response.text()).toString()}`)
                 // TODO: Save session token, log in user
+                onOpen()
             }
 
         } catch (error) {
@@ -135,7 +135,7 @@ function AccountCreationCard (props) {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="default" radius="full" isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
+                        <Button color="default" radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
                             // TODO: Add email to API
                             setIsFormDisabled(true);
                             const newAccount = {
