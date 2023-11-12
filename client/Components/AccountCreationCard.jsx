@@ -30,14 +30,14 @@ function AccountCreationCard (props) {
                 body: JSON.stringify(newAccount)
             })
             if(response.status === 400  || response.status === 500) {
-                window.alert(response)
+                window.alert(`Response code: ${response.status}`)
                 console.log("Response:")
                 console.log(response.body)
                 setIsFormDisabled(false)
                 throw new Error()
             }
             else if(response.status === 200) {
-                window.alert(`Your account was created successfully. Your session token is: ${response.text}`)
+                window.alert(`Your account was created successfully.`)
                 // TODO: Save session token, log in user
             }
 
@@ -48,8 +48,8 @@ function AccountCreationCard (props) {
 
     return (
         <React.Fragment>
-            <Button onPress={onOpen}>Create account</Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} hideCloseButton={isFormDisabled} isDismissable={!isFormDisabled} size="xl">
+            <Button onPress={onOpen} data-testid="open-modal-button">Create account</Button>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} hideCloseButton={isFormDisabled} isDismissable={!isFormDisabled} size="xl" data-testid="create-account-modal">
             <ModalContent>
             {(onClose) => (
                 <React.Fragment>
@@ -57,34 +57,34 @@ function AccountCreationCard (props) {
                     <ModalBody className="grid grid-flow-col auto-cols-max">
                         <div className="pl-2 pr-6 w-48">
                             <Popover showArrow isOpen={isPopoverOpen} onOpenChange={(open) => setIsPopoverOpen(open)} placement="right">
-                            <PopoverTrigger>
-                                <Image className="cursor-pointer" src={profilePicture} width={180} radius="full" />
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80 max-h-80">
-                                <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
-                                    {
-                                        // TODO: Should contain one picture object for each image in directory, have to wait for an API 
-                                    }
-                                    <Image onClick={() => {
-                                        if(!isFormDisabled) {
-                                            setProfilePicture("profile_pictures/botttsNeutral-1695826814739.png")
-                                            setIsPopoverOpen(false)
+                                <PopoverTrigger>
+                                    <Image className="cursor-pointer" src={profilePicture} width={180} radius="full" />
+                                </PopoverTrigger>
+                                <PopoverContent className="w-80 max-h-80">
+                                    <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
+                                        {
+                                            // TODO: Should contain one picture object for each image in directory, have to wait for an API 
                                         }
-                                    }} className="cursor-pointer" src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
-                                    <Image onClick={() => {
-                                        if(!isFormDisabled) {
-                                            setProfilePicture("profile_pictures/funEmoji-1695997904423.png")
-                                            setIsPopoverOpen(false)
-                                        }
-                                    }} className="cursor-pointer" src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
-                                    <Image onClick={() => {
-                                        if(!isFormDisabled) {
-                                            setProfilePicture("profile_pictures/JaredD-2023.png")
-                                            setIsPopoverOpen(false)
-                                        }
-                                    }} className="cursor-pointer" src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
-                                </div>
-                            </PopoverContent>
+                                        <Image onClick={() => {
+                                            if(!isFormDisabled) {
+                                                setProfilePicture("profile_pictures/botttsNeutral-1695826814739.png")
+                                                setIsPopoverOpen(false)
+                                            }
+                                        }} className="cursor-pointer" src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                        <Image onClick={() => {
+                                            if(!isFormDisabled) {
+                                                setProfilePicture("profile_pictures/funEmoji-1695997904423.png")
+                                                setIsPopoverOpen(false)
+                                            }
+                                        }} className="cursor-pointer" src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                        <Image onClick={() => {
+                                            if(!isFormDisabled) {
+                                                setProfilePicture("profile_pictures/JaredD-2023.png")
+                                                setIsPopoverOpen(false)
+                                            }
+                                        }} className="cursor-pointer" src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                    </div>
+                                </PopoverContent>
                             </Popover>
                             <p className="text-center pt-2">Click on the photo above to select a different profile picture.</p>
                         </div>
@@ -135,8 +135,7 @@ function AccountCreationCard (props) {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="default" radius="full" isLoading={isFormDisabled} onPress={() => {
-                            // TODO: Make appropriate API call.
+                        <Button color="default" radius="full" isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
                             // TODO: Add email to API
                             setIsFormDisabled(true);
                             const newAccount = {
