@@ -37,6 +37,7 @@ const router = createBrowserRouter(
             }
         >
             <Route index element={<IndexPage />} />
+            <Route path='/login' element={<CookieTest cookieName='token' />} />
             <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
             <Route path='/post/:id' element={<PostPage />} />
             <Route path='/profile/:username' element={<ProfilePage />} />
