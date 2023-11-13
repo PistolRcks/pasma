@@ -41,20 +41,9 @@ function AccountCreationCard (props) {
         return true
     }, [emailAddress])
 
-    const isFormValid = () => {
-        console.log("username: " + username)
-        console.log("email: " + emailAddress)
-        console.log("password: " + password)
-        if(username != "" && !isEmailInvalid && password != "") {
-            console.log("VALIDATION TRUE")
-            setIsCreateButtonDisabled(false)
-            return true
-        }
-        console.log("VALIDATION FALSE")
-        setIsCreateButtonDisabled(true)
-        return false
-        //return username != "" && !isEmailInvalid && password != "" ? true : false
-    }
+    React.useEffect(() => {
+        username != "" && !isEmailInvalid && password != "" ? setIsCreateButtonDisabled(false) : setIsCreateButtonDisabled(true)
+    }, [username, emailAddress, password])
 
     async function createNewAccount(newAccount) {
         console.log(newAccount)
@@ -76,9 +65,7 @@ function AccountCreationCard (props) {
                 // TODO: Save session token, log in user
             }
 
-        } catch (error) {
-            console.error(error)
-        }
+        } catch (error) {}
     }
 
     return (
@@ -129,13 +116,10 @@ function AccountCreationCard (props) {
                                 label="Username"
                                 labelPlacement="outside"
                                 color={username != "" ? "success" : "default"}
-                                onValueChange={async (value) => {
-                                    await setUsername(value)
-                                    isFormValid()
-                                }}
+                                onValueChange={setUsername}
                                 size="lg"
                                 placeholder=" "
-                                description="This is your unique identifier across pasma. It cannot be changed."
+                                description="This is your unique identifier across pasma. It cannot be changed once your account is created."
                             />
                             <Input
                                 isReadOnly={isFormDisabled}
@@ -147,10 +131,7 @@ function AccountCreationCard (props) {
                                 isValid={isEmailInvalid}
                                 color={emailInputColor}
                                 errorMessage={isEmailInvalid && "Please enter a valid email address."}
-                                onValueChange={async (value) => {
-                                    await setEmailAddress(value)
-                                    isFormValid()
-                                }}
+                                onValueChange={setEmailAddress}
                                 size="lg"
                                 placeholder=" "
                                 description={emailInputDescription}
@@ -163,19 +144,18 @@ function AccountCreationCard (props) {
                                 labelPlacement="outside"
                                 size="lg"
                                 color={password != "" ? "success" : "default"}
-                                defaultValue="CHANGE THIS LATER"
                                 value={password ? password : " "}
-                                onClick={async (value) => {
-                                    await setPassword(generatePassword)
-                                    await isFormValid()
+                                onClick={() => {
+                                    setPassword("")
+                                    setPassword(generatePassword)
                                 }}
                                 placeholder=" "
-                                description={password != "" ? "New password generated. Don't forget to copy this!" : "Click the field to generate a new password and copy it."}
+                                description={password != "" ? "New password generated. Don't forget to copy this!" : "Click the field to generate a new password."}
                             />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" variant="ghost" radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
+                        <Button color="primary" radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
                             setIsFormDisabled(true);
                             const newAccount = {
                                 "username": username,
