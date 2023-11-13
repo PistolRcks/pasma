@@ -36,9 +36,17 @@ export function initDB(dbFile: string): Database {
             Username TEXT, 
             Content TEXT, 
             Picture TEXT, 
-            Timestamp INTEGER, 
+            Timestamp INTEGER,
+            ParentID TEXT,
+            CommentCount INTEGER NOT NULL DEFAULT 0,
             Private BOOLEAN,
-            FOREIGN KEY(Username) REFERENCES Users(Username)
+            FOREIGN KEY(Picture) REFERENCES StockImages(Picture)
+            FOREIGN KEY(Username) REFERENCES Users(Username),
+            FOREIGN KEY(ParentID) REFERENCES Posts(ID)
+        );`);
+
+        newDB.run(`CREATE TABLE if not exists "StockImages" (
+            Picture TEXT PRIMARY KEY
         );`);
 
         newDB.run(`CREATE TABLE if not exists "PostDislikes" (
@@ -54,11 +62,23 @@ export function initDB(dbFile: string): Database {
         const salt: Buffer = crypto.randomBytes(16);
         const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
         
-        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, UserType)
-            VALUES(?, ?, ?, ?);
+        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, ProfilePicture, UserType)
+            VALUES(?, ?, ?, ?, ?);
         `, 
-        ["alice", testPassword.toString("hex"), salt, "standard"]);
-        
+        ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png", "standard"]);
+
+        // insert stock images from the stock_image directory
+        const fs = require("fs");
+        const path = require("path");
+        const stock_image_dir = path.join(__dirname, "../public/pictures/stock_images");
+        fs.readdir(stock_image_dir, (err: any, files: any) => {
+            files.forEach((file: any) => {
+                newDB.run(`INSERT OR IGNORE INTO StockImages(Picture)
+                    VALUES(?);
+                `, 
+                [file]);
+            });
+        });
 
         // Generate random posts based on lorem ipsum text
         const lipsum_sublength = Math.floor(LIPSUM.length / 10);

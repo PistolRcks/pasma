@@ -21,14 +21,12 @@ function ProfilePicture (props) {
   
     return (
       <div>
-        <Avatar showFallback name= {`${username}`} src={`/profile_pictures/${profilePictureName}`} size={`${size}`}/>
+        <Avatar showFallback name= {`${username}`} src={`/pictures/profile_pictures/${profilePictureName}`} size={`${size}`}/>
       </div>
     )
 }
 
-module.exports = {
-    ProfilePicture
-}
+module.exports = ProfilePicture;
 
 ProfilePicture.propTypes = {
     username: PropTypes.string.isRequired,
