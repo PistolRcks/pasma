@@ -1,10 +1,21 @@
 const React = require('react')
 const PropTypes = require('prop-types')
-const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, useDisclosure } = require("@nextui-org/react");
-const { collapseTextChangeRangesAcrossMultipleVersions } = require('typescript');
+const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger } = require("@nextui-org/react")
+const { propTypes } = require('./ProfilePicture')
 
+/**
+ * A modal which enables the user to create an account. Returns a window alert with the status of the action.
+ * Don't forget to include const { useDisclosure } = require("@nextui-org/react") in the parent!
+ * 
+ * @param {object} props Passed in from useDisclosure() parameters in parent.
+ */
 function AccountCreationCard (props) {
-    const [profilePicture, setProfilePicture] = React.useState("profile_pictures/botttsNeutral-1695826814739.png");
+    const { isOpen, onOpenChange } = props
+
+    console.log("isOpen is " + typeof(isOpen))
+    console.log("onOpenChange is " + typeof(onOpenChange))
+
+    const [profilePicture, setProfilePicture] = React.useState("pictures/stock_images/botttsNeutral-1695826814739.png");
     const [username, setUsername] = React.useState("");
     const [emailAddress, setEmailAddress] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -12,7 +23,6 @@ function AccountCreationCard (props) {
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isCreateButtonDisabled, setIsCreateButtonDisabled] = React.useState(false)
     const [isFormDisabled, setIsFormDisabled] = React.useState(false);
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
 
     const isInvalid = React.useMemo(() => {
@@ -48,7 +58,6 @@ function AccountCreationCard (props) {
 
     return (
         <React.Fragment>
-            <Button onPress={onOpen} data-testid="open-modal-button">Create account</Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} hideCloseButton={isFormDisabled} isDismissable={!isFormDisabled} size="xl" data-testid="create-account-modal">
             <ModalContent>
             {(onClose) => (
@@ -67,22 +76,22 @@ function AccountCreationCard (props) {
                                         }
                                         <Image onClick={() => {
                                             if(!isFormDisabled) {
-                                                setProfilePicture("profile_pictures/botttsNeutral-1695826814739.png")
+                                                setProfilePicture("pictures/stock_images/botttsNeutral-1695826814739.png")
                                                 setIsPopoverOpen(false)
                                             }
-                                        }} className="cursor-pointer" src="profile_pictures/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                        }} className="cursor-pointer" src="pictures/stock_images/botttsNeutral-1695826814739.png" width={100} radius="full" />
                                         <Image onClick={() => {
                                             if(!isFormDisabled) {
-                                                setProfilePicture("profile_pictures/funEmoji-1695997904423.png")
+                                                setProfilePicture("pictures/stock_images/funEmoji-1695997904423.png")
                                                 setIsPopoverOpen(false)
                                             }
-                                        }} className="cursor-pointer" src="profile_pictures/funEmoji-1695997904423.png" width={100} radius="full" />
+                                        }} className="cursor-pointer" src="pictures/stock_images/funEmoji-1695997904423.png" width={100} radius="full" />
                                         <Image onClick={() => {
                                             if(!isFormDisabled) {
-                                                setProfilePicture("profile_pictures/JaredD-2023.png")
+                                                setProfilePicture("pictures/stock_images/JaredD-2023.png")
                                                 setIsPopoverOpen(false)
                                             }
-                                        }} className="cursor-pointer" src="profile_pictures/JaredD-2023.png" width={100} radius="full" />
+                                        }} className="cursor-pointer" src="pictures/stock_images/JaredD-2023.png" width={100} radius="full" />
                                     </div>
                                 </PopoverContent>
                             </Popover>
@@ -160,5 +169,9 @@ function AccountCreationCard (props) {
     )
 }
 
-module.exports = AccountCreationCard
+AccountCreationCard.PropTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onOpenChange: PropTypes.func.isRequired
+}
 
+module.exports = AccountCreationCard
