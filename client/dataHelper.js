@@ -72,9 +72,9 @@ export async function retrievePostFeedData(_token) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(JSON.stringify({
+        body: JSON.stringify({
             token: _token,
-        })),
+        }),
     });
     
     if (response.status !== 200) {

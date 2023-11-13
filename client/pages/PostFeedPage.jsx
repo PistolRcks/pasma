@@ -22,7 +22,9 @@ function PostFeedPage(props) {
         )
     } else {
         return (
-            <PostFeed token={cookies.token} />
+            <div className='flex h-screen items-center justify-center m-8'>
+                <PostFeed token={cookies.token} />
+            </div>
         )
     }
 }

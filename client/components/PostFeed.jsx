@@ -1,8 +1,9 @@
-const { Button } = require("@nextui-org/react");
+const { Button, Spinner } = require("@nextui-org/react");
 const React = require("react");
 const { useEffect, useState } = require("react");
-const PropTypes = require('prop-types')
+const PropTypes = require("prop-types");
 const { retrievePostFeedData } = require("../dataHelper");
+const PostCard = require("./PostCard");
 
 /**
  * Renders the feed of posts via multiple PostCard objects.
@@ -15,44 +16,72 @@ function PostFeed(props) {
     const [isFetching, setIsFetching] = useState(false);
 
     const fetchPosts = () => {
+        // Set spinner while loading
+        setIsFetching(true);
+        setPosts(<Spinner label="Loading Posts..." color="Primary" />);
+
+        // Load data
         retrievePostFeedData(token)
             .then((data) => {
                 let postComponents = [];
                 data.forEach((postData, i) => {
+                    const {
+                        id,
+                        user,
+                        timestamp,
+                        picture,
+                        content,
+                        dislikes,
+                        comments,
+                    } = postData;
                     postComponents.push(
-                        <p key={i}>{`This is ${postData.id}`}</p>
-                    )
+                        <PostCard
+                            key={i}
+                            id={id}
+                            username={user}
+                            timestamp={timestamp}
+                            content={content}
+                            numDislikes={dislikes}
+                            numComments={comments}
+                        />
+                    );
                 });
                 setPosts(postComponents);
+                setIsFetching(false);
             })
             .catch((reason) => {
                 setPosts([
                     <div key={0} className="grid grid-cols-1 gap-4">
                         <p>Failed to fetch posts. Reason:</p>
                         <p>{reason.message}</p>
-                    </div>
-                ])
+                    </div>,
+                ]);
+                setIsFetching(false);
             });
-    }
+    };
 
     useEffect(fetchPosts, []);
 
     return (
-        <div className="w-1/2 grid-cols-1 gap-4 justify-center justify-items-center">
+        <div className="w-1/2 grid grid-cols-1 gap-12 justify-stretch">
             {posts}
-            <Button 
-                color="primary" variant="bordered"
+            {!isFetching && <Button
+                className="justify-self-center"
+                color="primary"
+                variant="bordered"
                 disabled={isFetching}
                 onPress={(e) => {
                     fetchPosts();
                 }}
-            >Load More</Button>
+            >
+                Reload Posts
+            </Button>}
         </div>
-    )
+    );
 }
 
 module.exports = PostFeed;
 
 PostFeed.propTypes = {
     token: PropTypes.string.isRequired,
-}
+};
