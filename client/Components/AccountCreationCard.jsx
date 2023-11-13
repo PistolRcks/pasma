@@ -1,7 +1,7 @@
 const React = require('react')
 const PropTypes = require('prop-types')
 const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger } = require("@nextui-org/react")
-const { propTypes } = require('./ProfilePicture')
+const { generatePassword } = require('../passwordGenerator')
 
 /**
  * A modal which enables the user to create an account. Returns a window alert with the status of the action.
@@ -12,23 +12,49 @@ const { propTypes } = require('./ProfilePicture')
 function AccountCreationCard (props) {
     const { isOpen, onOpenChange } = props
 
-    console.log("isOpen is " + typeof(isOpen))
-    console.log("onOpenChange is " + typeof(onOpenChange))
-
     const [profilePicture, setProfilePicture] = React.useState("pictures/stock_images/botttsNeutral-1695826814739.png");
     const [username, setUsername] = React.useState("");
     const [emailAddress, setEmailAddress] = React.useState("");
     const [password, setPassword] = React.useState("");
 
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-    const [isCreateButtonDisabled, setIsCreateButtonDisabled] = React.useState(false)
+    const [isCreateButtonDisabled, setIsCreateButtonDisabled] = React.useState(true)
+    const [emailInputColor, setEmailInputColor] = React.useState("default")
+    const [emailInputDescription, setEmailInputDescription] = React.useState("This is used for email notifications. It can be changed later.")
     const [isFormDisabled, setIsFormDisabled] = React.useState(false);
+
     const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
 
-    const isInvalid = React.useMemo(() => {
-        if (emailAddress === "") return false;
-        return validateEmail(emailAddress) ? false : true;
-    }, [emailAddress]);
+    const isEmailInvalid = React.useMemo(() => {
+        if (emailAddress === "") {
+            setEmailInputColor("default")
+            setEmailInputDescription("This is used for email notifications. It can be changed later.")
+            return false
+        }
+        if (validateEmail(emailAddress)) {
+            setEmailInputColor("success")
+            setEmailInputDescription("Email address is valid!")
+            return false
+        }
+        setEmailInputColor("danger")
+        setEmailInputDescription("This is used for email notifications. It can be changed later.")
+        return true
+    }, [emailAddress])
+
+    const isFormValid = () => {
+        console.log("username: " + username)
+        console.log("email: " + emailAddress)
+        console.log("password: " + password)
+        if(username != "" && !isEmailInvalid && password != "") {
+            console.log("VALIDATION TRUE")
+            setIsCreateButtonDisabled(false)
+            return true
+        }
+        console.log("VALIDATION FALSE")
+        setIsCreateButtonDisabled(true)
+        return false
+        //return username != "" && !isEmailInvalid && password != "" ? true : false
+    }
 
     async function createNewAccount(newAccount) {
         console.log(newAccount)
@@ -48,7 +74,6 @@ function AccountCreationCard (props) {
             else if(response.status === 200) {
                 window.alert(`Your account was created successfully.\nYour session token is:\n${(await response.text()).toString()}`)
                 // TODO: Save session token, log in user
-                onOpen()
             }
 
         } catch (error) {
@@ -103,7 +128,11 @@ function AccountCreationCard (props) {
                                 isRequired
                                 label="Username"
                                 labelPlacement="outside"
-                                onValueChange={setUsername}
+                                color={username != "" ? "success" : "default"}
+                                onValueChange={async (value) => {
+                                    await setUsername(value)
+                                    isFormValid()
+                                }}
                                 size="lg"
                                 placeholder=" "
                                 description="This is your unique identifier across pasma. It cannot be changed."
@@ -115,13 +144,16 @@ function AccountCreationCard (props) {
                                 type="email"
                                 label="Email Address"
                                 labelPlacement="outside"
-                                isInvalid={isInvalid}
-                                color={isInvalid ? "danger" : "default"}
-                                errorMessage={isInvalid && "Please enter a valid email address."}
-                                onValueChange={setEmailAddress}
+                                isValid={isEmailInvalid}
+                                color={emailInputColor}
+                                errorMessage={isEmailInvalid && "Please enter a valid email address."}
+                                onValueChange={async (value) => {
+                                    await setEmailAddress(value)
+                                    isFormValid()
+                                }}
                                 size="lg"
                                 placeholder=" "
-                                description="This is used for email notifications. It can be changed later."
+                                description={emailInputDescription}
                             />
                             <Input
                                 isReadOnly
@@ -133,10 +165,9 @@ function AccountCreationCard (props) {
                                 color={password != "" ? "success" : "default"}
                                 defaultValue="CHANGE THIS LATER"
                                 value={password ? password : " "}
-                                onClick={() => {
-                                    // TODO: Implement Jared's password generator
-                                    setPassword("generated-password-123")
-
+                                onClick={async (value) => {
+                                    await setPassword(generatePassword)
+                                    await isFormValid()
                                 }}
                                 placeholder=" "
                                 description={password != "" ? "New password generated. Don't forget to copy this!" : "Click the field to generate a new password and copy it."}
@@ -144,8 +175,7 @@ function AccountCreationCard (props) {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="default" radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
-                            // TODO: Add email to API
+                        <Button color="primary" variant="ghost" radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
                             setIsFormDisabled(true);
                             const newAccount = {
                                 "username": username,
@@ -169,7 +199,7 @@ function AccountCreationCard (props) {
     )
 }
 
-AccountCreationCard.PropTypes = {
+AccountCreationCard.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onOpenChange: PropTypes.func.isRequired
 }

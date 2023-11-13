@@ -26,7 +26,7 @@ function ProfilePicture (props) {
     )
 }
 
-module.exports = ProfilePicture;
+module.exports = ProfilePicture
 
 ProfilePicture.propTypes = {
     username: PropTypes.string.isRequired,
