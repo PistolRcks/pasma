@@ -113,10 +113,10 @@ export function initDB(dbFile: string): Database {
                 ]);
         }
 
-        // some example posts
-        newDB.run(`INSERT OR IGNORE INTO PostPhrases VALUES (?,?)`, ["0", "Lorem ipsum"]);
-        newDB.run(`INSERT OR IGNORE INTO PostPhrases VALUES (?,?)`, ["1", "dolor sit amet"]);
-        newDB.run(`INSERT OR IGNORE INTO PostPhrases VALUES (?,?)`, ["2", "consectetur adipiscing"]);
+        // generate some example phrases
+        for (let i = 0; i < 10; i++) {
+            newDB.run(`INSERT OR IGNORE INTO PostPhrases VALUES (?,?)`, ["" + i, LIPSUM.slice(i * lipsum_sublength, (i+1) * lipsum_sublength)]);
+        }
     });
 
     return newDB;
