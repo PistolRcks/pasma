@@ -18,20 +18,21 @@ function PostCard(props) {
     const { id, username, timestamp, content, numComments, numDislikes } = props
 
     // TODO: Implement UserType and more text sizing
+    // TODO: Implement Pictures
 
     return (
-        <Card className="flex pd-8">
+        <Card>
             <CardHeader className="justify-between">
                 <div className="flex gap-5 items-center">
-                    <ProfilePicture username={username} />
+                    <ProfilePicture username={username} size="lg"/>
                     <div className="flex flex-col items-start">
-                        <p>{username}</p>
+                        <p className="font-semibold">{`@${username}`}</p>
                         <p>{new Date(timestamp).toLocaleString()}</p>
                     </div>
                 </div>
             </CardHeader>
             <CardBody>
-                <p>{content}</p>
+                <p className="text-xl">{content}</p>
             </CardBody>
             <CardFooter className="place-content-between">
                 <Button variant="bordered">
