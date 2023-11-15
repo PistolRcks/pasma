@@ -59,3 +59,29 @@ export async function sendUpdatedPassword (token, oldPass, newPass) {
     }
 }
 
+/**
+ * Attempts to log in a user.
+ * @param {string} _username - the username of the user being logged in.
+ * @param {string} _password - the password of the user being logged in.
+ * @returns {Promise} - resolves to an object
+ * @throws an Error with the text defining what status code we got and
+ *      what error occurred.
+ */
+export async function attemptLogin(_username, _password) {
+    const response = await fetch(`/api/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username: _username,
+            password: _password
+        }),
+    });
+    
+    if (response.status !== 200) {
+        throw new Error(`Error ${response.status} - ${await response.text()}`);
+    }
+
+    return await response.json();
+}
