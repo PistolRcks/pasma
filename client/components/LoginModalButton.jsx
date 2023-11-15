@@ -76,6 +76,7 @@ function LoginModalButton(props) {
             <Button
                 color={color}
                 variant={variant}
+                radius="full"
                 className={styling}
                 onPress={onOpen}
             >
@@ -92,14 +93,14 @@ function LoginModalButton(props) {
                                 <Input
                                     autoFocus
                                     labelPlacement="outside"
-                                    placeholder="Enter your username..."
+                                    placeholder="Enter your username"
                                     label="Username"
                                     onValueChange={setUsername}
                                 />
                                 <Input
                                     type="password"
                                     labelPlacement="outside"
-                                    placeholder="Enter your password..."
+                                    placeholder="Enter your password"
                                     label="Password"
                                     onValueChange={setPassword}
                                 />
@@ -108,6 +109,7 @@ function LoginModalButton(props) {
                                 <Button
                                     color="default"
                                     variant="light"
+                                    radius="full"
                                     onPress={onClose}
                                 >
                                     Cancel
@@ -125,6 +127,7 @@ function LoginModalButton(props) {
                                             disabled={isLoading}
                                             isLoading={isLoading}
                                             onPress={doLogin}
+                                            radius="full"
                                         >
                                             Login
                                         </Button>
