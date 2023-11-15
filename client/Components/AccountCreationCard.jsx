@@ -13,7 +13,7 @@ const { Eye, EyeClosed, EyeSlash } = require('@phosphor-icons/react')
 function AccountCreationCard (props) {
     const { isOpen, onOpenChange } = props
 
-    const [profilePicture, setProfilePicture] = React.useState("pictures/stock_images/botttsNeutral-1695826814739.png")
+    const [profilePicture, setProfilePicture] = React.useState("botttsNeutral-1695826814739.png")
     const [username, setUsername] = React.useState("")
     const [emailAddress, setEmailAddress] = React.useState("")
     const [password, setPassword] = React.useState("")
@@ -24,6 +24,8 @@ function AccountCreationCard (props) {
     const [emailInputColor, setEmailInputColor] = React.useState("default")
     const [emailInputDescription, setEmailInputDescription] = React.useState("This is used for email notifications. It can be changed later.")
     const [isFormDisabled, setIsFormDisabled] = React.useState(false)
+
+    const stockImagePath = "pictures/stock_images/"
 
     const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i)
 
@@ -81,7 +83,7 @@ function AccountCreationCard (props) {
                         <div className="pl-2 pr-6 w-48">
                             <Popover showArrow isOpen={isPopoverOpen} onOpenChange={(open) => setIsPopoverOpen(open)} placement="right">
                                 <PopoverTrigger>
-                                    <Image className="cursor-pointer" src={profilePicture} width={180} radius="full" />
+                                    <Image className="cursor-pointer" src={stockImagePath + profilePicture} width={180} radius="full" />
                                 </PopoverTrigger>
                                 <PopoverContent className="w-80 max-h-80">
                                     <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
@@ -90,22 +92,22 @@ function AccountCreationCard (props) {
                                         }
                                         <Image onClick={() => {
                                             if(!isFormDisabled) {
-                                                setProfilePicture("pictures/stock_images/botttsNeutral-1695826814739.png")
+                                                setProfilePicture("botttsNeutral-1695826814739.png")
                                                 setIsPopoverOpen(false)
                                             }
-                                        }} className="cursor-pointer" src="pictures/stock_images/botttsNeutral-1695826814739.png" width={100} radius="full" />
+                                        }} className="cursor-pointer" src={stockImagePath + "botttsNeutral-1695826814739.png"} width={100} radius="full" />
                                         <Image onClick={() => {
                                             if(!isFormDisabled) {
-                                                setProfilePicture("pictures/stock_images/funEmoji-1695997904423.png")
+                                                setProfilePicture("funEmoji-1695997904423.png")
                                                 setIsPopoverOpen(false)
                                             }
-                                        }} className="cursor-pointer" src="pictures/stock_images/funEmoji-1695997904423.png" width={100} radius="full" />
+                                        }} className="cursor-pointer" src={stockImagePath + "funEmoji-1695997904423.png"} width={100} radius="full" />
                                         <Image onClick={() => {
                                             if(!isFormDisabled) {
-                                                setProfilePicture("pictures/stock_images/JaredD-2023.png")
+                                                setProfilePicture("JaredD-2023.png")
                                                 setIsPopoverOpen(false)
                                             }
-                                        }} className="cursor-pointer" src="pictures/stock_images/JaredD-2023.png" width={100} radius="full" />
+                                        }} className="cursor-pointer" src={stockImagePath + "JaredD-2023.png"} width={100} radius="full" />
                                     </div>
                                 </PopoverContent>
                             </Popover>
@@ -156,13 +158,7 @@ function AccountCreationCard (props) {
                                 description={password != "" ? "New password generated. Don't forget to copy this!" : "Click the field to generate a new password."}
                                 endContent={
                                     <button type="button" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
-                                        {
-                                            isPasswordVisible ? (
-                                                <EyeSlash/>
-                                            ) : (
-                                                <Eye/>
-                                            )
-                                        }
+                                        { isPasswordVisible ? <EyeSlash/> : <Eye/> }
                                     </button>
                                 }
                             />
