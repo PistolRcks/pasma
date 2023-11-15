@@ -15,14 +15,21 @@ const {
 const { useState } = require("react");
 const { useCookies } = require("react-cookie");
 const { useNavigate } = require("react-router");
+const PropTypes = require("prop-types");
 const { attemptLogin } = require("../dataHelper");
 
 /**
  * Renders a button which displays a modal to allow a user to login.
  *
- * @param {object} props - Unused.
+ * @param {object} props
+ *  - text: what to display on the Button component (default: 'Login')
+ *  - color: passed into the Button component (default: 'primary')
+ *  - variant: passed into the Button component (default: 'solid')
+ *  - styling: passed into the Button component's `className` prop (default: '')
  */
 function LoginModalButton(props) {
+    const { text, color, variant, styling } = props;
+
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [cookies, setCookies] = useCookies();
     const navigate = useNavigate();
@@ -37,11 +44,28 @@ function LoginModalButton(props) {
         setIsLoading(true);
         attemptLogin(username, password)
             .then((data) => {
-                setCookies(data);
+                const { token, username, profilePicture, userType } = data;
+                console.log(token);
+                console.log(username);
+                console.log(profilePicture);
+                console.log(userType);
+
+                // set cookies
+                // expire after one day
+                const options = {
+                    maxAge: 86400,
+                };
+                setCookies("token", token, options);
+                setCookies("username", username, options);
+                setCookies("profilePicture", profilePicture, options);
+                setCookies("userType", userType, options);
+
+                // move onward
                 navigate("/feed");
             })
             .catch((reason) => {
-                setErrorText(reason.message)
+                // Got an error from the backend; launch the popover
+                setErrorText(reason.message);
                 setIsErrorPopoverOpen(true);
                 setIsLoading(false);
             });
@@ -49,8 +73,13 @@ function LoginModalButton(props) {
 
     return (
         <>
-            <Button color="primary" onPress={onOpen}>
-                Login
+            <Button
+                color={color}
+                variant={variant}
+                className={styling}
+                onPress={onOpen}
+            >
+                {text}
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="md">
                 <ModalContent>
@@ -86,7 +115,9 @@ function LoginModalButton(props) {
                                 <Popover
                                     color="danger"
                                     isOpen={isErrorPopoverOpen}
-                                    onOpenChange={(open) => setIsErrorPopoverOpen(open)}
+                                    onOpenChange={(open) =>
+                                        setIsErrorPopoverOpen(open)
+                                    }
                                 >
                                     <PopoverTrigger>
                                         <Button
@@ -104,8 +135,10 @@ function LoginModalButton(props) {
                                                 Error
                                             </div>
                                             <div className="text-tiny">
-                                                {errorText}<br />
-                                                Check your username and password and try again.
+                                                {errorText}
+                                                <br />
+                                                Check your username and password
+                                                and try again.
                                             </div>
                                         </div>
                                     </PopoverContent>
@@ -118,5 +151,19 @@ function LoginModalButton(props) {
         </>
     );
 }
+
+LoginModalButton.propTypes = {
+    text: PropTypes.string,
+    color: PropTypes.string,
+    variant: PropTypes.string,
+    styling: PropTypes.string,
+};
+
+LoginModalButton.defaultProps = {
+    text: "Login",
+    color: "primary",
+    variant: "solid",
+    styling: "",
+};
 
 module.exports = LoginModalButton;
