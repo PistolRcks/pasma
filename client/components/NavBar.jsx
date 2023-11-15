@@ -21,6 +21,15 @@ function NavBar (props) {
         }
     }, [cookie.token]);
 
+    function logOut() {
+        setCookie('token', '');
+        setCookie('username', '');
+        setCookie('profilePicture', '');
+        setCookie('userType', '');
+        setLoggedIn(false);
+        console.log("Logged out")
+    }
+
     return (
         <>
             <Navbar isBordered>
@@ -47,7 +56,7 @@ function NavBar (props) {
                                 </DropdownTrigger>
                                 <DropdownMenu aria-label="Static Actions">
                                     <DropdownItem key="profile"><Link to='/account'>My Account</Link></DropdownItem>
-                                    <DropdownItem key="logOut" className="text-danger" color="danger"><Link to='/'>Log Out</Link></DropdownItem>
+                                    <DropdownItem key="logOut" className="text-danger" color="danger" onClick={ logOut }><Link to='/'>Log Out</Link></DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         :
