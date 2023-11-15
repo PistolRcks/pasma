@@ -76,7 +76,12 @@ export function register(req: Request, res: Response) {
                 // Log the new user in
                 console.log(`[API] Created new user "${req.body.username}"`);
                 const token = addSession({ username: req.body.username });
-                res.status(200).send(token);
+                    res.status(200).send({
+                        token: token,
+                        username: req.body.username,
+                        userType: req.body.userType,
+                        profilePicture: req.body.profilePicture 
+                    });
             });
             
         });

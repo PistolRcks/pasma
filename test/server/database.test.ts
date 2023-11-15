@@ -64,15 +64,14 @@ describe('Post checks', () => {
     });
 });
 
-/* list out the tables. make sure we have the Users and Posts tables, since they should be
+/* list out the tables. make sure we have all the necessary tables, since they should be
    created by initDB() */
 describe('Database checks', () => {
-    test("Checking database structure", done => {
-        let testDBTables = initDB(":memory:");
-        
+    test("Checking database structure", async () => {
+        let testDBTables = await initDB(":memory:");
+
         testDBTables.all("SELECT name FROM sqlite_master WHERE type='table';", [], function (err: Error, rows: any[]) {
-            expect(rows).toEqual([{name: 'Users'}, {name: 'Posts'}, {name: 'StockImages'}, {name: 'PostDislikes'}]);
-            done();
+            expect(rows).toEqual([{ name: 'Users' }, { name: 'Posts' }, { name: 'PostPhrases' }, { name: 'StockImages' }, { name: 'PostDislikes' }]);
         });
     });
 });

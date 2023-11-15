@@ -107,7 +107,7 @@ describe('[API] /edit: database', () => {
     });
 });
 
-describe('[API] /post: request', () => {
+describe('[API] /edit: request', () => {
 
     beforeEach(() => {
         db.get = jest.fn();
