@@ -29,7 +29,7 @@ export function getPhrases(req: Request, res: Response) {
         }
 
         let phrases: string[] = [];
-        rows.forEach(function (row: any) {
+        rows.forEach((row: any) => {
             phrases.push(row["Phrase"])
         });
 
