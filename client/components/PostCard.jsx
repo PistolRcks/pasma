@@ -1,4 +1,4 @@
-const { Card, CardHeader, CardBody, CardFooter, Button } = require("@nextui-org/react");
+const { Card, CardHeader, CardBody, CardFooter, Button, Image } = require("@nextui-org/react");
 const React = require("react");
 const PropTypes = require('prop-types');
 const ProfilePicture = require("../components/ProfilePicture");
@@ -27,8 +27,6 @@ function PostCard(props) {
         userTypeComponent = (<CurrencyCircleDollar size={16} />);
     }
     
-    // TODO: Implement Pictures
-    
     return (
         <Card>
             <CardHeader className="justify-between">
@@ -48,7 +46,14 @@ function PostCard(props) {
                 </div>
             </CardHeader>
             <CardBody>
-                <p className="text-xl">{content}</p>
+                <div className="flex flex-col items-center">
+                    <p className="text-xl">{content}</p>
+                    { (picture && picture != "") && <Image 
+                        className=""
+                        alt={`Picture for post ${id}`}
+                        src={`/pictures/stock_images/${picture}`}
+                    /> }
+                </div>
             </CardBody>
             <CardFooter className="place-content-between">
                 <Link to={`/post/${id}`}>
