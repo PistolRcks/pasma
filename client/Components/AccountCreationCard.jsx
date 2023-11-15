@@ -153,12 +153,14 @@ function AccountCreationCard (props) {
                                 value={password}
                                 onClick={() => {
                                     if(!isFormDisabled){
+                                        const newPassword = generatePassword(2)
                                         setPassword("")
-                                        setPassword(generatePassword)
+                                        setPassword(newPassword)
+                                        navigator.clipboard.writeText(newPassword)
                                     }
                                 }}
                                 placeholder=" "
-                                description={password != "" ? "New password generated. Don't forget to copy this!" : "Click the field to generate a new password."}
+                                description={password != "" ? "Copied to clipboard. Don't forget to save this!" : "Click the field to generate a new password."}
                                 endContent={
                                     <button type="button" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
                                         { isPasswordVisible ? <EyeSlash/> : <Eye/> }
