@@ -2,6 +2,7 @@ const React = require('react')
 const PropTypes = require('prop-types')
 const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger } = require("@nextui-org/react")
 const { generatePassword } = require('../passwordGenerator')
+const { Eye, EyeClosed, EyeSlash } = require('@phosphor-icons/react')
 
 /**
  * A modal which enables the user to create an account. Returns a window alert with the status of the action.
@@ -12,18 +13,19 @@ const { generatePassword } = require('../passwordGenerator')
 function AccountCreationCard (props) {
     const { isOpen, onOpenChange } = props
 
-    const [profilePicture, setProfilePicture] = React.useState("pictures/stock_images/botttsNeutral-1695826814739.png");
-    const [username, setUsername] = React.useState("");
-    const [emailAddress, setEmailAddress] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const [profilePicture, setProfilePicture] = React.useState("pictures/stock_images/botttsNeutral-1695826814739.png")
+    const [username, setUsername] = React.useState("")
+    const [emailAddress, setEmailAddress] = React.useState("")
+    const [password, setPassword] = React.useState("")
 
-    const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+    const [isPopoverOpen, setIsPopoverOpen] = React.useState(false)
+    const [isPasswordVisible, setIsPasswordVisible] = React.useState(false)
     const [isCreateButtonDisabled, setIsCreateButtonDisabled] = React.useState(true)
     const [emailInputColor, setEmailInputColor] = React.useState("default")
     const [emailInputDescription, setEmailInputDescription] = React.useState("This is used for email notifications. It can be changed later.")
-    const [isFormDisabled, setIsFormDisabled] = React.useState(false);
+    const [isFormDisabled, setIsFormDisabled] = React.useState(false)
 
-    const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
+    const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i)
 
     const isEmailInvalid = React.useMemo(() => {
         if (emailAddress === "") {
@@ -118,7 +120,7 @@ function AccountCreationCard (props) {
                                 color={username != "" ? "success" : "default"}
                                 onValueChange={setUsername}
                                 size="lg"
-                                placeholder=" "
+                                placeholder="Enter a username..."
                                 description="This is your unique identifier across pasma. It cannot be changed once your account is created."
                             />
                             <Input
@@ -133,7 +135,7 @@ function AccountCreationCard (props) {
                                 errorMessage={isEmailInvalid && "Please enter a valid email address."}
                                 onValueChange={setEmailAddress}
                                 size="lg"
-                                placeholder=" "
+                                placeholder="name@domain.com"
                                 description={emailInputDescription}
                             />
                             <Input
@@ -142,21 +144,33 @@ function AccountCreationCard (props) {
                                 className="pt-2"
                                 label="Password"
                                 labelPlacement="outside"
+                                type={isPasswordVisible ? "text" :"password"}
                                 size="lg"
                                 color={password != "" ? "success" : "default"}
-                                value={password ? password : " "}
+                                value={password}
                                 onClick={() => {
                                     setPassword("")
                                     setPassword(generatePassword)
                                 }}
                                 placeholder=" "
                                 description={password != "" ? "New password generated. Don't forget to copy this!" : "Click the field to generate a new password."}
+                                endContent={
+                                    <button type="button" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
+                                        {
+                                            isPasswordVisible ? (
+                                                <EyeSlash/>
+                                            ) : (
+                                                <Eye/>
+                                            )
+                                        }
+                                    </button>
+                                }
                             />
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
-                            setIsFormDisabled(true);
+                            setIsFormDisabled(true)
                             const newAccount = {
                                 "username": username,
                                 "password": password,
