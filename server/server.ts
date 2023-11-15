@@ -3,6 +3,7 @@
 
 import express, { Express, NextFunction, Request, Response } from 'express';
 import path from 'path';
+import { comment } from "./api/comment";
 import { edit } from "./api/edit";
 import { login } from "./api/login";
 import { logout } from "./api/logout";
@@ -11,6 +12,7 @@ import { dbProfilePicture } from './api/getProfilePicture';
 import { react } from './api/react';
 import { register } from './api/register';
 import { feed } from './api/feed';
+import { dbStockImages } from './api/getStockImages';
 
 
 /**
@@ -46,6 +48,7 @@ app.use((err : any, req : Request, res : Response, next : NextFunction) => {
  });
 
 // Attach endpoints to API router
+api.post("/comment", comment);
 api.post("/edit", edit);
 api.post("/login", login);
 api.post("/logout", logout);
@@ -55,6 +58,7 @@ api.post("/post", post);
 
 api.post("/feed", feed);        // not really a POST but still must be POST due to how JS fetch works
 api.get('/getProfilePicture/:Username', dbProfilePicture)
+api.get('/getStockImages', dbStockImages)
 
 app.use("/api", api);
 

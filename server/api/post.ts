@@ -3,7 +3,14 @@ import { Request, Response } from "express";
 import { sessions } from "../types/Session";
 
 let firstPost: boolean = true;
-let postID: number;
+export let postID: number;
+
+/**
+ * Sets the postID value.
+ */
+export function setPost(n: number) {
+    postID = n;
+}
 
 /**
  * Creates a post.
@@ -15,7 +22,7 @@ function createPost(req: Request, res: Response) {
         if (sessions.has(req.body.token)) {
             const username = sessions.get(req.body.token).username;
             const timestamp = Date.now();
-            db.run(`INSERT INTO Posts VALUES (?, ?, ?, ?, ?)`,
+            db.run(`INSERT INTO Posts(ID, Username, Content, Picture, Timestamp) VALUES (?, ?, ?, ?, ?)`,
                 [postID, username, req.body.content, req.body.picture, timestamp],
                 function (err: Error) {
                     if (err) {

@@ -145,7 +145,7 @@ describe('[API] /post: request', () => {
 
         const res = await supertest(app).post("/api/edit").send(realEditBadToken);
 
-        expect(res.status).toBe(500);
+        expect(res.status).toBe(401);
         expect(res.text).toBe("Invalid token provided!");
         expect(postContent).toBe("unedited message");
     });
