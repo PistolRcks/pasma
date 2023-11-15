@@ -86,7 +86,7 @@ describe('[API] /getPhrases: request', () => {
         const res = await supertest(app).get("/api/getPhrases").send(realGetPhrases);
 
         expect(res.status).toBe(200);
-        expect(res.text).toEqual(JSON.stringify(rows));
+        expect(res.text).toEqual(JSON.stringify([ "first phrase", "second phrase" ]));
     });
 
     test("Test proper getPhrases with bad token", async () => {

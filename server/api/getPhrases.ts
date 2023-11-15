@@ -28,11 +28,12 @@ export function getPhrases(req: Request, res: Response) {
             return;
         }
 
-        if (!rows) {
-            rows = [];
-        }
+        let phrases: string[] = [];
+        rows.forEach(function (row: any) {
+            phrases.push(row["Phrase"])
+        });
 
-        res.status(200).send(rows);
+        res.status(200).send(phrases);
         return;
     });
 };
