@@ -40,13 +40,19 @@ export function initDB(dbFile: string): Database {
             ParentID TEXT,
             CommentCount INTEGER NOT NULL DEFAULT 0,
             Private BOOLEAN,
-            FOREIGN KEY(Picture) REFERENCES StockImages(Picture)
+            FOREIGN KEY(Content) REFERENCES PostPhrases(Phrase)
+            FOREIGN KEY(Picture) REFERENCES StockImages(Picture),
             FOREIGN KEY(Username) REFERENCES Users(Username),
             FOREIGN KEY(ParentID) REFERENCES Posts(ID)
         );`);
 
         newDB.run(`CREATE TABLE if not exists "StockImages" (
             Picture TEXT PRIMARY KEY
+        );`);
+
+        newDB.run(`CREATE TABLE if not exists "PostPhrases" (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            Phrase TEXT NOT NULL
         );`);
 
         newDB.run(`CREATE TABLE if not exists "PostDislikes" (
@@ -57,27 +63,38 @@ export function initDB(dbFile: string): Database {
             FOREIGN KEY (ID) REFERENCES Posts(ID),
             FOREIGN KEY (Username) REFERENCES Users(Username)
         );`);
-        
+
+        newDB.run(`CREATE TABLE if not exists "PostDislikes" (
+            ID TEXT, 
+            Username TEXT,
+            Disliked INTEGER,
+            PRIMARY KEY (ID, Username),
+            FOREIGN KEY (ID) REFERENCES Posts(ID),
+            FOREIGN KEY (Username) REFERENCES Users(Username)
+        );`);
+
         // insert test user (for now)
         const salt: Buffer = crypto.randomBytes(16);
-        const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512"); 
-        
+        const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512");
+
         newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, ProfilePicture, UserType)
             VALUES(?, ?, ?, ?, ?);
-        `, 
-        ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png", "standard"]);
+        `,
+            ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png", "standard"]);
 
         // insert stock images from the stock_image directory
         const fs = require("fs");
         const path = require("path");
         const stock_image_dir = path.join(__dirname, "../public/pictures/stock_images");
         fs.readdir(stock_image_dir, (err: any, files: any) => {
-            files.forEach((file: any) => {
-                newDB.run(`INSERT OR IGNORE INTO StockImages(Picture)
-                    VALUES(?);
-                `, 
-                [file]);
-            });
+            if (files) {
+                files.forEach((file: any) => {
+                    newDB.run(`INSERT OR IGNORE INTO StockImages(Picture)
+                        VALUES(?);
+                    `,
+                        [file]);
+                });
+            }
         });
 
         // Generate random posts based on lorem ipsum text
@@ -86,14 +103,19 @@ export function initDB(dbFile: string): Database {
             newDB.run(`INSERT OR IGNORE INTO Posts(ID, Username, Content, Picture, Timestamp, Private)
                 VALUES(?, ?, ?, ?, ?, ?)
             `,
-            [
-                i, 
-                "alice", 
-                LIPSUM.slice(i * lipsum_sublength, (i + 1) * lipsum_sublength), 
-                null, 
-                Date.now(),
-                false
-            ]);
+                [
+                    i,
+                    "alice",
+                    LIPSUM.slice(i * lipsum_sublength, (i + 1) * lipsum_sublength),
+                    null,
+                    Date.now(),
+                    false
+                ]);
+        }
+
+        // generate some example phrases
+        for (let i = 0; i < 10; i++) {
+            newDB.run(`INSERT OR IGNORE INTO PostPhrases VALUES (?,?)`, ["" + i, LIPSUM.slice(i * lipsum_sublength, (i+1) * lipsum_sublength)]);
         }
     });
 
