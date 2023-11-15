@@ -2462,6 +2462,10 @@ video {
   font-weight: 600;
 }
 
+.font-bold {
+  font-weight: 700;
+}
+
 .\!text-danger {
   --tw-text-opacity: 1 !important;
   color: hsl(var(--nextui-danger) / var(--nextui-danger-opacity, var(--tw-text-opacity))) !important;
@@ -6752,6 +6756,10 @@ video {
   .sm\:my-16 {
     margin-top: 4rem;
     margin-bottom: 4rem;
+  }
+
+  .sm\:flex {
+    display: flex;
   }
 
   .sm\:items-start {

@@ -65,7 +65,8 @@ function AccountCreationCard (props) {
                 throw new Error()
             }
             else if(response.status === 200) {
-                window.alert(`Your account was created successfully.\nYour session token is:\n${(await response.text()).toString()}`)
+                token = (await response.text()).toString()
+                window.alert(`Your account was created successfully.\nYour session token is:\n${token}`)
                 // TODO: Save session token, log in user
             }
 
@@ -151,8 +152,10 @@ function AccountCreationCard (props) {
                                 color={password != "" ? "success" : "default"}
                                 value={password}
                                 onClick={() => {
-                                    setPassword("")
-                                    setPassword(generatePassword)
+                                    if(!isFormDisabled){
+                                        setPassword("")
+                                        setPassword(generatePassword)
+                                    }
                                 }}
                                 placeholder=" "
                                 description={password != "" ? "New password generated. Don't forget to copy this!" : "Click the field to generate a new password."}
