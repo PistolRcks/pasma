@@ -2,31 +2,47 @@ const { Card, CardHeader, CardBody, CardFooter, Button } = require("@nextui-org/
 const React = require("react");
 const PropTypes = require('prop-types');
 const ProfilePicture = require("../components/ProfilePicture");
-const { ThumbsDown, ChatText } = require("@phosphor-icons/react");
+const { ThumbsDown, ChatText, UserCircleGear, CurrencyCircleDollar } = require("@phosphor-icons/react");
+const { Link } = require("react-router-dom");
 
 /**
  * Generates a Card representing a Post.
  * @param {object} props - Has the following:
  *  - id
  *  - username
+ *  - userType
  *  - timestamp
  *  - content
+ *  - picture
  *  - numComments
  *  - numDislikes
  */
 function PostCard(props) {
-    const { id, username, timestamp, content, numComments, numDislikes } = props
+    const { id, username, userType, timestamp, content, picture, numComments, numDislikes } = props
 
-    // TODO: Implement UserType and more text sizing
+    let userTypeComponent = (<></>);
+    if (userType === "moderator") {
+        userTypeComponent = (<UserCircleGear size={16} />);
+    } else if (userType === "brand") {
+        userTypeComponent = (<CurrencyCircleDollar size={16} />);
+    }
+    
     // TODO: Implement Pictures
-
+    
     return (
         <Card>
             <CardHeader className="justify-between">
                 <div className="flex gap-5 items-center">
-                    <ProfilePicture username={username} size="lg"/>
+                    <Link to={`/profile/${username}`}>
+                        <ProfilePicture username={username} size="lg"/>
+                    </Link>
                     <div className="flex flex-col items-start">
-                        <p className="font-semibold">{`@${username}`}</p>
+                        <Link to={`/profile/${username}`}>
+                            <div className="flex gap-1 items-center">
+                                <p className="font-semibold">{`@${username}`}</p>
+                                {userTypeComponent}
+                            </div>
+                        </Link>
                         <p>{new Date(timestamp).toLocaleString()}</p>
                     </div>
                 </div>
@@ -35,13 +51,15 @@ function PostCard(props) {
                 <p className="text-xl">{content}</p>
             </CardBody>
             <CardFooter className="place-content-between">
-                <Button variant="bordered">
-                    <div className="flex gap-2">
-                        <ChatText size={24} />
-                        <p>{numComments}</p>
-                    </div>
-                </Button>
-                <Button variant="bordered">
+                <Link to={`/post/${id}`}>
+                    <Button variant="bordered">
+                        <div className="flex gap-2">
+                            <ChatText size={24} />
+                            <p>{numComments}</p>
+                        </div>
+                    </Button>
+                </Link>
+                <Button variant="bordered">               
                     <div className="flex gap-2">
                         <p>{numDislikes}</p>
                         <ThumbsDown size={24} />
@@ -58,8 +76,10 @@ module.exports = PostCard;
 PostCard.propTypes = {
     id: PropTypes.string,
     username: PropTypes.string,
+    userType: PropTypes.string,
     timestamp: PropTypes.number,
     content: PropTypes.string,
+    picture: PropTypes.string,
     numComments: PropTypes.number,
     numDislikes: PropTypes.number
 }
@@ -67,8 +87,10 @@ PostCard.propTypes = {
 PostCard.defaultProps = {
     id: 0,
     username: "<No User>",
+    userType: "standard",
     timestamp: 0,
     content: "",
+    picture: null,
     numComments: 0,
     numDislikes: 0
 }

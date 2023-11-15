@@ -13,6 +13,7 @@ import { sessions } from "../types/Session";
  *      error (beginning with "Error:"), or with a JSON array of the most recent posts containing each:
  *          - "id": the post ID of the post
  *          - "user": the username of the user who created the post
+ *          - "userType": the usertype of the user who created the post
  *          - "picture": the filename of the image attached to the post, if any
  *          - "content": the text content of the post, if any
  *          - "dislikes": number of dislikes on the post
@@ -65,6 +66,7 @@ export function feed(req: Request, res: Response) {
         SELECT 
             p.ID as id, 
             p.Username as user, 
+            u.UserType as userType,
             p.Timestamp as timestamp,
             p.Picture as picture, 
             p.Content as content,
@@ -76,6 +78,7 @@ export function feed(req: Request, res: Response) {
                     pd.Disliked = true
             ) as dislikes
         FROM Posts p
+        JOIN Users u ON u.Username = p.Username
         ORDER BY 
             timestamp DESC,
             id DESC

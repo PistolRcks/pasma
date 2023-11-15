@@ -28,6 +28,7 @@ function PostFeed(props) {
                     const {
                         id,
                         user,
+                        userType,
                         timestamp,
                         picture,
                         content,
@@ -43,6 +44,8 @@ function PostFeed(props) {
                             content={content}
                             numDislikes={dislikes}
                             numComments={comments}
+                            picture={picture}
+                            userType={userType}
                         />
                     );
                 });
