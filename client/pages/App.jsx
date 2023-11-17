@@ -5,6 +5,7 @@ const {
     createBrowserRouter,
     createRoutesFromElements,
     Route,
+    Outlet,
     RouterProvider
 } = require('react-router-dom');
 
@@ -12,6 +13,7 @@ const {
 const ProfilePicture = require('../components/ProfilePicture.jsx');
 const CookieTest = require('../components/CookieTest.jsx');
 const ChangePassword = require('../components/ChangePassword.jsx');
+const NavBar = require('../components/NavBar.jsx');
 
 // Pages
 const AccountPage = require('./AccountPage.jsx');
@@ -26,16 +28,26 @@ const FourOhFourPage = require('./404Page.jsx');
 const router = createBrowserRouter(
     createRoutesFromElements(
         <>
-        <Route index element={<IndexPage />} />
-        <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
-        <Route path='/post/:id' element={<PostPage />} />
-        <Route path='/profile/:username' element={<ProfilePage />} />
-        <Route path='/account' element={/* Eventually, this should be a verified page */ <AccountPage />} />
-        <Route path='/test/profile_picture' element={<ProfilePicture username='alice' />} />
-        <Route path='/test/change_password' element={<ChangePassword username='alice' />} /> 
-        <Route path='/test/cookie' element={<CookieTest cookieName='token' />} /> 
-        <Route path='/api' />
-        <Route path='*' element={<FourOhFourPage />} />
+        <Route
+            element={
+                <div>
+                    <NavBar />
+                    <Outlet />
+                </div>
+            }
+        >
+            <Route index element={<IndexPage />} />
+            <Route path='/login' element={<CookieTest cookieName='token' />} />
+            <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
+            <Route path='/post/:id' element={<PostPage />} />
+            <Route path='/profile/:username' element={<ProfilePage />} />
+            <Route path='/account' element={/* Eventually, this should be a verified page */ <AccountPage />} />
+            <Route path='/test/profile_picture' element={<ProfilePicture username='alice' />} />
+            <Route path='/test/change_password' element={<ChangePassword username='alice' />} /> 
+            <Route path='/test/cookie' element={<CookieTest cookieName='token' />} /> 
+            <Route path='/api' />
+            <Route path='*' element={<FourOhFourPage />} />
+        </Route>
         </>
     )
 )

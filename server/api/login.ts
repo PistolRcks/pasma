@@ -40,7 +40,12 @@ export function login(req: Request, res: Response) {
                 if (user.Password === inputHash) {
                     console.log(`[API] Logged in user "${user.Username}"`);
                     const token = addSession({ username : user.Username });
-                    res.status(200).send(token);
+                    res.status(200).send({
+                        token: token,
+                        username: user.Username,
+                        userType: user.UserType,
+                        profilePicture: user.ProfilePicture
+                    });
                     return;
                 } else {
                     res.status(401).send("Error: Username or password does not exist.");

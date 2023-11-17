@@ -54,7 +54,10 @@ describe("Tests for the /api/login endpoint", () => {
             .send({ username: "username", password: "password" });
 
         expect(response.status).toBe(200);
-        expect(response.text).toHaveLength(32);
+        expect(response.body.token).toHaveLength(32);
+        expect(response.body.username).toBe("username");
+        expect(response.body.userType).toBe("standard");
+        expect(response.body.profilePicture).toBe("picture.jpeg");
     });
 
     test("400 - Request malformed", async () => {

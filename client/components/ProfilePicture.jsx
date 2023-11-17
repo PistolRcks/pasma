@@ -21,7 +21,11 @@ function ProfilePicture (props) {
   
     return (
       <div>
-        <Avatar showFallback name= {`${username}`} src={`/pictures/profile_pictures/${profilePictureName}`} size={`${size}`}/>
+        <Avatar
+            showFallback
+            name= {`${username}`}
+            src={`/pictures/profile_pictures/${profilePictureName}`}
+            size={`${size}`}/>
       </div>
     )
 }
