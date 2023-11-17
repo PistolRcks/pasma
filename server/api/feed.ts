@@ -18,6 +18,7 @@ import { sessions } from "../types/Session";
  *          - "content": the text content of the post, if any
  *          - "dislikes": number of dislikes on the post
  *          - "comments": number of comments on the post (unimplemented; will work on that later)
+ *          - "isDisliked": whether or not the user has disliked this post (0 if false, 1 if true)
  *      Eventually, we will also have the idea of private posts which will not send to users who are not
  *      friends of that user.
  */
@@ -76,7 +77,15 @@ export function feed(req: Request, res: Response) {
                 WHERE 
                     pd.ID = p.ID AND
                     pd.Disliked = true
-            ) as dislikes
+            ) as dislikes,
+            (
+                SELECT count(*)
+                FROM PostDislikes pd
+                WHERE
+                    pd.ID = p.ID AND
+                    pd.Username = p.Username AND
+                    pd.Disliked = true
+            ) as isDisliked
         FROM Posts p
         JOIN Users u ON u.Username = p.Username
         ORDER BY 

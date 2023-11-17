@@ -66,15 +66,13 @@ export async function sendUpdatedPassword(token, oldPass, newPass) {
  * @throws an Error with the text defining what status code we got and
  *      what error occurred.
  */
-export async function retrievePostFeedData(_token) {
+export async function retrievePostFeedData(token) {
     const response = await fetch(`/api/feed`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            token: _token,
-        }),
+        body: JSON.stringify({token})
     });
     
     if (response.status !== 200) {
@@ -82,4 +80,28 @@ export async function retrievePostFeedData(_token) {
     }
 
     return await response.json();
+}
+
+/**
+ * Flips the dislike bit on a certain post.
+ * @param {string} token - A valid token used in the API call.
+ * @param {string} id - The ID of the post whose dislike to flip
+ * @returns {Promise} - resolves to an object
+ * @throws an Error with the text defining what status code we got and
+ *      what error occurred.
+ */
+export async function flipDislike(token, id) {
+    const response = await fetch(`/api/react`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({token, id})
+    });
+    
+    if (response.status !== 200) {
+        throw new Error(`Error ${response.status} - ${await response.text()}`);
+    }
+
+    return await response.text();
 }
