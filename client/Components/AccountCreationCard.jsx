@@ -2,7 +2,7 @@ const React = require('react')
 const PropTypes = require('prop-types')
 const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger } = require("@nextui-org/react")
 const { generatePassword } = require('../passwordGenerator')
-const { Eye, EyeClosed, EyeSlash } = require('@phosphor-icons/react')
+const { Eye, EyeSlash } = require('@phosphor-icons/react')
 
 /**
  * A modal which enables the user to create an account. Returns a window alert with the status of the action.
@@ -50,7 +50,7 @@ function AccountCreationCard (props) {
     }, [username, emailAddress, password])
 
     async function createNewAccount(newAccount) {
-        console.log(newAccount)
+        //console.log(newAccount)
         try {
             const response = await fetch("/api/register", {
                 method: "POST",
@@ -65,9 +65,11 @@ function AccountCreationCard (props) {
                 throw new Error()
             }
             else if(response.status === 200) {
-                token = (await response.text()).toString()
-                window.alert(`Your account was created successfully.\nYour session token is:\n${token}`)
-                // TODO: Save session token, log in user
+                newUserJSON = JSON.parse(await response.text())
+                console.log("userJSON")
+                console.log(newUserJSON)
+                //window.alert(`Your account was created successfully.\nYour session token is:\n${token}`)
+                // TODO: Log in user
             }
 
         } catch (error) {}
@@ -179,8 +181,8 @@ function AccountCreationCard (props) {
                                 "userType": "standard",
                                 "profilePicture": profilePicture
                             }
-                            console.log("newAccount")
-                            console.log(JSON.parse(JSON.stringify(newAccount)))
+                            // console.log("newAccount")
+                            // console.log(JSON.parse(JSON.stringify(newAccount)))
                             createNewAccount(JSON.parse(JSON.stringify(newAccount)))
                         }}>
                             Create Account
