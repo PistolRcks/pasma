@@ -23,7 +23,7 @@ let realPhraseInvalidLength = {
 }
 
 let realPhraseBadToken = {
-    "token": "floodingpasmawithposts",
+    "token": "floodingpasmawithphrases",
     "phrase": "blah blah blah"
 }
 
@@ -31,10 +31,6 @@ let realPhraseNoPrivileges = {
     "token": alexsToken,
     "phrase": "blah blah blah"
 }
-
-// instead of actually reflecting changes in the database, we simply keep track of the
-// number of posts made and return that value from that...
-let postCount = 0;
 
 // ...so here, we are returning the value
 const mockGet = jest.fn((stmt, callback) => {
@@ -46,7 +42,6 @@ const mockGet = jest.fn((stmt, callback) => {
 }) as jest.MockedFunction<DBGetType>;
 
 const mockRun = jest.fn((stmt, params, callback) => {
-    postCount++;
     // @ts-ignore
     callback(null);
 }) as jest.MockedFunction<DBRunTypeWithCallback>;
@@ -101,7 +96,6 @@ describe('[API] /createPhrase: request', () => {
         db.run = jest.fn();
     });
 
-    // we need a test for the second post to test branching code
     test("Test valid createPhrase", async () => {
         db.get = mockGet;
         db.run = mockRun;

@@ -68,9 +68,9 @@ function createPhrase(req: Request, res: Response) {
 }
 
 /**
- * Checks if this is the initial post before sending it off to createPost, which does the interaction with the database.
+ * Checks if this is the initial phrase before sending it off to createPhrase, which does the interaction with the database.
  * @param {Request} req Requires a JSON body which includes 'token', 'content', and 'picture' fields.
- * @param {Response} res Responds with the post ID in the text field if successful, otherwise returns status code 500.
+ * @param {Response} res Responds with the phrase ID in the text field if successful, otherwise returns status code 500.
  */
 export function phrase(req: Request, res: Response) {
     if (firstPhrase) {
