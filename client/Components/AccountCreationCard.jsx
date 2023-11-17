@@ -29,7 +29,7 @@ function AccountCreationCard (props) {
     const [emailInputDescription, setEmailInputDescription] = React.useState("This is used for email notifications. It can be changed later.")
     const [isFormDisabled, setIsFormDisabled] = React.useState(false)
 
-    const stockImagePath = "pictures/stock_images/"
+    const stockImagePath = "pictures/profile_pictures/"
 
     const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i)
 
