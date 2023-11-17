@@ -1,4 +1,6 @@
 const React = require('react')
+const { useNavigate } = require('react-router-dom')
+const { useCookies } = require('react-cookie')
 const PropTypes = require('prop-types')
 const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger } = require("@nextui-org/react")
 const { generatePassword } = require('../passwordGenerator')
@@ -12,6 +14,8 @@ const { Eye, EyeSlash } = require('@phosphor-icons/react')
  */
 function AccountCreationCard (props) {
     const { isOpen, onOpenChange } = props
+    const navigateTo = useNavigate();
+    const [cookies, setCookie] = useCookies(["token", "username", "profilePicture", "userType"])
 
     const [profilePicture, setProfilePicture] = React.useState("botttsNeutral-1695826814739.png")
     const [username, setUsername] = React.useState("")
@@ -66,10 +70,13 @@ function AccountCreationCard (props) {
             }
             else if(response.status === 200) {
                 newUserJSON = JSON.parse(await response.text())
-                console.log("userJSON")
-                console.log(newUserJSON)
-                //window.alert(`Your account was created successfully.\nYour session token is:\n${token}`)
-                // TODO: Log in user
+                
+                await setCookie("token", newUserJSON.token, {path: "/", maxAge: 86400})
+                await setCookie("username", newUserJSON.username, {path: "/", maxAge: 86400})
+                await setCookie("profilePicture", newUserJSON.profilePicture, {path: "/", maxAge: 86400})
+                await setCookie("userType", newUserJSON.userType, {path: "/", maxAge: 86400})
+
+                navigateTo("/feed")
             }
 
         } catch (error) {}
