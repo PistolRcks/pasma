@@ -64,7 +64,10 @@ describe("Tests for the /api/register endpoint", () => {
             .send(goodUser);
 
         expect(response.status).toBe(200);
-        expect(response.text).toHaveLength(32);
+        expect(response.body.token).toHaveLength(32);
+        expect(response.body.username).toBe("username");
+        expect(response.body.userType).toBe("standard");
+        expect(response.body.profilePicture).toBe("blah.jpeg");
     });
 
     test("400 - Request malformed: required field missing", async () => {
