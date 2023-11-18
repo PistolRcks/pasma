@@ -12,7 +12,7 @@ function PostModalCard (props) {
 
     return (
         <div className="pb-4">
-            <Card isPressable isFooterBlurred className="cursor-pointer" onPress={() => phraseString ? sendProperty(phraseString) : sendProperty(imageURL)}>
+            <Card isPressable className="cursor-pointer" onPress={() => phraseString ? sendProperty(phraseString) : sendProperty(imageURL)}>
                 <CardBody>
                     { phraseString != null ? 
                         <p>{phraseString}</p>
