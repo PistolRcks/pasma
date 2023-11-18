@@ -20,6 +20,40 @@ function CreatePostForm (props) {
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
 
+    let stockPhrases, stockImages
+    console.log(cookies.token)
+    async function getAllContent() {
+        stockPhrases = await fetch("/api/getPhrases", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: {token: cookies.token}
+        })
+        if(stockImages.status === 400 || stockImages.status === 401 || stockImages.status === 500) {
+            window.alert((await response.text()).toString())
+        } else if(stockImages.status === 200) {
+            console.log(stockPhrases)
+        }
+        getStockImages = await fetch("/api/getStockImages", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: {token: cookies.token}
+        })
+        if(stockImages.status === 400 || stockImages.status === 401 || stockImages.status === 500) {
+            window.alert((await response.text()).toString())
+        } else if(stockImages.status === 200) {
+            console.log(stockImages)
+        }
+    }
+
+    React.useEffect(() => {
+        getAllContent()
+    }, [])
+    
+
     const imagePath = "pictures/stock_images/"
 
     const selectPhrase = (phraseString) => {
@@ -57,7 +91,8 @@ function CreatePostForm (props) {
         }
     }
 
-    const stockPhrases = [ // TODO: Replace with actual phrases
+    
+    stockPhrases = [ // TODO: Replace with actual phrases
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat diam ut venenatis tellus in.",
         "Ut ornare lectus sit amet est. Sed velit dignissim sodales ut eu sem integer.",
         "Libero id faucibus nisl tincidunt eget nullam. Ante in nibh mauris cursus mattis molestie a. Velit sed ullamcorper morbi tincidunt. Adipiscing at in tellus integer feugiat scelerisque varius morbi. Sagittis id consectetur purus ut faucibus. In nulla posuere sollicitudin aliquam.",
@@ -66,7 +101,7 @@ function CreatePostForm (props) {
         "Turpis egestas sed tempus urna et pharetra. Est ante in nibh mauris. Donec adipiscing tristique risus nec feugiat in. Hac habitasse platea dictumst vestibulum rhoncus est. Sem nulla pharetra diam sit amet nisl suscipit.",
         "Morbi non arcu risus quis. Eleifend quam adipiscing vitae proin sagittis nisl."
     ]
-    const stockImages = [ // TODO: Replace with actual image URLs
+    stockImages = [ // TODO: Replace with actual image URLs
         "stockImage001.png",
         "stockImage002.png",
         "stockImage003.png",
