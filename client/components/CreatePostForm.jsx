@@ -85,7 +85,14 @@ function CreatePostForm (props) {
                 </CardBody>
                 <CardFooter className="flex justify-between items-end">
                     <div className="grid gap-x-0.5 grid-cols-2">
-                        {picture ? <Image className="h-16 w-16" src={imagePath + picture}/> : <></>}
+                        {picture ?
+                            <Image className="cursor-pointer h-16 w-16" src={imagePath + picture} onClick={() => {
+                                setModalState(false)
+                                onOpen()
+                            }}/>
+                            :
+                            <></>
+                        }
                         <Tooltip placement={picture ? "right" : "top"} content={picture ? "Remove Picture" : "Attach Picture"}>
                             <Button
                                 isIconOnly
