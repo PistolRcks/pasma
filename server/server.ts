@@ -55,11 +55,11 @@ api.post("/logout", logout);
 api.post("/react", react);
 api.post("/register", register);
 api.post("/post", post);
+api.post("/getPhrases", getPhrases);
+api.post('/getStockImages', dbStockImages)
 
 api.get("/feed", feed);
-api.get("/getPhrases", getPhrases);
-api.get('/getProfilePicture/:Username', dbProfilePicture)
-api.get('/getStockImages', dbStockImages)
+api.post('/getProfilePicture/:Username', dbProfilePicture)
 
 app.use("/api", api);
 
