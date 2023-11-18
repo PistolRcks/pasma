@@ -179,7 +179,7 @@ function AccountCreationCard (props) {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
+                        <Button color={isCreateButtonDisabled ? "default" : "primary"} radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
                             setIsFormDisabled(true)
                             const newAccount = {
                                 "username": username,
