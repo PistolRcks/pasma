@@ -1,7 +1,7 @@
 const React = require('react')
 const { useNavigate } = require('react-router-dom')
 const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Skeleton, Textarea, Tooltip, useDisclosure } = require('@nextui-org/react')
-const { ArrowBendUpLeft, FileImage, PencilSimple, PencilSimpleLine, X } = require('@phosphor-icons/react')
+const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const PostModalCard = require('./PostModalCard')
 const ImageIcon = require('@phosphor-icons/react').Image // Alias for Phosphor Icons "Image", since it shares the same name as NextUI's "Image"
 
@@ -15,8 +15,6 @@ function CreatePostForm (props) {
     const [phrase, setPhrase] = React.useState("")
     const [picture, setPicture] = React.useState(undefined)
 
-    const [isSelectButtonDisabled, setIsSelectButtonDisabled] = React.useState(true)
-
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
 
     const imagePath = "pictures/stock_images/"
@@ -29,6 +27,10 @@ function CreatePostForm (props) {
     const selectPicture = (imageURL) => {
         setPicture(imageURL)
         onOpenChange()
+    }
+
+    const createPost = () => {
+        // TODO: Create a post using the API
     }
 
     const stockPhrases = [ // TODO: Replace with actual phrases
@@ -60,7 +62,7 @@ function CreatePostForm (props) {
             <Card className="flex-auto w-1/2">
                 <CardHeader>
                     <Button size="sm" radius="full" startContent={<ArrowBendUpLeft className="h-4 w-4"/>} onClick={() => {
-                        navigateTo("/") // TODO: Change to correct route when post feed is implemented
+                        navigateTo("/feed")
                     }}>
                         Back to Post Feed
                     </Button>
@@ -102,7 +104,15 @@ function CreatePostForm (props) {
                             </Button>
                         </Tooltip>
                     </div>
-                    <Button color="primary" radius="full" endContent={<PencilSimple className="h-6 w-6"/>}>Create Post</Button>
+                    <Button
+                        isDisabled={phrase == ""}
+                        color={phrase == "" ? "default" : "primary"}
+                        radius="full"
+                        endContent={<PencilSimple className="h-6 w-6"/>}
+                        onClick={() => {
+
+                        }}
+                    >Create Post</Button>
                 </CardFooter>
             </Card>
             <Modal size="2xl" scrollBehavior="inside" isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -114,13 +124,13 @@ function CreatePostForm (props) {
                         {modalState ?
                             <div className="columns-2">
                                 {stockPhrases.map((item, index) => (
-                                    <PostModalCard phraseString={item} sendProperty={selectPhrase}/>
+                                    <PostModalCard key={item} phraseString={item} sendProperty={selectPhrase}/>
                                 ))}
                             </div>
                             :
                             <div className="columns-3">
                                 {stockImages.map((item, index) => (
-                                    <PostModalCard imageURL={item} sendProperty={selectPicture}/>
+                                    <PostModalCard key={item} imageURL={item} sendProperty={selectPicture}/>
                                 ))}
                             </div>
                         }

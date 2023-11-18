@@ -1,10 +1,9 @@
 const React = require('react')
 const PropTypes = require('prop-types')
-const { Button, Card, CardBody, CardHeader, CardFooter, Image } = require('@nextui-org/react')
-const { X } = require('@phosphor-icons/react')
+const { Card, CardBody, Image } = require('@nextui-org/react')
 
 /**
- * Renders either a phrase or a photo depending on whether it received a `phraseString` or `imageURL` as a prop. `phraseString` takes precedence.
+ * Renders either a phrase or a photo depending on whether it received `phraseString` or `imageURL` as a prop. `phraseString` takes precedence.
  * @param {object} props - `sendProperty` sends the property of the card (phrase or image URL) up the component chain to the parent.
  */
 function PostModalCard (props) {
