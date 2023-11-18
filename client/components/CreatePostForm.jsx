@@ -146,7 +146,7 @@ function CreatePostForm (props) {
                         </Tooltip>
                     </div>
                     <Button
-                        isDisabled={!phrase || isFormDisabled}
+                        isDisabled={(!phrase || isFormDisabled) && !(phrase && !isFormDisabled)} //* XOR
                         isLoading={isFormDisabled}
                         color={phrase ? "primary" : "default"}
                         radius="full"
