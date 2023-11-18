@@ -5,6 +5,10 @@ const { ArrowBendUpLeft, FileImage, PencilSimple, PencilSimpleLine, X } = requir
 const PostModalCard = require('./PostModalCard')
 const ImageIcon = require('@phosphor-icons/react').Image // Alias for Phosphor Icons "Image", since it shares the same name as NextUI's "Image"
 
+/**
+ * Renders the create post form.
+ * @param {object} props - Unused.
+ */
 function CreatePostForm (props) {
     const navigateTo = useNavigate()
     const [modalState, setModalState] = React.useState(true) //* true renders phrases, false renders photos
