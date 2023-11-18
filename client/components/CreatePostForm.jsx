@@ -1,5 +1,6 @@
 const React = require('react')
 const { useNavigate } = require('react-router-dom')
+const { useCookies } = require('react-cookie')
 const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Skeleton, Textarea, Tooltip, useDisclosure } = require('@nextui-org/react')
 const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const PostModalCard = require('./PostModalCard')
@@ -11,9 +12,11 @@ const ImageIcon = require('@phosphor-icons/react').Image // Alias for Phosphor I
  */
 function CreatePostForm (props) {
     const navigateTo = useNavigate()
+    const [cookies] = useCookies(["token"])
     const [modalState, setModalState] = React.useState(true) //* true renders phrases, false renders photos
-    const [phrase, setPhrase] = React.useState("")
-    const [picture, setPicture] = React.useState(undefined)
+    const [isFormDisabled, setIsFormDisabled] = React.useState(false)
+    const [phrase, setPhrase] = React.useState(undefined)
+    const [picture, setPicture] = React.useState(null)
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
 
@@ -29,8 +32,29 @@ function CreatePostForm (props) {
         onOpenChange()
     }
 
-    const createPost = () => {
-        // TODO: Create a post using the API
+    async function createPost() {
+        const newPost = {
+            "token": cookies.token,
+            "content": phrase,
+            "picture": picture
+        }
+
+        const response = await fetch("/api/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newPost)
+        })
+        
+        if(response.status === 401 || response.status === 500) {
+            window.alert((await response.text()).toString())
+            setIsFormDisabled(false)
+        }
+        else if(response.status === 200) {
+            window.alert("Post created successfully!\nPost id: " + (await response.text()))
+            navigateTo("/feed")
+        }
     }
 
     const stockPhrases = [ // TODO: Replace with actual phrases
@@ -61,15 +85,22 @@ function CreatePostForm (props) {
         <div className="grid justify-items-center mt-6">
             <Card className="flex-auto w-1/2">
                 <CardHeader>
-                    <Button size="sm" radius="full" startContent={<ArrowBendUpLeft className="h-4 w-4"/>} onClick={() => {
-                        navigateTo("/feed")
-                    }}>
+                    <Button
+                        isDisabled={isFormDisabled}
+                        size="sm"
+                        radius="full"
+                        startContent={<ArrowBendUpLeft className="h-4 w-4"/>}
+                        onClick={() => {
+                            navigateTo("/feed")
+                        }}
+                    >
                         Back to Post Feed
                     </Button>
                 </CardHeader>
                 <CardBody>
                     <Textarea
-                        isReadOnly 
+                        isReadOnly
+                        isDisabled={isFormDisabled}
                         className="cursor-pointer"
                         minRows={8}
                         size="lg"
@@ -78,15 +109,17 @@ function CreatePostForm (props) {
                         placeholder="Propagate passive aggression responsibly!"
                         description="Click the field above to select a predefined phrase for your post."
                         onClick={async () => {
-                            await setModalState(true)
-                            onOpen()
+                            if(!isFormDisabled) {
+                                await setModalState(true)
+                                onOpen()
+                            }
                         }}
                     />
                 </CardBody>
                 <CardFooter className="flex justify-between items-end">
                     <div className="grid gap-x-0.5 grid-cols-2">
                         {picture ?
-                            <Image className="cursor-pointer h-16 w-16" src={imagePath + picture} onClick={() => {
+                            <Image isZoomed className="cursor-pointer h-16 w-16" src={imagePath + picture} onClick={() => {
                                 setModalState(false)
                                 onOpen()
                             }}/>
@@ -96,11 +129,12 @@ function CreatePostForm (props) {
                         <Tooltip placement={picture ? "right" : "top"} content={picture ? "Remove Picture" : "Attach Picture"}>
                             <Button
                                 isIconOnly
+                                isDisabled={isFormDisabled}
                                 size={picture ? "sm" : "md"}
                                 radius="full"
                                 onPress={async () => {
                                     if(picture) {
-                                        setPicture(undefined)
+                                        setPicture(null)
                                     } else {
                                         await setModalState(false)
                                         onOpen()
@@ -112,12 +146,14 @@ function CreatePostForm (props) {
                         </Tooltip>
                     </div>
                     <Button
-                        isDisabled={phrase == ""}
-                        color={phrase == "" ? "default" : "primary"}
+                        isDisabled={!phrase || isFormDisabled}
+                        isLoading={isFormDisabled}
+                        color={phrase ? "primary" : "default"}
                         radius="full"
                         endContent={<PencilSimple className="h-6 w-6"/>}
-                        onClick={() => {
-
+                        onClick={async () => {
+                            await setIsFormDisabled(true)
+                            await createPost()
                         }}
                     >Create Post</Button>
                 </CardFooter>
