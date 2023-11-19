@@ -20,39 +20,40 @@ function CreatePostForm (props) {
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
 
-    let stockPhrases, stockImages
-    console.log(cookies.token)
-    async function getAllContent() {
-        stockPhrases = await fetch("/api/getPhrases", {
-            method: "GET",
+    const stockPhrases = getAllPhrases()
+
+    //let stockImages = []
+
+    async function getAllPhrases() {
+        const getPhrases = await fetch("/api/getPhrases", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: {token: cookies.token}
+            body: JSON.stringify({"token": cookies.token})
         })
-        if(stockImages.status === 400 || stockImages.status === 401 || stockImages.status === 500) {
-            window.alert((await response.text()).toString())
-        } else if(stockImages.status === 200) {
-            console.log(stockPhrases)
-        }
-        getStockImages = await fetch("/api/getStockImages", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: {token: cookies.token}
-        })
-        if(stockImages.status === 400 || stockImages.status === 401 || stockImages.status === 500) {
-            window.alert((await response.text()).toString())
-        } else if(stockImages.status === 200) {
-            console.log(stockImages)
+        if(getPhrases.status === 400 || getPhrases.status === 401 || getPhrases.status === 500) {
+            window.alert((await getPhrases.text()).toString())
+        } else if(getPhrases.status === 200) {
+            return JSON.parse(await getPhrases.text())
+            // console.log("stock phrases are:")
+            // console.log(stockPhrases[0])
         }
     }
-
-    React.useEffect(() => {
-        getAllContent()
-    }, [])
-    
+    async function getAllStockImages() {
+        getStockImages = await fetch("/api/getStockImages", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({"token": cookies.token})
+        })
+        if(getStockImages.status === 400 || getStockImages.status === 401 || getStockImages.status === 500) {
+            window.alert((await getStockImages.text()).toString())
+        } else if(getStockImages.status === 200) {
+            // TODO: Parse to array
+        }
+    }
 
     const imagePath = "pictures/stock_images/"
 
@@ -92,7 +93,7 @@ function CreatePostForm (props) {
     }
 
     
-    stockPhrases = [ // TODO: Replace with actual phrases
+    /*stockPhrases = [ // TODO: Replace with actual phrases
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat diam ut venenatis tellus in.",
         "Ut ornare lectus sit amet est. Sed velit dignissim sodales ut eu sem integer.",
         "Libero id faucibus nisl tincidunt eget nullam. Ante in nibh mauris cursus mattis molestie a. Velit sed ullamcorper morbi tincidunt. Adipiscing at in tellus integer feugiat scelerisque varius morbi. Sagittis id consectetur purus ut faucibus. In nulla posuere sollicitudin aliquam.",
@@ -114,7 +115,7 @@ function CreatePostForm (props) {
         "stockImage010.png",
         "stockImage011.png",
         "stockImage012.png"
-    ]
+    ]*/
 
     return (
         <div className="grid justify-items-center mt-6">
@@ -201,13 +202,13 @@ function CreatePostForm (props) {
                     <ModalBody>
                         {modalState ?
                             <div className="columns-2">
-                                {stockPhrases.map((item, index) => (
+                                {Array.from(stockPhrases).map((item, index) => (
                                     <PostModalCard key={item} phraseString={item} sendProperty={selectPhrase}/>
                                 ))}
                             </div>
                             :
                             <div className="columns-3">
-                                {stockImages.map((item, index) => (
+                                {Array.from(stockImages).map((item, index) => (
                                     <PostModalCard key={item} imageURL={item} sendProperty={selectPicture}/>
                                 ))}
                             </div>
