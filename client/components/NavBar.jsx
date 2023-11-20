@@ -56,7 +56,7 @@ function NavBar (props) {
                         {loggedIn ?
                             <Dropdown>
                                 <DropdownTrigger>
-                                <Button isIconOnly radius="full"> 
+                                <Button isIconOnly radius="full" data-testid="navBarProfilePicture"> 
                                     <ProfilePicture username={cookie.username}/>
                                 </Button>
                                 </DropdownTrigger>
