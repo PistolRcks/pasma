@@ -20,7 +20,7 @@ function NavBar (props) {
         }
     }, [cookie.token]);
 
-    async function myLogOut() {
+    async function doLogOut() {
         const logOutResponse = await logOut(cookie.token)
 
         if (logOutResponse == "OK") {
@@ -62,7 +62,7 @@ function NavBar (props) {
                                 </DropdownTrigger>
                                 <DropdownMenu aria-label="Static Actions">
                                     <DropdownItem key="profile"><Link to='/account' className="flex">My Account</Link></DropdownItem>
-                                    <DropdownItem key="logOut" className="text-danger" color="danger" onClick={ myLogOut }><Link to='/' className="flex">Log Out</Link></DropdownItem>
+                                    <DropdownItem key="logOut" className="text-danger" color="danger" onClick={ doLogOut }><Link to='/' className="flex">Log Out</Link></DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         :
