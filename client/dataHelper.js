@@ -70,8 +70,8 @@ export async function sendUpdatedPassword (token, oldPass, newPass) {
 /**
  * Logs a user out
  * 
- * @param {*} token 
- * @returns 
+ * @param {*} token The User's valid session token
+ * @returns Returns OK if the user ahs successfully been logged out otherwise returns error
  */
 export async function logOut (token) {
     try {
