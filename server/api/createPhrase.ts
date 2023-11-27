@@ -38,7 +38,7 @@ function createPhrase(req: Request, res: Response) {
 
     const username = sessions.get(req.body.token).username;
 
-    db.get(`SELECT UserType FROM Users WHERE Username=${username}`, function (err: Error, row: any) {
+    db.get(`SELECT UserType FROM Users WHERE Username=?`, [username], function (err: Error, row: any) {
         if (err) {
             console.log("[SQL] Error: " + err);
             res.status(500).send("Database error!");
@@ -74,7 +74,7 @@ function createPhrase(req: Request, res: Response) {
  */
 export function phrase(req: Request, res: Response) {
     if (firstPhrase) {
-        db.get(`SELECT COUNT(*) as 'count' FROM PostPhrases`, function (err: Error, row: any) {
+        db.get(`SELECT COUNT(*) as 'count' FROM PostPhrases`, [], function (err: Error, row: any) {
             if (err) {
                 console.log("[SQL] Error: " + err);
                 res.status(500).send("Database error!");

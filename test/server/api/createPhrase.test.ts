@@ -33,13 +33,13 @@ let realPhraseNoPrivileges = {
 }
 
 // ...so here, we are returning the value
-const mockGet = jest.fn((stmt, callback) => {
+const mockGet = jest.fn((stmt, params, callback) => {
     // @ts-ignore
     callback(null, {
         count: "1",
         UserType: "moderator"
     });
-}) as jest.MockedFunction<DBGetType>;
+}) as jest.MockedFunction<DBGetTypeWithParams>;
 
 const mockRun = jest.fn((stmt, params, callback) => {
     // @ts-ignore
@@ -61,10 +61,10 @@ describe('[API] /createPhrase: database', () => {
     });
 
     test("'get' error", async () => {
-        db.get = jest.fn((stmt, callback) => {
+        db.get = jest.fn((stmt, params, callback) => {
             // @ts-ignore
             callback(new Error(), null);
-        }) as jest.MockedFunction<DBGetType>;
+        }) as jest.MockedFunction<DBGetTypeWithParams>;
 
         db.run = mockRun;
 
@@ -127,10 +127,10 @@ describe('[API] /createPhrase: request', () => {
     });
 
     test("Test valid createPhrase with invalid token", async () => {
-        db.get = jest.fn().mockImplementationOnce(mockGet).mockImplementation((stmt, callback) => {
+        db.get = jest.fn().mockImplementationOnce(mockGet).mockImplementation((stmt, params, callback) => {
             // @ts-ignore
             callback(null, null);
-        }) as jest.MockedFunction<DBGetType>;
+        }) as jest.MockedFunction<DBGetTypeWithParams>;
         db.run = mockRun;
 
         const res = await supertest(app).post("/api/createPhrase").send(realPhraseBadToken);
@@ -140,12 +140,12 @@ describe('[API] /createPhrase: request', () => {
     });
 
     test("Test valid createPhrase with non-moderator user", async () => {
-        db.get = jest.fn((stmt, callback) => {
+        db.get = jest.fn((stmt, params, callback) => {
             // @ts-ignore
             callback(null, {
                 UserType: "standard"
             });
-        }) as jest.MockedFunction<DBGetType>;
+        }) as jest.MockedFunction<DBGetTypeWithParams>;
         db.run = mockRun;
 
         const res = await supertest(app).post("/api/createPhrase").send(realPhraseNoPrivileges);
