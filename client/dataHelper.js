@@ -28,7 +28,15 @@ export async function retrieveProfilePicture(username) {
     }
 }
 
-export async function sendUpdatedPassword(token, oldPass, newPass) {
+/**
+ * Sends updated password to server
+ * 
+ * @param {*} token 
+ * @param {*} oldPass 
+ * @param {*} newPass 
+ * @returns 
+ */
+export async function sendUpdatedPassword (token, oldPass, newPass) {
     try {
         // Send an AJAX request
         const response = await fetch(`api/profile/settings/password`, {
@@ -104,4 +112,39 @@ export async function flipDislike(token, id) {
     }
 
     return await response.text();
+}
+
+/**
+ * Logs a user out
+ * 
+ * @param {*} token The User's valid session token
+ * @returns Returns OK if the user ahs successfully been logged out otherwise returns error
+ */
+export async function logOut (token) {
+    try {
+        // Send an AJAX request
+        const response = await fetch(`api/logout`, {
+          method: "POST",
+          body: JSON.stringify({
+            token: token
+          }),
+          headers: {
+              "Content-type": "application/json; charset=UTF-8"
+          }
+        })
+  
+        if (response.status >= 400) {
+          throw new Error(`Error ${response.status} - Logout failed`)
+        }
+        else {
+          // Return the response
+          return await response.text()
+        }
+  
+    } catch (err) {
+        // something went wrong so return null
+        console.error('Failed to logout')
+        console.error(err)
+        return null
+    }
 }

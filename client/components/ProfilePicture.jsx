@@ -21,7 +21,11 @@ function ProfilePicture (props) {
   
     return (
       <div>
-        <Avatar showFallback name= {`${username}`} src={`/pictures/profile_pictures/${profilePictureName}`} size={`${size}`}/>
+        <Avatar
+            showFallback
+            name= {`${username}`}
+            src={`/pictures/profile_pictures/${profilePictureName}`}
+            size={`${size}`}/>
       </div>
     )
 }
@@ -29,10 +33,11 @@ function ProfilePicture (props) {
 module.exports = ProfilePicture;
 
 ProfilePicture.propTypes = {
-    username: PropTypes.string.isRequired,
+    username: PropTypes.string,
     size: PropTypes.string
 }
 
 ProfilePicture.defaultProps = {
+    username: "default.png",
     size: "md"
 }

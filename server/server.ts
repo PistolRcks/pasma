@@ -4,7 +4,9 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import path from 'path';
 import { comment } from "./api/comment";
+import { phrase } from './api/createPhrase';
 import { edit } from "./api/edit";
+import { getPhrases } from './api/getPhrases';
 import { login } from "./api/login";
 import { logout } from "./api/logout";
 import { post } from "./api/post";
@@ -18,7 +20,7 @@ import { dbStockImages } from './api/getStockImages';
 /**
  * The actual app. Set request handlers to this object.
  */
-const app : Express = express();
+const app: Express = express();
 export default app;
 
 /**
@@ -34,21 +36,22 @@ app.use((req, res, next) => {
     // FIXME: Not displaying date correctly?
     console.log(`[${Date.now().toLocaleString("en-us")}] ${req.method} at ${req.path}`);
     console.log(`Body: ${JSON.stringify(req.body)}`);
-    
-    // propagate if possible
+
+   // propagate if possible
     next();
 });
 
 // Propagate errors to the frontend
-app.use((err : any, req : Request, res : Response, next : NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     const errorMsg: string = `Error occurred at "${err?.name}": ${err?.message}\n\t${err?.stack}`;
     res.status(500).send(errorMsg);
     // FIXME: Not displaying date correctly?
     console.log(`[${Date.now().toLocaleString("en-us")}] ${errorMsg}`);
- });
+});
 
 // Attach endpoints to API router
 api.post("/comment", comment);
+api.post("/createPhrase", phrase);
 api.post("/edit", edit);
 api.post("/login", login);
 api.post("/logout", logout);
@@ -57,6 +60,7 @@ api.post("/register", register);
 api.post("/post", post);
 
 api.post("/feed", feed);        // not really a POST but still must be POST due to how JS fetch works
+api.get("/getPhrases", getPhrases);
 api.get('/getProfilePicture/:Username', dbProfilePicture)
 api.get('/getStockImages', dbStockImages)
 
@@ -66,7 +70,7 @@ app.use("/api", api);
 app.use(express.static("./public"));
 
 // Required for React Routing; serve routed files 
-app.use('*', (req : Request, res : Response) => {
+app.use('*', (req: Request, res: Response) => {
     // actually begins in the "dist" folder since that's where we're compiling typescript to
     // thus, gotta go up a folder
     res.sendFile(path.join(__dirname, "..", "public", "index.html"))
