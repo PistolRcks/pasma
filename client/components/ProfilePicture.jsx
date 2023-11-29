@@ -33,10 +33,11 @@ function ProfilePicture (props) {
 module.exports = ProfilePicture
 
 ProfilePicture.propTypes = {
-    username: PropTypes.string.isRequired,
+    username: PropTypes.string,
     size: PropTypes.string
 }
 
 ProfilePicture.defaultProps = {
+    username: "default.png",
     size: "md"
 }
