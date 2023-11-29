@@ -22,6 +22,7 @@ describe("Tests for the /api/feed endpoint", () => {
     const badSessionToken = "bad";
     const badSmallSize = 0;
     const badLargeSize = 10001;
+    // *technically* not all we're grabbing, but works for our usecase
     const data = [
         {
             id: 0,
@@ -40,14 +41,16 @@ describe("Tests for the /api/feed endpoint", () => {
     test("200 - normal usage, default size", async () => {
         db.all = jest.fn((stmt, params, callback) => {
             // default `size` value is 100
-            expect(params[0]).toBe(100);
+            expect(params[1]).toBe(100);
             // @ts-ignore
             callback(null, data);
         }) as jest.MockedFunction<DBAllTypeWithParams>;
 
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({ token: sessionToken });
+
+        expect(response.status).toBe(200);
 
         // only length one in the fake dataset. in normal cases there 
         // would be at most `size` items
@@ -59,18 +62,17 @@ describe("Tests for the /api/feed endpoint", () => {
         expect(response.body[0]).toHaveProperty("picture"); 
         expect(response.body[0]).toHaveProperty("dislikes"); 
         expect(response.body[0]).toHaveProperty("comments"); 
-        expect(response.status).toBe(200);
     });
     
     test("200 - normal usage, custom size", async () => {
         db.all = jest.fn((stmt, params, callback) => {
-            expect(params[0]).toBe(1);
+            expect(params[1]).toBe(1);
             // @ts-ignore
             callback(null, data);
         }) as jest.MockedFunction<DBAllTypeWithParams>;
 
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({ token: sessionToken, size: 1 });
 
         expect(response.body).toHaveLength(1);
@@ -84,7 +86,7 @@ describe("Tests for the /api/feed endpoint", () => {
         }) as jest.MockedFunction<DBAllTypeWithParams>;
 
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({ token: sessionToken });
 
         expect(response.body).toHaveLength(0);
@@ -93,7 +95,7 @@ describe("Tests for the /api/feed endpoint", () => {
     
     test("400 - token not present", async () => {
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({});
 
         expect(response.status).toBe(400);
@@ -102,7 +104,7 @@ describe("Tests for the /api/feed endpoint", () => {
     
     test("400 - size parameter not a number", async () => {
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({ token: sessionToken, size: "bad" });
 
         expect(response.status).toBe(400);
@@ -111,7 +113,7 @@ describe("Tests for the /api/feed endpoint", () => {
     
     test("400 - size parameter too small", async () => {
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({ token: sessionToken, size: badSmallSize });
 
         expect(response.status).toBe(400);
@@ -120,7 +122,7 @@ describe("Tests for the /api/feed endpoint", () => {
     
     test("400 - size parameter too large", async () => {
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({ token: sessionToken, size: badLargeSize });
 
         expect(response.status).toBe(400);
@@ -129,7 +131,7 @@ describe("Tests for the /api/feed endpoint", () => {
     
     test("401 - invalid token", async () => {
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({ token : badSessionToken });
 
         expect(response.status).toBe(401);
@@ -143,7 +145,7 @@ describe("Tests for the /api/feed endpoint", () => {
         }) as jest.MockedFunction<DBAllTypeWithParams>;
         
         const response = await req
-            .get("/api/feed")
+            .post("/api/feed")
             .send({ token : sessionToken });
         
         expect(response.status).toBe(500);

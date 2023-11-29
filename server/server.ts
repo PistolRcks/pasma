@@ -36,8 +36,9 @@ app.use(express.json());
 app.use((req, res, next) => {
     // FIXME: Not displaying date correctly?
     console.log(`[${Date.now().toLocaleString("en-us")}] ${req.method} at ${req.path}`);
+    console.log(`Body: ${JSON.stringify(req.body)}`);
 
-    // propagate if possible
+   // propagate if possible
     next();
 });
 
@@ -59,7 +60,7 @@ api.post("/react", react);
 api.post("/register", register);
 api.post("/post", post);
 
-api.get("/feed", feed);
+api.post("/feed", feed);        // not really a POST but still must be POST due to how JS fetch works
 api.post("/getPhrases", getPhrases);
 api.get('/getProfilePicture/:Username', dbProfilePicture)
 api.post('/getStockImages', dbStockImages)
