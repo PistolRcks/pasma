@@ -18,7 +18,7 @@ function CreatePostForm (props) {
     const [isFormDisabled, setIsFormDisabled] = React.useState(false)
     const [phrase, setPhrase] = React.useState(undefined)
     const [picture, setPicture] = React.useState(null)
-    const [stockPhrases, setStockPhrases] = React.useState(["bingus"])
+    const [stockPhrases, setStockPhrases] = React.useState([])
     const [stockImages, setStockImages] = React.useState([])
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
