@@ -61,7 +61,7 @@ api.post("/post", post);
 
 api.post("/feed", feed);
 api.post("/getPhrases", getPhrases);
-api.post('/getProfilePicture/:Username', dbProfilePicture)
+api.get('/getProfilePicture/:Username', dbProfilePicture)
 api.post('/getStockImages', dbStockImages)
 api.post('/getProfilePictures', getProfilePictures)
 
