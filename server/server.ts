@@ -15,6 +15,7 @@ import { react } from './api/react';
 import { register } from './api/register';
 import { feed } from './api/feed';
 import { dbStockImages } from './api/getStockImages';
+import { getProfilePictures } from './api/getProfilePictures';
 
 
 /**
@@ -59,9 +60,10 @@ api.post("/register", register);
 api.post("/post", post);
 
 api.get("/feed", feed);
-api.get("/getPhrases", getPhrases);
+api.post("/getPhrases", getPhrases);
 api.get('/getProfilePicture/:Username', dbProfilePicture)
-api.get('/getStockImages', dbStockImages)
+api.post('/getStockImages', dbStockImages)
+api.post('/getProfilePictures', getProfilePictures)
 
 app.use("/api", api);
 
