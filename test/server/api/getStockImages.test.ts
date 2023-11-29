@@ -34,7 +34,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
         }) as jest.MockedFunction<DBAllType>;
 
         const response = await req
-            .get("/api/getStockImages")
+            .post("/api/getStockImages")
             .send({ token: sessionToken });
 
         // only going to check for properties once
@@ -49,7 +49,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
         }) as jest.MockedFunction<DBAllType>;
 
         const response = await req
-            .get("/api/getStockImages")
+            .post("/api/getStockImages")
             .send({ token: sessionToken });
 
         expect(response.text).toBe("[]"); 
@@ -58,7 +58,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
     
     test("400 - token not present", async () => {
         const response = await req
-            .get("/api/getStockImages")
+            .post("/api/getStockImages")
             .send({});
 
         expect(response.status).toBe(400);
@@ -72,7 +72,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
         }) as jest.MockedFunction<DBAllType>;
         
         const response = await req
-            .get("/api/getStockImages")
+            .post("/api/getStockImages")
             .send({ token : sessionToken });
         
         expect(response.status).toBe(500);
