@@ -12,7 +12,7 @@ const {
     Input,
     useDisclosure,
 } = require("@nextui-org/react");
-const { useState } = require("react");
+const { useState, useRef } = require("react");
 const { useCookies } = require("react-cookie");
 const { useNavigate } = require("react-router");
 const PropTypes = require("prop-types");
@@ -39,6 +39,8 @@ function LoginModalButton(props) {
     const [errorText, setErrorText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isErrorPopoverOpen, setIsErrorPopoverOpen] = useState(false);
+    
+    const passwordRef = useRef(null);
 
     const doLogin = () => {
         setIsLoading(true);
@@ -96,13 +98,28 @@ function LoginModalButton(props) {
                                     placeholder="Enter your username"
                                     label="Username"
                                     onValueChange={setUsername}
+                                    onKeyDown={(e) => {
+                                        // enter being pressed
+                                        if (e.keyCode === 13) {
+                                            // shift focus
+                                            passwordRef.current.focus();
+                                        }
+                                    }}
                                 />
                                 <Input
                                     type="password"
+                                    ref={passwordRef}
                                     labelPlacement="outside"
                                     placeholder="Enter your password"
                                     label="Password"
                                     onValueChange={setPassword}
+                                    onKeyDown={(e) => {
+                                        // enter being pressed
+                                        if (e.keyCode === 13) {
+                                            // login
+                                            doLogin()
+                                        }
+                                    }}
                                 />
                             </ModalBody>
                             <ModalFooter>
