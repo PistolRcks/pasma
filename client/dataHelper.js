@@ -59,3 +59,26 @@ export async function sendUpdatedPassword (token, oldPass, newPass) {
     }
 }
 
+
+/**
+ * Retrieves a list of valid phrases from the database
+ * 
+ * @returns A list of phrases as an array
+ */
+export async function getAllPhrases(token) {
+    const getPhrases = await fetch("/api/getPhrases", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({"token": token})
+    })
+    if(getPhrases.status === 400 || getPhrases.status === 401 || getPhrases.status === 500) {
+        window.alert((await getPhrases.text()).toString())
+    } else if(getPhrases.status === 200) {
+        const phrases = JSON.parse(await getPhrases.text())
+        console.log("phrases:")
+        console.log(phrases)
+        return phrases
+    }
+}

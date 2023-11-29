@@ -5,6 +5,7 @@ const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody,
 const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const PostModalCard = require('./PostModalCard')
 const ImageIcon = require('@phosphor-icons/react').Image // Alias for Phosphor Icons "Image", since it shares the same name as NextUI's "Image"
+const { getAllPhrases } = require('../dataHelper.js')
 
 /**
  * Renders the create post form.
@@ -17,43 +18,10 @@ function CreatePostForm (props) {
     const [isFormDisabled, setIsFormDisabled] = React.useState(false)
     const [phrase, setPhrase] = React.useState(undefined)
     const [picture, setPicture] = React.useState(null)
+    const [stockPhrases, setStockPhrases] = React.useState(["bingus"])
+    const [stockImages, setStockImages] = React.useState([])
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
-
-    const stockPhrases = getAllPhrases()
-
-    //let stockImages = []
-
-    async function getAllPhrases() {
-        const getPhrases = await fetch("/api/getPhrases", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({"token": cookies.token})
-        })
-        if(getPhrases.status === 400 || getPhrases.status === 401 || getPhrases.status === 500) {
-            window.alert((await getPhrases.text()).toString())
-        } else if(getPhrases.status === 200) {
-            return JSON.parse(await getPhrases.text())
-            // console.log("stock phrases are:")
-            // console.log(stockPhrases[0])
-        }
-    }
-    async function getAllStockImages() {
-        getStockImages = await fetch("/api/getStockImages", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({"token": cookies.token})
-        })
-        if(getStockImages.status === 400 || getStockImages.status === 401 || getStockImages.status === 500) {
-            window.alert((await getStockImages.text()).toString())
-        } else if(getStockImages.status === 200) {
-            // TODO: Parse to array
-        }
-    }
 
     const imagePath = "pictures/stock_images/"
 
@@ -93,16 +61,21 @@ function CreatePostForm (props) {
     }
 
     
-    /*stockPhrases = [ // TODO: Replace with actual phrases
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat diam ut venenatis tellus in.",
-        "Ut ornare lectus sit amet est. Sed velit dignissim sodales ut eu sem integer.",
-        "Libero id faucibus nisl tincidunt eget nullam. Ante in nibh mauris cursus mattis molestie a. Velit sed ullamcorper morbi tincidunt. Adipiscing at in tellus integer feugiat scelerisque varius morbi. Sagittis id consectetur purus ut faucibus. In nulla posuere sollicitudin aliquam.",
-        "Aliquam malesuada bibendum arcu vitae elementum curabitur vitae. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Quam quisque id diam vel quam.",
-        "Nibh cras pulvinar mattis nunc sed blandit libero volutpat sed. Amet nisl purus in mollis nunc. Tortor aliquam nulla facilisi cras fermentum odio eu feugiat pretium. Blandit libero volutpat sed cras ornare arcu dui vivamus. Lorem ipsum dolor sit amet. Egestas erat imperdiet sed euismod nisi porta lorem mollis. Blandit volutpat maecenas volutpat blandit aliquam etiam erat velit scelerisque. Non consectetur a erat nam at lectus urna. Donec enim diam vulputate ut pharetra sit.",
-        "Turpis egestas sed tempus urna et pharetra. Est ante in nibh mauris. Donec adipiscing tristique risus nec feugiat in. Hac habitasse platea dictumst vestibulum rhoncus est. Sem nulla pharetra diam sit amet nisl suscipit.",
-        "Morbi non arcu risus quis. Eleifend quam adipiscing vitae proin sagittis nisl."
+    /*stockPhrases = [
+        "I love space pirates! I think blockades should be abolished!",
+        "Space pirates, man, they're like cosmic renegades surfing the galactic waves, plundering the celestial treasures with a swagger that even black holes envy!",
+        "Just hear me out, space pirates are the rebellious rockstars of the cosmos, robbing star systems of monotony and filling the void with interstellar excitement!",
+        "I'm just saying, space pirates are the unsung heroes of the universe, carving their names into the constellations and rewriting the rules of intergalactic adventure.",
+        "Space pirates are my jam, soaring through the cosmic sea, chasing comets and rewriting the rules of space travel one stolen spaceship at a time!",
+        "There's something poetic about space pirates, dancing with asteroids and pirouetting through nebulas, making the cosmos their playground and leaving a trail of stardust behind.",
+        "Honestly, space pirates are like the rebels of the cosmos, sailing on starships named after mythological beasts, flipping off gravity, and giving the galaxy a much-needed dose of anarchy.",
+        "Picture this: space pirates, riding the solar winds, looting planets for space treasure, and leaving behind a trail of cosmic chaos that even the most advanced civilizations can't ignore.",
+        "Space pirates are the cosmic mavericks, the swashbuckling outliers of the galaxy, flipping off the establishment and turning the universe into their own personal treasure chest.",
+        "I'm just vibing with the idea of space pirates, you know? Stealing from the rich asteroid belts, redistributing wealth in the form of interstellar adventures for everyone.",
+        "Space pirates, the celestial rebels, the freebooters of the Milky Way, plundering planets and moons with a style that screams 'space is the new wild west!'",
     ]
-    stockImages = [ // TODO: Replace with actual image URLs
+    
+    stockImages = [
         "stockImage001.png",
         "stockImage002.png",
         "stockImage003.png",
@@ -146,6 +119,7 @@ function CreatePostForm (props) {
                         description="Click the field above to select a predefined phrase for your post."
                         onClick={async () => {
                             if(!isFormDisabled) {
+                                setStockPhrases(await getAllPhrases(cookies.token))
                                 await setModalState(true)
                                 onOpen()
                             }
@@ -172,6 +146,7 @@ function CreatePostForm (props) {
                                     if(picture) {
                                         setPicture(null)
                                     } else {
+                                        setStockImages(await getAllStockImages())
                                         await setModalState(false)
                                         onOpen()
                                     }
@@ -202,13 +177,13 @@ function CreatePostForm (props) {
                     <ModalBody>
                         {modalState ?
                             <div className="columns-2">
-                                {Array.from(stockPhrases).map((item, index) => (
+                                {stockPhrases.map((item, index) => (
                                     <PostModalCard key={item} phraseString={item} sendProperty={selectPhrase}/>
                                 ))}
                             </div>
                             :
                             <div className="columns-3">
-                                {Array.from(stockImages).map((item, index) => (
+                                {stockImages.map((item, index) => (
                                     <PostModalCard key={item} imageURL={item} sendProperty={selectPicture}/>
                                 ))}
                             </div>
