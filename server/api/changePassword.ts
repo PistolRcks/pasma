@@ -11,7 +11,7 @@ import { sessions } from "../types/Session";
 /**
  * Changes a user's password, given a valid session token and valid new password.
  * @param {Request} req - Requests a JSON object in the body containing 
- *      "password" field.
+ *      "token", "oldPassword" and "newPassword" field.
  * @param {Response} res - Responds with error text in the case of a user or internal 
  *      error (beginning with "Error:"), or with the newly generated session token in the case of
  *      a success.
@@ -34,14 +34,18 @@ export function changePassword(req: Request, res: Response) {
         }
 
         // Is input malformed?
-        if (!("password" in req.body)) {
+        if (!("oldPassword" in req.body)) {
+            res.status(400).send("Error: \"password\" not in request JSON.");
+            return;
+        }
+        if (!("newPassword" in req.body)) {
             res.status(400).send("Error: \"password\" not in request JSON.");
             return;
         }
         
-        // Is the password good?
-        if (!verifyPassword(req.body.password)) {
-            res.status(400).send("Error: Password is insecure. It must have at least 12 characters, one digit, and one special character.");
+        // Is the new password good?
+        if (!verifyPassword(req.body.newPassword)) {
+            res.status(400).send("Error: New password is insecure. It must have at least 12 characters, one digit, and one special character.");
             return;
         }
 
@@ -58,14 +62,14 @@ export function changePassword(req: Request, res: Response) {
             // Need to narrow here or else we are not able to use the result we got
             } else if (isUser(user)) {
                 // Verify (assuming sent password is plaintext)
-                const inputHash = crypto.pbkdf2Sync(req.body.password, user.Salt, 1000, 64, "sha512").toString('hex'); 
-                if (user.Password === inputHash) {
+                const oldPasswordHash = crypto.pbkdf2Sync(req.body.oldPassword, user.Salt, 1000, 64, "sha512").toString('hex'); 
+                if (user.Password === oldPasswordHash) {
                     // Generate password hash
-                    const salt = crypto.randomBytes(16);
-                    const hashedPassword = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64, "sha512"); 
+                    const newSalt = crypto.randomBytes(16);
+                    const newPasswordHashed = crypto.pbkdf2Sync(req.body.newPassword, newSalt, 1000, 64, "sha512"); 
 
                     // Dynamically generate the SQL statement based on what we've got
-                    let params = [hashedPassword.toString("hex"), salt, sessions.get(req.body.token).username];
+                    let params = [newPasswordHashed.toString("hex"), newSalt];
                     let appliedFields = "Password = ?, Salt = ?";
                     let questionMarks = "?, ?";
                     
@@ -84,40 +88,5 @@ export function changePassword(req: Request, res: Response) {
                 }            
             }
         });
-
-        // Does username exist?
-        // (potential for an SQL injection here but I don't care)
-        db.get(`select * from Users where Username = "${req.body.username}"`, function (err, user) {
-            if (err) {
-                res.status(500).send(`Server Error: ${err}`);
-                return;
-            }
-
-            if (typeof user === "undefined" || user === null) {
-                res.status(401).send("Error: Username or password does not exist.");
-                return;
-            // Need to narrow here or else we are not able to use the result we got
-            } else if (isUser(user)) {
-                // Verify (assuming sent password is plaintext)
-                const inputHash = crypto.pbkdf2Sync(req.body.password, user.Salt, 1000, 64, "sha512").toString('hex'); 
-                if (user.Password === inputHash) {
-                    console.log(`[API] Logged in user "${user.Username}"`);
-                    const token = addSession({ username : user.Username });
-                    res.status(200).send({
-                        token: token,
-                        username: user.Username,
-                        userType: user.UserType,
-                        profilePicture: user.ProfilePicture
-                    });
-                    return;
-                } else {
-                    res.status(401).send("Error: Username or password does not exist.");
-                    return;            
-                }            
-            }
-        });
-    } else {
-        res.status(400).send("Error: Request body was not able to be transformed into JSON.");
-        return;
     }
 }
