@@ -12,9 +12,7 @@ const mockPasswordUpdate = jest.fn((token, oldPass, newPass) => {
     return "OK"
 })
 
-
 describe("Tests for Change Password", () => {
-
     test("Checks for Change Password button", () => {
         const wrapper = render(<BrowserRouter><ChangePassword /></BrowserRouter>);
         expect(wrapper.baseElement.outerHTML).toContain(

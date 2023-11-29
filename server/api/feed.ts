@@ -83,6 +83,7 @@ export function feed(req: Request, res: Response) {
             ) as isDisliked
         FROM Posts p
         JOIN Users u ON u.Username = p.Username
+        WHERE p.ParentID is null
         ORDER BY 
             timestamp DESC,
             id DESC
