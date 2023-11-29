@@ -17,9 +17,10 @@ const {
     DropdownItem,
 } = require("@nextui-org/react");
 const LoginModalButton = require("./LoginModalButton.jsx");
+const { logOut } = require("../dataHelper.js")
 
 function NavBar(props) {
-    const [cookie, setCookie] = useCookies([
+    const [cookie, setCookie, removeCookie] = useCookies([
         "token",
         "username",
         "profilePicture",
@@ -39,10 +40,10 @@ function NavBar(props) {
         const logOutResponse = await logOut(cookie.token);
 
         if (logOutResponse == "OK") {
-            setCookie("token", "");
-            setCookie("username", "");
-            setCookie("profilePicture", "");
-            setCookie("userType", "");
+            removeCookie("token");
+            removeCookie("username");
+            removeCookie("profilePicture");
+            removeCookie("userType");
             setLoggedIn(false);
         } else {
             alert("Error logging out");
