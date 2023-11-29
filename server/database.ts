@@ -29,7 +29,6 @@ export function initDB(dbFile: string): Database {
             Salt BLOB, 
             ProfilePicture TEXT,
             UserType TEXT NOT NULL CHECK (UserType IN ('standard', 'brand', 'moderator'))
-            FOREIGN KEY(ProfilePicture) REFERENCES ProfilePictures(Picture)
         );`);
 
         newDB.run(`CREATE TABLE if not exists "Posts" (
