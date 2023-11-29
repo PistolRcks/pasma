@@ -59,7 +59,7 @@ api.post("/react", react);
 api.post("/register", register);
 api.post("/post", post);
 
-api.post("/feed", feed);
+api.get("/feed", feed);
 api.post("/getPhrases", getPhrases);
 api.get('/getProfilePicture/:Username', dbProfilePicture)
 api.post('/getStockImages', dbStockImages)
