@@ -30,18 +30,31 @@ function NavBar(props) {
     useEffect(() => {
         if (cookie.token) {
             setLoggedIn(true);
-            console.log("Logged in");
         } else {
             setLoggedIn(false);
-            console.log("Logged out");
         }
     }, [cookie.token]);
+
+    async function doLogOut() {
+        const logOutResponse = await logOut(cookie.token);
+
+        if (logOutResponse == "OK") {
+            setCookie("token", "");
+            setCookie("username", "");
+            setCookie("profilePicture", "");
+            setCookie("userType", "");
+            setLoggedIn(false);
+        } else {
+            alert("Error logging out");
+            console.log("Error logging out");
+        }
+    }
 
     return (
         <>
             <Navbar isBordered>
                 <NavbarBrand>
-                    <Link to={loggedIn ? "/feed" : "/"}>
+                    <Link to={loggedIn ? "/feed" : "/"} className="flex">
                         <img
                             src="/pictures/logos/pasmaSquare.png"
                             alt="PASMA"
@@ -64,7 +77,11 @@ function NavBar(props) {
                         {loggedIn ? (
                             <Dropdown>
                                 <DropdownTrigger>
-                                    <Button isIconOnly radius="full">
+                                    <Button
+                                        isIconOnly
+                                        radius="full"
+                                        data-testid="navBarProfilePicture"
+                                    >
                                         <ProfilePicture
                                             username={cookie.username}
                                         />
@@ -72,19 +89,24 @@ function NavBar(props) {
                                 </DropdownTrigger>
                                 <DropdownMenu aria-label="Static Actions">
                                     <DropdownItem key="profile">
-                                        <Link to="/account">My Account</Link>
+                                        <Link to="/account" className="flex">
+                                            My Account
+                                        </Link>
                                     </DropdownItem>
                                     <DropdownItem
                                         key="logOut"
                                         className="text-danger"
                                         color="danger"
+                                        onClick={doLogOut}
                                     >
-                                        <Link to="/">Log Out</Link>
+                                        <Link to="/" className="flex">
+                                            Log Out
+                                        </Link>
                                     </DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         ) : (
-                            <LoginModalButton variant="flat" />
+                            <LoginModalButton color="primary" variant="flat" />
                         )}
                     </NavbarItem>
                 </NavbarContent>
