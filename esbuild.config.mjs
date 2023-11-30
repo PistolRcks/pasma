@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as esbuild from "esbuild";
-import e from "express";
 
 let config = {
     entryPoints: ["client/main.jsx"],
