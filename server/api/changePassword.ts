@@ -79,7 +79,7 @@ export function changePassword(req: Request, res: Response) {
                             return;
                         }
                         
-                        res.status(200).send("Success!");
+                        res.status(200).send("OK");
                         return;
                     });
                 } else {
