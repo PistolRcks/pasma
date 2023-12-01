@@ -1,7 +1,7 @@
 const React = require('react')
 const { useNavigate } = require('react-router-dom')
 const { useCookies } = require('react-cookie')
-const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalHeader, Textarea, Tooltip, useDisclosure } = require('@nextui-org/react')
+const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalHeader, Spinner, Textarea, Tooltip, useDisclosure } = require('@nextui-org/react')
 const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const PostModalCard = require('./PostModalCard')
 const ImageIcon = require('@phosphor-icons/react').Image // Alias for Phosphor Icons "Image", since it shares the same name as NextUI's "Image"
@@ -158,17 +158,23 @@ function CreatePostForm (props) {
                     </ModalHeader>
                     <ModalBody>
                         {modalState ?
-                            <div className="columns-2">
-                                {stockPhrases.map((item, index) => (
-                                    <PostModalCard key={item} phraseString={item} sendProperty={selectPhrase}/>
-                                ))}
-                            </div>
+                            stockPhrases != [] ?
+                                <div className="columns-2">
+                                    {stockPhrases.map((item, index) => (
+                                        <PostModalCard key={item} phraseString={item} sendProperty={selectPhrase}/>
+                                    ))}
+                                </div>
+                                :
+                                <Spinner className="pb-4" label="Loading phrases..." size="lg" color="warning" />
                             :
-                            <div className="columns-3">
-                                {stockImages.map((item, index) => (
-                                    <PostModalCard key={item} imageURL={item} sendProperty={selectPicture}/>
-                                ))}
-                            </div>
+                            stockImages != [] ?
+                                <div className="columns-3">
+                                    {stockImages.map((item, index) => (
+                                        <PostModalCard key={item} imageURL={item} sendProperty={selectPicture}/>
+                                    ))}
+                                </div>
+                                :
+                                <Spinner className="pb-4" label="Loading images..." size="lg" color="warning" />
                         }
                     </ModalBody>
                 </ModalContent>
