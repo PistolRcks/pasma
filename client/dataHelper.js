@@ -175,3 +175,40 @@ export async function attemptLogin(username, password) {
 
     return await response.json();
 }
+
+/**
+ * Retrieves post data for a specific post 
+ * @param {string} token - A valid token used in the API call.
+ * @param {string} id - the ID of the post to look for
+ * @returns {Promise} - resolves to an object
+ * @throws an Error with the text defining what status code we got and
+ *      what error occurred.
+ */
+export async function getIndividualPost(token, id) {
+    try {
+        // Send an AJAX request
+        const response = await fetch(`api/feed`, {
+          method: "POST",
+          body: JSON.stringify({
+            token, id
+          }),
+          headers: {
+              "Content-type": "application/json; charset=UTF-8"
+          }
+        })
+  
+        if (response.status !== 200) {
+          throw new Error(`Error ${response.status} - ${await response.text()}`)
+        }
+        else {
+          // Return the response
+          return await response.json()
+        }
+  
+    } catch (err) {
+        // something went wrong so return null
+        console.error('Failed to logout')
+        console.error(err)
+        return null
+    }
+}
