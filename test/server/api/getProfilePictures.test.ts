@@ -18,7 +18,7 @@ beforeAll(() => {
     sessionToken = addSession({ username: "bob" });
 });
 
-describe("Tests for the /api/getStockImages endpoint", () => {
+describe("Tests for the /api/getProfilePictures endpoint", () => {
 
     beforeEach(() => {
         db.all = jest.fn();
@@ -28,13 +28,13 @@ describe("Tests for the /api/getStockImages endpoint", () => {
         db.all = jest.fn((stmt, callback) => {
             // fake row
             let rows;
-            rows = [{ Picture: "stockImage001.png" }];
+            rows = [{ Picture: "JaredD-2023.png" }];
             // @ts-ignore
             callback(null, rows);
         }) as jest.MockedFunction<DBAllType>;
 
         const response = await req
-            .post("/api/getStockImages")
+            .post("/api/getProfilePictures")
             .send({ token: sessionToken });
 
         // only going to check for properties once
@@ -49,7 +49,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
         }) as jest.MockedFunction<DBAllType>;
 
         const response = await req
-            .post("/api/getStockImages")
+            .post("/api/getProfilePictures")
             .send({ token: sessionToken });
 
         expect(response.text).toBe("[]"); 
@@ -58,7 +58,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
     
     test("400 - token not present", async () => {
         const response = await req
-            .post("/api/getStockImages")
+            .post("/api/getProfilePictures")
             .send({});
 
         expect(response.status).toBe(400);
@@ -72,7 +72,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
         }) as jest.MockedFunction<DBAllType>;
         
         const response = await req
-            .post("/api/getStockImages")
+            .post("/api/getProfilePictures")
             .send({ token : sessionToken });
         
         expect(response.status).toBe(500);
