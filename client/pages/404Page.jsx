@@ -2,6 +2,10 @@ const { Button } = require('@nextui-org/button');
 const React = require('react');
 const { Link } = require('react-router-dom')
 
+/**
+ * Renders the 404 page.
+ * @param {object} props - Unused.
+ */
 function FourOhFourPage(props) {
     return (
         <div className='flex h-screen items-center justify-center'>

@@ -61,7 +61,7 @@ describe("[API] /getPhrases: database", () => {
     test("'all' error", async () => {
         db.all = mockAllError;
 
-        const res = await supertest(app).get("/api/getPhrases").send(realGetPhrases);
+        const res = await supertest(app).post("/api/getPhrases").send(realGetPhrases);
 
         expect(res.status).toBe(500);
         expect(res.text).toBe("Database error!");
@@ -76,21 +76,21 @@ describe('[API] /getPhrases: request', () => {
     });
 
     test("Test invalid getPhrases", async () => {
-        const res = await supertest(app).get("/api/getPhrases").send(fakeGetPhrases);
+        const res = await supertest(app).post("/api/getPhrases").send(fakeGetPhrases);
 
         expect(res.status).toBe(500);
         expect(res.text).toBe("Invalid getPhrases request!");
     });
 
     test("Test valid getPhrases", async () => {
-        const res = await supertest(app).get("/api/getPhrases").send(realGetPhrases);
+        const res = await supertest(app).post("/api/getPhrases").send(realGetPhrases);
 
         expect(res.status).toBe(200);
         expect(res.text).toEqual(JSON.stringify([ "first phrase", "second phrase" ]));
     });
 
     test("Test proper getPhrases with bad token", async () => {
-        const res = await supertest(app).get("/api/getPhrases").send(realGetPhrasesBadToken);
+        const res = await supertest(app).post("/api/getPhrases").send(realGetPhrasesBadToken);
 
         expect(res.status).toBe(401);
         expect(res.text).toBe("Invalid token provided!");

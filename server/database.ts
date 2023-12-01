@@ -28,7 +28,8 @@ export function initDB(dbFile: string): Database {
             Password TEXT NOT NULL, 
             Salt BLOB, 
             ProfilePicture TEXT,
-            UserType TEXT NOT NULL CHECK (UserType IN ('standard', 'brand', 'moderator'))
+            UserType TEXT NOT NULL CHECK (UserType IN ('standard', 'brand', 'moderator')),
+            FOREIGN KEY(ProfilePicture) REFERENCES ProfilePictures(Picture)
         );`);
 
         newDB.run(`CREATE TABLE if not exists "Posts" (
@@ -47,6 +48,10 @@ export function initDB(dbFile: string): Database {
         );`);
 
         newDB.run(`CREATE TABLE if not exists "StockImages" (
+            Picture TEXT PRIMARY KEY
+        );`);
+
+        newDB.run(`CREATE TABLE if not exists "ProfilePictures" (
             Picture TEXT PRIMARY KEY
         );`);
 
@@ -90,6 +95,21 @@ export function initDB(dbFile: string): Database {
             if (files) {
                 files.forEach((file: any) => {
                     newDB.run(`INSERT OR IGNORE INTO StockImages(Picture)
+                        VALUES(?);
+                    `,
+                        [file]);
+                });
+            }
+        });
+
+        // insert profile pictures from the profile_pictures directory
+        // use fs from above
+        // use path from above
+        const profile_pictures_image_dir = path.join(__dirname, "../public/pictures/profile_pictures");
+        fs.readdir(profile_pictures_image_dir, (err: any, files: any) => {
+            if (files) {
+                files.forEach((file: any) => {
+                    newDB.run(`INSERT OR IGNORE INTO ProfilePictures(Picture)
                         VALUES(?);
                     `,
                         [file]);

@@ -15,6 +15,7 @@ import { react } from './api/react';
 import { register } from './api/register';
 import { feed } from './api/feed';
 import { dbStockImages } from './api/getStockImages';
+import { getProfilePictures } from './api/getProfilePictures';
 
 
 /**
@@ -35,8 +36,9 @@ app.use(express.json());
 app.use((req, res, next) => {
     // FIXME: Not displaying date correctly?
     console.log(`[${Date.now().toLocaleString("en-us")}] ${req.method} at ${req.path}`);
+    console.log(`Body: ${JSON.stringify(req.body)}`);
 
-    // propagate if possible
+   // propagate if possible
     next();
 });
 
@@ -60,8 +62,12 @@ api.post("/post", post);
 api.post("/getPhrases", getPhrases);
 api.post('/getStockImages', dbStockImages)
 
-api.get("/feed", feed);
-api.post('/getProfilePicture/:Username', dbProfilePicture)
+api.post("/feed", feed);        // not really a POST but still must be POST due to how JS fetch works
+api.post("/getPhrases", getPhrases);
+api.get('/getProfilePicture/:Username', dbProfilePicture)
+api.post('/getStockImages', dbStockImages)
+api.post('/getProfilePictures', getProfilePictures)
+
 
 app.use("/api", api);
 
