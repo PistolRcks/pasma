@@ -84,10 +84,7 @@ export async function getAllPhrases(token) {
     if(getPhrases.status === 400 || getPhrases.status === 401 || getPhrases.status === 500) {
         window.alert((await getPhrases.text()).toString())
     } else if(getPhrases.status === 200) {
-        const phrases = JSON.parse(await getPhrases.text())
-        console.log("phrases:")
-        console.log(phrases)
-        return phrases
+        return JSON.parse(await getPhrases.text())
     }
 }
 
@@ -108,10 +105,7 @@ export async function getAllStockImages(token) {
     if(getStockImages.status === 400 || getStockImages.status === 401 || getStockImages.status === 500) {
         window.alert((await getStockImages.text()).toString())
     } else if(getStockImages.status === 200) {
-        const images = JSON.parse(await getStockImages.text())
-        console.log("images:")
-        console.log(images)
-        return images
+        return JSON.parse(await getStockImages.text())
     }
 }
 
