@@ -59,8 +59,6 @@ api.post("/logout", logout);
 api.post("/react", react);
 api.post("/register", register);
 api.post("/post", post);
-api.post("/getPhrases", getPhrases);
-api.post('/getStockImages', dbStockImages)
 
 api.post("/feed", feed);        // not really a POST but still must be POST due to how JS fetch works
 api.post("/getPhrases", getPhrases);
