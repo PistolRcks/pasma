@@ -118,7 +118,7 @@ function AccountCreationCard (props) {
                                                 ))}
                                             </div>
                                             :
-                                            <div className="py-5"><Spinner label="Loading profile pictures..." size="sm" color="warning"/></div>
+                                            <div className="py-5 flex items-center"><Spinner color="warning"/><p className="pl-2">Loading profile pictures...</p></div>
                                             
                                         }
                                 </PopoverContent>
