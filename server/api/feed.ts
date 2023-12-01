@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { db } from "../database";
 import { sessions } from "../types/Session";
 
+import { userTypes } from "../types/DatabaseTypes";
+
 /**
  * Returns a list of the (default) top 100 most recent posts visible to the currently logged in user
  * @param {Request} req - Requests a JSON object in the body containing:
@@ -43,7 +45,7 @@ export function feed(req: Request, res: Response) {
 
     if ("id" in req.body) {
         if (typeof req.body.id === "number") {
-            stringBuilder += `p.ID = ? OR p.ParentID = ?\n`;
+            stringBuilder += `(p.ID = ? OR p.ParentID = ?)\n`;
             params.push(req.body.id);
             params.push(req.body.id);
         } else {
@@ -55,9 +57,10 @@ export function feed(req: Request, res: Response) {
         stringBuilder += `p.ParentID is null\n`;
     }
 
+    let startDate = 0;
     if ("startDate" in req.body) {
         if (typeof req.body.startDate === "number") {
-            let startDate = req.body.startDate;
+            startDate = req.body.startDate;
             stringBuilder += `\tAND timestamp >= ?\n`;
             params.push(startDate);
         } else {
@@ -68,7 +71,7 @@ export function feed(req: Request, res: Response) {
     }
 
     if ("endDate" in req.body) {
-        if (typeof req.body.endDate === "number" && parseInt(req.body.endDate) >= parseInt(req.body.startDate)) {
+        if (typeof req.body.endDate === "number" && parseInt(req.body.endDate) >= startDate) {
             let endDate = req.body.endDate;
             stringBuilder += `\tAND timestamp <= ?\n`;
             params.push(endDate);
@@ -86,9 +89,7 @@ export function feed(req: Request, res: Response) {
     }
 
     if ("userType" in req.body) {
-        if (req.body.userType === "standard" ||
-            req.body.userType === "brand" ||
-            req.body.userType === "moderator") {
+        if (userTypes.includes(req.body.userType)) {
 
             let userType = req.body.userType;
             stringBuilder += `\tAND userType = ?\n`;

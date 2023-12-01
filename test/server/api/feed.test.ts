@@ -90,8 +90,8 @@ describe("Tests for the /api/feed endpoint", () => {
                 size: 2
             });
 
-        expect(response.body).toHaveLength(1);
         expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(1);
     });
 
     test("200 - normal usage, custom parameters with invalid startDate", async () => {
