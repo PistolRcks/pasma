@@ -1,11 +1,11 @@
 const React = require('react')
 const { useNavigate } = require('react-router-dom')
 const { useCookies } = require('react-cookie')
-const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Skeleton, Textarea, Tooltip, useDisclosure } = require('@nextui-org/react')
+const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalHeader, Textarea, Tooltip, useDisclosure } = require('@nextui-org/react')
 const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const PostModalCard = require('./PostModalCard')
 const ImageIcon = require('@phosphor-icons/react').Image // Alias for Phosphor Icons "Image", since it shares the same name as NextUI's "Image"
-const { getAllPhrases } = require('../dataHelper.js')
+const { createPost, getAllPhrases, getAllStockImages } = require('../dataHelper.js')
 
 /**
  * Renders the create post form.
@@ -35,32 +35,6 @@ function CreatePostForm (props) {
         onOpenChange()
     }
 
-    async function createPost() {
-        const newPost = {
-            "token": cookies.token,
-            "content": phrase,
-            "picture": picture
-        }
-
-        const response = await fetch("/api/post", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newPost)
-        })
-        
-        if(response.status === 401 || response.status === 500) {
-            window.alert((await response.text()).toString())
-            setIsFormDisabled(false)
-        }
-        else if(response.status === 200) {
-            window.alert("Post created successfully!\nPost id: " + (await response.text()))
-            navigateTo("/feed")
-        }
-    }
-
-    
     /*stockPhrases = [
         "I love space pirates! I think blockades should be abolished!",
         "Space pirates, man, they're like cosmic renegades surfing the galactic waves, plundering the celestial treasures with a swagger that even black holes envy!",
@@ -146,7 +120,7 @@ function CreatePostForm (props) {
                                     if(picture) {
                                         setPicture(null)
                                     } else {
-                                        setStockImages(await getAllStockImages())
+                                        setStockImages(await getAllStockImages(cookies.token))
                                         await setModalState(false)
                                         onOpen()
                                     }
@@ -164,7 +138,15 @@ function CreatePostForm (props) {
                         endContent={<PencilSimple className="h-6 w-6"/>}
                         onClick={async () => {
                             await setIsFormDisabled(true)
-                            await createPost()
+                            const newPost = {
+                                "token": cookies.token,
+                                "content": phrase,
+                                "picture": picture
+                            }
+                            const status = await createPost(newPost)
+                            if(status === 200) {
+                                navigateTo("/feed")
+                            }
                         }}
                     >Create Post</Button>
                 </CardFooter>

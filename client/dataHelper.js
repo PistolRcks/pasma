@@ -70,7 +70,8 @@ export async function sendUpdatedPassword (token, oldPass, newPass) {
 /**
  * Retrieves a list of valid phrases from the database
  * 
- * @returns A list of phrases as an array
+ * @param {String} token The session token from the cookie system
+ * @returns {Array} A list of phrases as an array
  */
 export async function getAllPhrases(token) {
     const getPhrases = await fetch("/api/getPhrases", {
@@ -88,6 +89,56 @@ export async function getAllPhrases(token) {
         console.log(phrases)
         return phrases
     }
+}
+
+/**
+ * Retrieves a list of valid stock image file names from the database
+ * 
+ * @param {String} token The session token from the cookie system
+ * @returns {Array} A list of file names as an array
+ */
+export async function getAllStockImages(token) {
+    const getStockImages = await fetch("/api/getStockImages", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({"token": token})
+    })
+    if(getStockImages.status === 400 || getStockImages.status === 401 || getStockImages.status === 500) {
+        window.alert((await getStockImages.text()).toString())
+    } else if(getStockImages.status === 200) {
+        const images = JSON.parse(await getStockImages.text())
+        console.log("images:")
+        console.log(images)
+        return images
+    }
+}
+
+/**
+ * Creates a new post from the content passed into it
+ * 
+ * @param {Object} newPost JSON object consisting of the session token, post content, and picture file name
+ * @returns {int} Response code from the API
+ */
+export async function createPost(newPost) {
+    const response = await fetch("/api/post", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newPost)
+    })
+    
+    if(response.status === 401 || response.status === 500) {
+        window.alert((await response.text()).toString())
+        setIsFormDisabled(false)
+    }
+    else if(response.status === 200) {
+        window.alert("Post created successfully!\nPost id: " + (await response.text()))
+    }
+
+    return response.status
 }
 
 /**
@@ -141,7 +192,7 @@ export async function flipDislike(token, id) {
  * Logs a user out
  * 
  * @param {*} token The User's valid session token
- * @returns Returns OK if the user ahs successfully been logged out otherwise returns error
+ * @returns Returns OK if the user has successfully been logged out otherwise returns error
  */
 export async function logOut (token) {
     try {
