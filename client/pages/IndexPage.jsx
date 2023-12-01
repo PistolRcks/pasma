@@ -1,5 +1,5 @@
 const React = require("react");
-const AccountCreationCard = require("../Components/AccountCreationCard");
+const AccountCreationCard = require("../components/AccountCreationCard");
 const { Button } = require("@nextui-org/react");
 const { useDisclosure } = require("@nextui-org/react")
 const LoginModalButton = require("../components/LoginModalButton");
@@ -16,6 +16,7 @@ function IndexPage(props) {
             <div className="h-56 grid grid-cols-1 gap-2">
                 <p>This page is "/" (the index page).</p>
 				<Button onClick={onOpen}>Create Account Card</Button>
+                <AccountCreationCard isOpen={isOpen} onOpenChange={onOpenChange}></AccountCreationCard>
                 <LoginModalButton />
             </div>
         </div>

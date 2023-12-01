@@ -2,7 +2,7 @@ const React = require('react')
 const { useNavigate } = require('react-router-dom')
 const { useCookies } = require('react-cookie')
 const PropTypes = require('prop-types')
-const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger } = require("@nextui-org/react")
+const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, Skeleton, Spinner } = require("@nextui-org/react")
 const { generatePassword } = require('../passwordGenerator')
 const { Eye, EyeSlash } = require('@phosphor-icons/react')
 
@@ -16,6 +16,7 @@ function AccountCreationCard (props) {
     const { isOpen, onOpenChange } = props
     const navigateTo = useNavigate();
     const [cookies, setCookie] = useCookies(["token", "username", "profilePicture", "userType"])
+    const [profilePictures, setProfilePictures] = React.useState([]);
 
     const [profilePicture, setProfilePicture] = React.useState("botttsNeutral-1695826814739.png")
     const [username, setUsername] = React.useState("")
@@ -29,7 +30,7 @@ function AccountCreationCard (props) {
     const [emailInputDescription, setEmailInputDescription] = React.useState("This is used for email notifications. It can be changed later.")
     const [isFormDisabled, setIsFormDisabled] = React.useState(false)
 
-    const stockImagePath = "pictures/profile_pictures/"
+    const imagePath = "pictures/profile_pictures/"
 
     const validateEmail = (emailAddress) => emailAddress.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i)
 
@@ -48,6 +49,10 @@ function AccountCreationCard (props) {
         setEmailInputDescription("This is used for email notifications. It can be changed later.")
         return true
     }, [emailAddress])
+
+    React.useEffect(() => {
+
+    }, [])
 
     React.useEffect(() => {
         username != "" && !isEmailInvalid && password != "" ? setIsCreateButtonDisabled(false) : setIsCreateButtonDisabled(true)
@@ -93,32 +98,29 @@ function AccountCreationCard (props) {
                         <div className="pl-2 pr-6 w-48">
                             <Popover showArrow isOpen={isPopoverOpen} onOpenChange={(open) => setIsPopoverOpen(open)} placement="right">
                                 <PopoverTrigger>
-                                    <Image className="cursor-pointer" src={stockImagePath + profilePicture} width={180} radius="full" />
+                                    {
+                                        // TODO: Skeleton until first image in array loaded
+                                    }
+                                    <Skeleton className="rounded-full" isLoaded={profilePictures.length > 0}>
+                                        <Image className="cursor-pointer" src={imagePath + profilePicture} width={180} radius="full" />
+                                    </Skeleton>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-80 max-h-80">
-                                    <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
-                                        {
-                                            // TODO: Should contain one picture object for each image in directory, have to wait for an API 
+                                        {profilePictures.length > 0 ?
+                                            <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
+                                                {profilePictures.map((item, index) => (
+                                                    <Image key={item} onClick={() => {
+                                                        if(!isFormDisabled) {
+                                                            setProfilePicture(image)
+                                                            setIsPopoverOpen(false)
+                                                        }
+                                                    }} className="cursor-pointer" src={imagePath + item} width={100} radius="full" />
+                                                ))}
+                                            </div>
+                                            :
+                                            <div className="py-5"><Spinner label="Loading profile pictures..." size="sm" color="warning"/></div>
+                                            
                                         }
-                                        <Image onClick={() => {
-                                            if(!isFormDisabled) {
-                                                setProfilePicture("botttsNeutral-1695826814739.png")
-                                                setIsPopoverOpen(false)
-                                            }
-                                        }} className="cursor-pointer" src={stockImagePath + "botttsNeutral-1695826814739.png"} width={100} radius="full" />
-                                        <Image onClick={() => {
-                                            if(!isFormDisabled) {
-                                                setProfilePicture("funEmoji-1695997904423.png")
-                                                setIsPopoverOpen(false)
-                                            }
-                                        }} className="cursor-pointer" src={stockImagePath + "funEmoji-1695997904423.png"} width={100} radius="full" />
-                                        <Image onClick={() => {
-                                            if(!isFormDisabled) {
-                                                setProfilePicture("JaredD-2023.png")
-                                                setIsPopoverOpen(false)
-                                            }
-                                        }} className="cursor-pointer" src={stockImagePath + "JaredD-2023.png"} width={100} radius="full" />
-                                    </div>
                                 </PopoverContent>
                             </Popover>
                             <p className="text-center pt-2">Click on the photo above to select a different profile picture.</p>
