@@ -5,6 +5,7 @@ const PropTypes = require('prop-types')
 const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, Skeleton, Spinner } = require("@nextui-org/react")
 const { generatePassword } = require('../passwordGenerator')
 const { Eye, EyeSlash } = require('@phosphor-icons/react')
+const { getAllProfilePictures } = require('../dataHelper.js')
 
 /**
  * A modal which enables the user to create an account. Returns a window alert with the status of the action.
@@ -51,41 +52,12 @@ function AccountCreationCard (props) {
     }, [emailAddress])
 
     React.useEffect(() => {
-
+        // TODO: Load profile pics here
     }, [])
 
     React.useEffect(() => {
         username != "" && !isEmailInvalid && password != "" ? setIsCreateButtonDisabled(false) : setIsCreateButtonDisabled(true)
     }, [username, emailAddress, password])
-
-    async function createNewAccount(newAccount) {
-        //console.log(newAccount)
-        try {
-            const response = await fetch("/api/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(newAccount)
-            })
-            if(response.status === 400  || response.status === 500) {
-                window.alert((await response.text()).toString())
-                setIsFormDisabled(false)
-                throw new Error()
-            }
-            else if(response.status === 200) {
-                newUserJSON = JSON.parse(await response.text())
-                
-                await setCookie("token", newUserJSON.token, {path: "/", maxAge: 86400})
-                await setCookie("username", newUserJSON.username, {path: "/", maxAge: 86400})
-                await setCookie("profilePicture", newUserJSON.profilePicture, {path: "/", maxAge: 86400})
-                await setCookie("userType", newUserJSON.userType, {path: "/", maxAge: 86400})
-
-                navigateTo("/feed")
-            }
-
-        } catch (error) {}
-    }
 
     return (
         <React.Fragment>

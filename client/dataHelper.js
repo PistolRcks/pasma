@@ -115,6 +115,61 @@ export async function flipDislike(token, id) {
 }
 
 /**
+ * Retrieves a list of valid profile picture file names from the database
+ * 
+ * @param {String} token The session token from the cookie system
+ * @returns {Array} A list of file names as an array
+ */
+export async function getAllProfilePictures(token) {
+    const getProfilePictures = await fetch("/api/getProfilePictures", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({"token": token})
+    })
+    if(getProfilePictures.status === 403 || getProfilePictures.status === 500) {
+        window.alert((await getProfilePictures.text()).toString())
+    } else if(getProfilePictures.status === 200) {
+        return JSON.parse(await getProfilePictures.text())
+    }
+}
+/**
+ * Creates a new account from the JSON object data it receives
+ * 
+ * @param {Object} newAccount A JSON object consisting of 
+ */
+export async function createNewAccount(newAccount) {
+    //console.log(newAccount)
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newAccount)
+        })
+        if(response.status === 400  || response.status === 500) {
+            window.alert((await response.text()).toString())
+            setIsFormDisabled(false)
+            throw new Error()
+        }
+        else if(response.status === 200) {
+            newUserJSON = JSON.parse(await response.text())
+            
+            await setCookie("token", newUserJSON.token, {path: "/", maxAge: 86400})
+            await setCookie("username", newUserJSON.username, {path: "/", maxAge: 86400})
+            await setCookie("profilePicture", newUserJSON.profilePicture, {path: "/", maxAge: 86400})
+            await setCookie("userType", newUserJSON.userType, {path: "/", maxAge: 86400})
+
+            // TODO: Return status code instead of navigate
+            navigateTo("/feed")
+        }
+
+    } catch (error) {}
+}
+
+/**
  * Logs a user out
  * 
  * @param {*} token The User's valid session token
