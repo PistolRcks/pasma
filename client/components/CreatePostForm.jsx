@@ -158,7 +158,7 @@ function CreatePostForm (props) {
                     </ModalHeader>
                     <ModalBody>
                         {modalState ?
-                            stockPhrases != [] ?
+                            stockPhrases.length > 0 ?
                                 <div className="columns-2">
                                     {stockPhrases.map((item, index) => (
                                         <PostModalCard key={item} phraseString={item} sendProperty={selectPhrase}/>
@@ -167,7 +167,7 @@ function CreatePostForm (props) {
                                 :
                                 <Spinner className="pb-4" label="Loading phrases..." size="lg" color="warning" />
                             :
-                            stockImages != [] ?
+                            stockImages.length > 0 ?
                                 <div className="columns-3">
                                     {stockImages.map((item, index) => (
                                         <PostModalCard key={item} imageURL={item} sendProperty={selectPicture}/>
