@@ -73,7 +73,7 @@ export function changePassword(req: Request, res: Response) {
                     let appliedFields = "Password = ?, Salt = ?";
                     let questionMarks = "?, ?";
                     
-                    db.run(`UPDATE Users SET ${appliedFields} WHERE Username = ?`, params, function (err) {
+                    db.run(`UPDATE Users SET ${appliedFields} WHERE Username = "${user.Username}"`, params, function (err) {
                         if (err) {
                             res.status(500).send(`Server Error: ${err}`);
                             return;

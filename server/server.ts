@@ -16,6 +16,7 @@ import { register } from './api/register';
 import { feed } from './api/feed';
 import { dbStockImages } from './api/getStockImages';
 import { getProfilePictures } from './api/getProfilePictures';
+import { changePassword } from './api/changePassword';
 
 
 /**
@@ -56,6 +57,7 @@ api.post("/createPhrase", phrase);
 api.post("/edit", edit);
 api.post("/login", login);
 api.post("/logout", logout);
+api.post("/changePassword", changePassword)
 api.post("/react", react);
 api.post("/register", register);
 api.post("/post", post);
