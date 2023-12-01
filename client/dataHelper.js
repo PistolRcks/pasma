@@ -216,3 +216,30 @@ export async function logOut (token) {
         return null
     }
 }
+
+/**
+ * Attempts to log in a user.
+ * @param {string} username - the username of the user being logged in.
+ * @param {string} password - the password of the user being logged in.
+ * @returns {Promise} - resolves to an object
+ * @throws an Error with the text defining what status code we got and
+ *      what error occurred.
+ */
+export async function attemptLogin(username, password) {
+    const response = await fetch(`/api/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username,
+            password,
+        }),
+    });
+
+    if (response.status !== 200) {
+        throw new Error(`Error ${response.status} - ${await response.text()}`);
+    }
+
+    return await response.json();
+}
