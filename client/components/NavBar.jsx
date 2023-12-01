@@ -1,15 +1,31 @@
-const React = require('react')
-const { useState, useEffect } = require('react')
-const { Link } = require('react-router-dom');
-const PropTypes = require('prop-types')
-const ProfilePicture = require('./ProfilePicture.jsx')
-const { useCookies } = require('react-cookie');
-const { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } = require('@nextui-org/react');
-const { logOut } = require('../dataHelper.js')
+const React = require("react");
+const { useState, useEffect } = require("react");
+const { Link } = require("react-router-dom");
+const PropTypes = require("prop-types");
+const ProfilePicture = require("./ProfilePicture.jsx");
+const { useCookies } = require("react-cookie");
+const {
+    Navbar,
+    NavbarBrand,
+    NavbarContent,
+    NavbarItem,
+    Button,
+    Input,
+    Dropdown,
+    DropdownTrigger,
+    DropdownMenu,
+    DropdownItem,
+} = require("@nextui-org/react");
+const LoginModalButton = require("./LoginModalButton.jsx");
+const { logOut } = require("../dataHelper.js")
 
-function NavBar (props) {
-
-    const [cookie, setCookie] = useCookies(['token', 'username', 'profilePicture', 'userType']);
+function NavBar(props) {
+    const [cookie, setCookie, removeCookie] = useCookies([
+        "token",
+        "username",
+        "profilePicture",
+        "userType",
+    ]);
     const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
@@ -21,31 +37,37 @@ function NavBar (props) {
     }, [cookie.token]);
 
     async function doLogOut() {
-        const logOutResponse = await logOut(cookie.token)
+        const logOutResponse = await logOut(cookie.token);
 
         if (logOutResponse == "OK") {
-            setCookie('token', '');
-            setCookie('username', '');
-            setCookie('profilePicture', '');
-            setCookie('userType', '');
+            removeCookie("token");
+            removeCookie("username");
+            removeCookie("profilePicture");
+            removeCookie("userType");
             setLoggedIn(false);
-        }
-        else {
-            alert("Error logging out")
-            console.log("Error logging out")
+        } else {
+            alert("Error logging out");
+            console.log("Error logging out");
         }
     }
 
     return (
         <>
             <Navbar isBordered>
-                <NavbarBrand >
-                    <Link to={loggedIn ? '/feed' : '/'} className="flex">
-                        <img src="/pictures/logos/pasmaSquare.png" alt="PASMA" className="w-12 h-12 mr-2" />
+                <NavbarBrand>
+                    <Link to={loggedIn ? "/feed" : "/"} className="flex">
+                        <img
+                            src="/pictures/logos/pasmaSquare.png"
+                            alt="PASMA"
+                            className="w-12 h-12 mr-2"
+                        />
                     </Link>
                 </NavbarBrand>
 
-                <NavbarContent className="hidden sm:flex gap-4" justify="center">
+                <NavbarContent
+                    className="hidden sm:flex gap-4"
+                    justify="center"
+                >
                     <NavbarItem>
                         <Input label="Search" size="sm" />
                     </NavbarItem>
@@ -53,30 +75,45 @@ function NavBar (props) {
 
                 <NavbarContent justify="end">
                     <NavbarItem>
-                        {loggedIn ?
+                        {loggedIn ? (
                             <Dropdown>
                                 <DropdownTrigger>
-                                <Button isIconOnly radius="full" data-testid="navBarProfilePicture"> 
-                                    <ProfilePicture username={cookie.username}/>
-                                </Button>
+                                    <Button
+                                        isIconOnly
+                                        radius="full"
+                                        data-testid="navBarProfilePicture"
+                                    >
+                                        <ProfilePicture
+                                            username={cookie.username}
+                                        />
+                                    </Button>
                                 </DropdownTrigger>
                                 <DropdownMenu aria-label="Static Actions">
-                                    <DropdownItem key="profile"><Link to='/account' className="flex">My Account</Link></DropdownItem>
-                                    <DropdownItem key="logOut" className="text-danger" color="danger" onClick={ doLogOut }><Link to='/' className="flex">Log Out</Link></DropdownItem>
+                                    <DropdownItem key="profile">
+                                        <Link to="/account" className="flex">
+                                            My Account
+                                        </Link>
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        key="logOut"
+                                        className="text-danger"
+                                        color="danger"
+                                        onClick={doLogOut}
+                                    >
+                                        <Link to="/" className="flex">
+                                            Log Out
+                                        </Link>
+                                    </DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
-                        :
-                            <Button color="primary" variant="flat"><Link to='/login' className="flex">
-                                Login
-                            </Link></Button>
-                    
-                        }
+                        ) : (
+                            <LoginModalButton color="primary" variant="flat" />
+                        )}
                     </NavbarItem>
                 </NavbarContent>
             </Navbar>
-      
         </>
-    )
+    );
 }
 
 module.exports = NavBar;
