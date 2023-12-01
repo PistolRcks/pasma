@@ -88,7 +88,9 @@ export async function getAllPhrases(token) {
         console.log(phrases)
         return phrases
     }
+}
 
+/**
  * Retrieves post feed data for a specific user
  * @param {string} token - A valid token used in the API call.
  * @returns {Promise} - resolves to an object
