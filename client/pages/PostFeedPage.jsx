@@ -1,7 +1,7 @@
 const React = require("react");
 const { useState, useEffect } = require("react");
 const { useNavigate } = require('react-router-dom')
-const { Button, Spinner } = require("@nextui-org/react");
+const { Button, Spinner, Tooltip } = require("@nextui-org/react");
 const { NotePencil } = require('@phosphor-icons/react')
 const { Link } = require("react-router-dom");
 const { useCookies } = require("react-cookie");
@@ -99,7 +99,9 @@ function PostFeedPage(props) {
                     </Button>}
                 </div>
                 <div className="pl-4">
-                    <Button isIconOnly size="lg" radius="full" onClick={() => {navigateTo("/create")}}><NotePencil size={32}/></Button>
+                    <Tooltip placement="right" content="Create Post">
+                        <Button isIconOnly size="lg" radius="full" onClick={() => {navigateTo("/create")}}><NotePencil size={32}/></Button>
+                    </Tooltip>
                 </div>
             </div>
         );
