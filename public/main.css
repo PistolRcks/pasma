@@ -1522,10 +1522,6 @@ video {
   grid-auto-columns: max-content;
 }
 
-.grid-flow-row {
-  grid-auto-flow: row;
-}
-
 .grid-flow-col {
   grid-auto-flow: column;
 }
@@ -1572,10 +1568,6 @@ video {
 
 .place-content-between {
   place-content: space-between;
-}
-
-.content-center {
-  align-content: center;
 }
 
 .items-start {
@@ -1808,10 +1800,6 @@ video {
 
 .rounded-small {
   border-radius: var(--nextui-radius-small);
-}
-
-.rounded-lg {
-  border-radius: 0.5rem;
 }
 
 .\!rounded-l-none {
@@ -2462,10 +2450,6 @@ video {
 
 .pb-4 {
   padding-bottom: 1rem;
-}
-
-.pl-4 {
-  padding-left: 1rem;
 }
 
 .text-left {

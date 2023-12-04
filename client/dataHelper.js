@@ -122,11 +122,12 @@ export async function flipDislike(token, id) {
  */
 export async function getAllProfilePictures(token) {
     const getProfilePictures = await fetch("/api/getProfilePictures", {
-        method: "POST",
+        //method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
-        },
-        body: JSON.stringify({"token": token})
+        }//,
+        //body: JSON.stringify({"token": token})
     })
     if(getProfilePictures.status === 403 || getProfilePictures.status === 500) {
         window.alert((await getProfilePictures.text()).toString())
@@ -138,6 +139,7 @@ export async function getAllProfilePictures(token) {
  * Creates a new account from the JSON object data it receives
  * 
  * @param {Object} newAccount A JSON object consisting of 
+ * @returns {*} The JSON for cookie setting or false if an error occurred; null in all other cases
  */
 export async function createNewAccount(newAccount) {
     //console.log(newAccount)
@@ -152,21 +154,15 @@ export async function createNewAccount(newAccount) {
         if(response.status === 400  || response.status === 500) {
             window.alert((await response.text()).toString())
             setIsFormDisabled(false)
-            throw new Error()
+            return false;
         }
         else if(response.status === 200) {
             newUserJSON = JSON.parse(await response.text())
-            
-            await setCookie("token", newUserJSON.token, {path: "/", maxAge: 86400})
-            await setCookie("username", newUserJSON.username, {path: "/", maxAge: 86400})
-            await setCookie("profilePicture", newUserJSON.profilePicture, {path: "/", maxAge: 86400})
-            await setCookie("userType", newUserJSON.userType, {path: "/", maxAge: 86400})
-
-            // TODO: Return status code instead of navigate
-            navigateTo("/feed")
+            return newUserJSON;
         }
 
     } catch (error) {}
+    return null;
 }
 
 /**

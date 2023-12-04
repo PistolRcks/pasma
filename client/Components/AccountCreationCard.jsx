@@ -52,7 +52,7 @@ function AccountCreationCard (props) {
     }, [emailAddress])
 
     React.useEffect(() => {
-        // TODO: Load profile pics here
+        setProfilePictures(getAllProfilePictures())
     }, [])
 
     React.useEffect(() => {
@@ -70,9 +70,6 @@ function AccountCreationCard (props) {
                         <div className="pl-2 pr-6 w-48">
                             <Popover showArrow isOpen={isPopoverOpen} onOpenChange={(open) => setIsPopoverOpen(open)} placement="right">
                                 <PopoverTrigger>
-                                    {
-                                        // TODO: Skeleton until first image in array loaded
-                                    }
                                     <Skeleton className="rounded-full" isLoaded={profilePictures.length > 0}>
                                         <Image className="cursor-pointer" src={imagePath + profilePicture} width={180} radius="full" />
                                     </Skeleton>
@@ -153,7 +150,7 @@ function AccountCreationCard (props) {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color={isCreateButtonDisabled ? "default" : "primary"} radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={() => {
+                        <Button color={isCreateButtonDisabled ? "default" : "primary"} radius="full" isDisabled={isCreateButtonDisabled} isLoading={isFormDisabled} data-testid="create-account-button" onPress={async () => {
                             setIsFormDisabled(true)
                             const newAccount = {
                                 "username": username,
@@ -164,7 +161,15 @@ function AccountCreationCard (props) {
                             }
                             // console.log("newAccount")
                             // console.log(JSON.parse(JSON.stringify(newAccount)))
-                            createNewAccount(JSON.parse(JSON.stringify(newAccount)))
+                            response = await createNewAccount(JSON.parse(JSON.stringify(newAccount)))
+                            if(response && typeof(response) == "object" && response.token) {
+                                await setCookie("token", response.token, {path: "/", maxAge: 86400})
+                                await setCookie("username", response.username, {path: "/", maxAge: 86400})
+                                await setCookie("profilePicture", response.profilePicture, {path: "/", maxAge: 86400})
+                                await setCookie("userType", response.userType, {path: "/", maxAge: 86400})
+
+                                navigateTo("/feed")
+                            }
                         }}>
                             Create Account
                         </Button>
