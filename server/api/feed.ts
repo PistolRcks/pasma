@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { db } from "../database";
 import { sessions } from "../types/Session";
 
+import { userTypes } from "../types/DatabaseTypes";
+
 /**
  * Returns a list of the (default) top 100 most recent posts visible to the currently logged in user
  * @param {Request} req - Requests a JSON object in the body containing:
@@ -37,6 +39,68 @@ export function feed(req: Request, res: Response) {
         return;
     }
 
+    // BUILD a WHERE string with filters depending on what they have.
+    let stringBuilder = `WHERE `;
+    let params: any[] = [sessions.get(req.body.token).username];
+
+    if ("id" in req.body) {
+        if (typeof req.body.id === "number") {
+            stringBuilder += `(p.ID = ? OR p.ParentID = ?)\n`;
+            params.push(req.body.id);
+            params.push(req.body.id);
+        } else {
+            console.log("[API] Feed get failed! (invalid request)");
+            res.status(500).send("Error: Invalid id, please provide a valid number!");
+            return;
+        }
+    } else {
+        stringBuilder += `p.ParentID is null\n`;
+    }
+
+    let startDate = 0;
+    if ("startDate" in req.body) {
+        if (typeof req.body.startDate === "number") {
+            startDate = req.body.startDate;
+            stringBuilder += `\tAND timestamp >= ?\n`;
+            params.push(startDate);
+        } else {
+            console.log("[API] Feed get failed! (invalid request)");
+            res.status(500).send("Error: Invalid startDate, please provide a valid number!");
+            return;
+        }
+    }
+
+    if ("endDate" in req.body) {
+        if (typeof req.body.endDate === "number" && parseInt(req.body.endDate) >= startDate) {
+            let endDate = req.body.endDate;
+            stringBuilder += `\tAND timestamp <= ?\n`;
+            params.push(endDate);
+        } else {
+            console.log("[API] Feed get failed! (invalid request)");
+            res.status(500).send("Error: Invalid endDate, please provide a valid number that is greater than startDate!");
+            return;
+        }
+    }
+
+    if ("author" in req.body) {
+        let author = req.body.author;
+        stringBuilder += `\tAND user = ?\n`;
+        params.push(author);
+    }
+
+    if ("userType" in req.body) {
+        if (userTypes.includes(req.body.userType)) {
+
+            let userType = req.body.userType;
+            stringBuilder += `\tAND userType = ?\n`;
+            params.push(userType);
+        } else {
+            console.log("[API] Feed get failed! (invalid request)");
+            res.status(500).send("Error: Invalid userType, please provide a valid userType string!");
+            return;
+        }
+    }
+
     let size = 100;
     if ("size" in req.body) {
         if (typeof req.body.size !== "number") {
@@ -54,42 +118,40 @@ export function feed(req: Request, res: Response) {
             size = req.body.size;
         }
     }
+    params.push(size);
 
     // get posts
-    db.all(
-        `
-        SELECT 
-            p.ID as id, 
-            p.Username as user, 
-            u.UserType as userType,
-            p.Timestamp as timestamp,
-            p.Picture as picture, 
-            p.Content as content,
-            (
-                SELECT count(*)
-                FROM PostDislikes pd
-                WHERE 
-                    pd.ID = p.ID AND
-                    pd.Disliked = true
-            ) as dislikes,
-            p.CommentCount as comments, 
-            (
-                SELECT count(*)
-                FROM PostDislikes pd
-                WHERE
-                    pd.ID = p.ID AND
-                    pd.Username = ? AND
-                    pd.Disliked = true
-            ) as isDisliked
-        FROM Posts p
-        JOIN Users u ON u.Username = p.Username
-        WHERE p.ParentID is null
-        ORDER BY 
-            timestamp DESC,
-            id DESC
-        LIMIT ?;
-        `,
-        [sessions.get(req.body.token).username, size],
+    db.all(`SELECT 
+    p.ID as id, 
+    p.Username as user, 
+    u.UserType as userType,
+    p.Timestamp as timestamp,
+    p.Picture as picture, 
+    p.Content as content,
+    (
+        SELECT count(*)
+        FROM PostDislikes pd
+        WHERE 
+            pd.ID = p.ID AND
+            pd.Disliked = true
+    ) as dislikes,
+    p.CommentCount as comments, 
+    (
+        SELECT count(*)
+        FROM PostDislikes pd
+        WHERE
+            pd.ID = p.ID AND
+            pd.Username = ? AND
+            pd.Disliked = true
+    ) as isDisliked
+FROM Posts p
+JOIN Users u ON u.Username = p.Username
+${stringBuilder}
+ORDER BY 
+    timestamp DESC,
+    id DESC
+LIMIT ?;
+`, params,
         function (err, rows) {
             if (err) {
                 console.log("[SQL] Error: " + err);
