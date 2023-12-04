@@ -35,35 +35,6 @@ function CreatePostForm (props) {
         onOpenChange()
     }
 
-    /*stockPhrases = [
-        "I love space pirates! I think blockades should be abolished!",
-        "Space pirates, man, they're like cosmic renegades surfing the galactic waves, plundering the celestial treasures with a swagger that even black holes envy!",
-        "Just hear me out, space pirates are the rebellious rockstars of the cosmos, robbing star systems of monotony and filling the void with interstellar excitement!",
-        "I'm just saying, space pirates are the unsung heroes of the universe, carving their names into the constellations and rewriting the rules of intergalactic adventure.",
-        "Space pirates are my jam, soaring through the cosmic sea, chasing comets and rewriting the rules of space travel one stolen spaceship at a time!",
-        "There's something poetic about space pirates, dancing with asteroids and pirouetting through nebulas, making the cosmos their playground and leaving a trail of stardust behind.",
-        "Honestly, space pirates are like the rebels of the cosmos, sailing on starships named after mythological beasts, flipping off gravity, and giving the galaxy a much-needed dose of anarchy.",
-        "Picture this: space pirates, riding the solar winds, looting planets for space treasure, and leaving behind a trail of cosmic chaos that even the most advanced civilizations can't ignore.",
-        "Space pirates are the cosmic mavericks, the swashbuckling outliers of the galaxy, flipping off the establishment and turning the universe into their own personal treasure chest.",
-        "I'm just vibing with the idea of space pirates, you know? Stealing from the rich asteroid belts, redistributing wealth in the form of interstellar adventures for everyone.",
-        "Space pirates, the celestial rebels, the freebooters of the Milky Way, plundering planets and moons with a style that screams 'space is the new wild west!'",
-    ]
-    
-    stockImages = [
-        "stockImage001.png",
-        "stockImage002.png",
-        "stockImage003.png",
-        "stockImage004.png",
-        "stockImage005.png",
-        "stockImage006.png",
-        "stockImage007.png",
-        "stockImage008.png",
-        "stockImage009.png",
-        "stockImage010.png",
-        "stockImage011.png",
-        "stockImage012.png"
-    ]*/
-
     return (
         <div className="grid justify-items-center mt-6">
             <Card className="flex-auto w-1/2">
@@ -72,12 +43,12 @@ function CreatePostForm (props) {
                         isDisabled={isFormDisabled}
                         size="sm"
                         radius="full"
-                        startContent={<ArrowBendUpLeft className="h-4 w-4"/>}
+                        startContent={<ArrowBendUpLeft size={16}/>}
                         onClick={() => {
                             navigateTo("/feed")
                         }}
                     >
-                        Back to Post Feed
+                        Back to Feed
                     </Button>
                 </CardHeader>
                 <CardBody>
@@ -144,7 +115,7 @@ function CreatePostForm (props) {
                                 "picture": picture
                             }
                             const status = await createPost(newPost)
-                            if(status === 200) {
+                            if (status === 200) {
                                 navigateTo("/feed")
                             }
                         }}
