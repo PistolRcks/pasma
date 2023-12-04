@@ -68,6 +68,7 @@ api.get('/getProfilePicture/:Username', dbProfilePicture)
 api.post('/getStockImages', dbStockImages)
 api.post('/getProfilePictures', getProfilePictures)
 
+
 app.use("/api", api);
 
 // Create static route to serve (most of) the public folder (like static non-routed files)
