@@ -29,6 +29,11 @@ export function getProfilePictures (req: Request, res: Response) {
             return;
         }
 
+        if (rows == null) {
+            res.status(200).send("[]");
+            return;
+        }
+
         let profilePicturesArray: string[] = [];
         rows.forEach((row: any) => {
             profilePicturesArray.push(row["Picture"])

@@ -27,8 +27,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
     test("200 - normal usage", async () => {
         db.all = jest.fn((stmt, callback) => {
             // fake row
-            let rows;
-            rows = [{ Picture: "stockImage001.png" }];
+            let rows = [{ Picture: "stockImage001.png" }];
             // @ts-ignore
             callback(null, rows);
         }) as jest.MockedFunction<DBAllType>;
@@ -38,7 +37,7 @@ describe("Tests for the /api/getStockImages endpoint", () => {
             .send({ token: sessionToken });
 
         // only going to check for properties once
-        expect(response.body[0]).toHaveProperty("Picture"); 
+        expect(response.body[0]).toBe("stockImage001.png");
         expect(response.status).toBe(200);
     });
     
