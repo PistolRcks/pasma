@@ -47,20 +47,5 @@ describe("Tests for the /api/getProfilePicture endpoint", () => {
         expect(response.text).toBe("User does not exist"); 
         expect(response.status).toBe(400);
     });
-    
-    /*
-    test("500 - database error", async () => {
-        db.all = jest.fn((stmt, callback) => {
-            // @ts-ignore
-            callback(new Error("Error!"), null);
-        }) as jest.MockedFunction<DBAllType>;
-        
-        const response = await req
-            .post("/api/getProfilePictures");
-        
-        expect(response.status).toBe(500);
-        expect(response.text).toBe("Error: Database error!");
-    });
-    */
 
 })
