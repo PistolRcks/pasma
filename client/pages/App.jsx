@@ -17,6 +17,7 @@ const NavBar = require('../components/NavBar.jsx');
 
 // Pages
 const AccountPage = require('./AccountPage.jsx');
+const CreatePostPage = require('./CreatePostPage.jsx');
 const IndexPage = require('./IndexPage.jsx');
 const PostFeedPage = require('./PostFeedPage.jsx');
 const PostPage = require('./PostPage.jsx');
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
             }
         >
             <Route index element={<IndexPage />} />
+            <Route path='/create' element={<CreatePostPage />}/>
             <Route path='/login' element={<CookieTest cookieName='token' />} />
             <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
             <Route path='/post/:id' element={<PostPage />} />
