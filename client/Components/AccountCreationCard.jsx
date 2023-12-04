@@ -52,8 +52,11 @@ function AccountCreationCard (props) {
     }, [emailAddress])
 
     React.useEffect(() => {
-        setProfilePictures(getAllProfilePictures())
+        onStart()
     }, [])
+    async function onStart() {
+        setProfilePictures(await getAllProfilePictures())
+    }
 
     React.useEffect(() => {
         username != "" && !isEmailInvalid && password != "" ? setIsCreateButtonDisabled(false) : setIsCreateButtonDisabled(true)
