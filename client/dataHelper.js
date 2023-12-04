@@ -142,7 +142,6 @@ export async function getAllProfilePictures(token) {
  * @returns {*} The JSON for cookie setting or false if an error occurred; null in all other cases
  */
 export async function createNewAccount(newAccount) {
-    //console.log(newAccount)
     try {
         const response = await fetch("/api/register", {
             method: "POST",
