@@ -29,6 +29,11 @@ export function dbStockImages (req: Request, res: Response) {
             return;
         }
 
+        if (rows == null) {
+            res.status(200).send("[]");
+            return;
+        }
+
         let stockImagesArray: string[] = [];
         rows.forEach((row: any) => {
             stockImagesArray.push(row["Picture"])
