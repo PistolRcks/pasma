@@ -162,8 +162,6 @@ function AccountCreationCard (props) {
                                 "userType": "standard",
                                 "profilePicture": profilePicture
                             }
-                            // console.log("newAccount")
-                            // console.log(JSON.parse(JSON.stringify(newAccount)))
                             response = await createNewAccount(JSON.parse(JSON.stringify(newAccount)))
                             if(response && typeof(response) == "object" && response.token) {
                                 await setCookie("token", response.token, {path: "/", maxAge: 86400})
