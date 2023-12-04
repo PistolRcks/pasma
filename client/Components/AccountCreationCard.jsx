@@ -5,7 +5,7 @@ const PropTypes = require('prop-types')
 const { Button, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, Skeleton, Spinner } = require("@nextui-org/react")
 const { generatePassword } = require('../passwordGenerator')
 const { Eye, EyeSlash } = require('@phosphor-icons/react')
-const { getAllProfilePictures } = require('../dataHelper.js')
+const { createNewAccount, getAllProfilePictures } = require('../dataHelper.js')
 
 /**
  * A modal which enables the user to create an account. Returns a window alert with the status of the action.
@@ -83,7 +83,7 @@ function AccountCreationCard (props) {
                                                 {profilePictures.map((item, index) => (
                                                     <Image key={item} onClick={() => {
                                                         if(!isFormDisabled) {
-                                                            setProfilePicture(image)
+                                                            setProfilePicture(item)
                                                             setIsPopoverOpen(false)
                                                         }
                                                     }} className="cursor-pointer" src={imagePath + item} width={100} radius="full" />
