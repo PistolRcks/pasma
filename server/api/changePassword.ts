@@ -18,75 +18,72 @@ import { sessions } from "../types/Session";
  */
 
 export function changePassword(req: Request, res: Response) {
-    if (typeof req.body === "object") {
-        // ensure valid request 
-        if (!("token" in req.body)) {
-            res.status(400).send("Error: \"token\" not in request JSON.");
-            return;
-        }
-        
-        // ensure logged in
-        if (!sessions.has(req.body.token)) {
-            // invalid user token
-            console.log("[API] Feed get failed! (invalid token provided)");
-            res.status(401).send("Error: Invalid token provided.");
+    // ensure valid request 
+    if (!("token" in req.body)) {
+        res.status(400).send("Error: \"token\" not in request JSON.");
+        return;
+    }
+
+    // ensure logged in
+    if (!sessions.has(req.body.token)) {
+        // invalid user token
+        console.log("[API] changePassword failed! (invalid token provided)");
+        res.status(401).send("Error: Invalid token provided.");
+        return;
+    }
+
+    // Is input malformed?
+    if (!("oldPassword" in req.body)) {
+        res.status(400).send("Error: \"oldPassword\" not in request JSON.");
+        return;
+    }
+    if (!("newPassword" in req.body)) {
+        res.status(400).send("Error: \"newPassword\" not in request JSON.");
+        return;
+    }
+
+    // Is the new password good?
+    if (!verifyPassword(req.body.newPassword)) {
+        res.status(400).send("Error: New password is insecure. It must have at least 12 characters, one digit, and one special character.");
+        return;
+    }
+
+    // Check that old passwords match
+    db.get(`select * from Users where Username = ?`, [sessions.get(req.body.token).username], function (err, user) {
+        if (err) {
+            res.status(500).send(`Server Error: ${err}`);
             return;
         }
 
-        // Is input malformed?
-        if (!("oldPassword" in req.body)) {
-            res.status(400).send("Error: \"password\" not in request JSON.");
+        if (typeof user === "undefined" || user === null) {
+            res.status(401).send("Error: Username or password does not exist.");
             return;
-        }
-        if (!("newPassword" in req.body)) {
-            res.status(400).send("Error: \"password\" not in request JSON.");
-            return;
-        }
-        
-        // Is the new password good?
-        if (!verifyPassword(req.body.newPassword)) {
-            res.status(400).send("Error: New password is insecure. It must have at least 12 characters, one digit, and one special character.");
-            return;
-        }
+            // Need to narrow here or else we are not able to use the result we got
+        } else if (isUser(user)) {
+            console.log(JSON.stringify(user));
+            // Verify (assuming sent password is plaintext)
+            const oldPasswordHash = crypto.pbkdf2Sync(req.body.oldPassword, user.Salt, 1000, 64, "sha512").toString('hex');
+            if (user.Password === oldPasswordHash) {
+                // Generate password hash
+                const newSalt = crypto.randomBytes(16);
+                const newPasswordHashed = crypto.pbkdf2Sync(req.body.newPassword, newSalt, 1000, 64, "sha512");
 
-        // Check that old passwords match
-        db.get(`select * from Users where Username = "${sessions.get(req.body.token).username}"`, function (err, user) {
-            if (err) {
-                res.status(500).send(`Server Error: ${err}`);
-                return;
-            }
+                // Dynamically generate the SQL statement based on what we've got
+                let params = [newPasswordHashed.toString("hex"), newSalt, user.Username];
 
-            if (typeof user === "undefined" || user === null) {
+                db.run(`UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?`, params, function (err) {
+                    if (err) {
+                        res.status(500).send(`Server Error: ${err}`);
+                        return;
+                    }
+
+                    res.status(200).send("OK");
+                    return;
+                });
+            } else {
                 res.status(401).send("Error: Username or password does not exist.");
                 return;
-            // Need to narrow here or else we are not able to use the result we got
-            } else if (isUser(user)) {
-                // Verify (assuming sent password is plaintext)
-                const oldPasswordHash = crypto.pbkdf2Sync(req.body.oldPassword, user.Salt, 1000, 64, "sha512").toString('hex'); 
-                if (user.Password === oldPasswordHash) {
-                    // Generate password hash
-                    const newSalt = crypto.randomBytes(16);
-                    const newPasswordHashed = crypto.pbkdf2Sync(req.body.newPassword, newSalt, 1000, 64, "sha512"); 
-
-                    // Dynamically generate the SQL statement based on what we've got
-                    let params = [newPasswordHashed.toString("hex"), newSalt];
-                    let appliedFields = "Password = ?, Salt = ?";
-                    let questionMarks = "?, ?";
-                    
-                    db.run(`UPDATE Users SET ${appliedFields} WHERE Username = "${user.Username}"`, params, function (err) {
-                        if (err) {
-                            res.status(500).send(`Server Error: ${err}`);
-                            return;
-                        }
-                        
-                        res.status(200).send("OK");
-                        return;
-                    });
-                } else {
-                    res.status(401).send("Error: Username or password does not exist.");
-                    return;            
-                }            
             }
-        });
-    }
+        }
+    });
 }

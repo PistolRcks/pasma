@@ -2,7 +2,7 @@ import supertest from "supertest";
 import crypto from "crypto";
 import app from "../../../server/server";
 import { db } from "../../../server/database";
-import { DBGetType } from "../../utils/types";
+import { DBGetType, DBGetTypeWithParams, DBRunTypeWithCallback } from "../../utils/types";
 import { isSession, addSession } from "../../../server/types/Session";
 
 jest.mock("crypto", () => {
@@ -32,13 +32,10 @@ beforeAll(() => {
 });
 
 describe("Tests for the /api/changePassword endpoint", () => {
+    let token: string;
     beforeEach(() => {
-        db.get = jest.fn();
-    });
-
-    // Create dummy user 
-    test("200 - Normal Login", async () => {
-        db.get = jest.fn((stmt, callback) => {
+        token = addSession({ username: "alice" })
+        db.get = jest.fn((stmt, params, callback) => {
             // @ts-ignore
             callback(null, { 
                 Username: "username", 
@@ -47,11 +44,15 @@ describe("Tests for the /api/changePassword endpoint", () => {
                 ProfilePicture: "picture.jpeg",
                 UserType: "standard"
             });
-        }) as jest.MockedFunction<DBGetType>;
-        
-        let session = { username: "alice" };
-        let token = addSession(session)
+        }) as jest.MockedFunction<DBGetTypeWithParams>;
+        db.run = jest.fn((stmt, params, callback) => {
+            // @ts-ignore
+            callback(null);
+        }) as jest.MockedFunction<DBRunTypeWithCallback>;
+    });
 
+    // Create dummy user 
+    test("200 - Normal Login", async () => {
         const responseChangePassword = await req
             .post("/api/changePassword")
             .send({ token: token, oldPassword: "password", newPassword: "new-password-21" });
@@ -60,56 +61,68 @@ describe("Tests for the /api/changePassword endpoint", () => {
         expect(responseChangePassword.text).toBe("OK");
     });
 
-    /*
-    test("400 - Request malformed", async () => {
+    test("400 - Missing token", async () => {
+
         const response = await req
-            .post("/api/login")
-            .send({}); // Empty request body, which should trigger a 400 response
+            .post("/api/changePassword")
+            .send({
+                "oldPassword": "doesnt_matter",
+                "newPassword": "really_doesnt_matter"
+            }); // Empty request body, which should trigger a 400 response
 
         expect(response.status).toBe(400);
-        expect(response.text).toBe("Error: \"username\" and/or \"password\" not in request JSON.")
+        expect(response.text).toBe("Error: \"token\" not in request JSON.")
     });
 
-    test("401 - Username doesn't exist", async () => {
-        db.get = jest.fn((stmt, callback) => {
-            // @ts-ignore
-            callback(null, null);
-        }) as jest.MockedFunction<DBGetType>;
-        
+    test("400 - Missing oldPassword", async () => {
+
         const response = await req
-            .post("/api/login")
-            .send({ username: "nonexistent", password: "password" });
+            .post("/api/changePassword")
+            .send({
+                "token": token,
+                "newPassword": "really_doesnt_matter"
+            }); // Empty request body, which should trigger a 400 response
+
+        expect(response.status).toBe(400);
+        expect(response.text).toBe("Error: \"oldPassword\" not in request JSON.")
+    });
+
+    test("400 - Missing newPassword", async () => {
+
+        const response = await req
+            .post("/api/changePassword")
+            .send({
+                "token": token,
+                "oldPassword": "really_doesnt_matter"
+            }); // Empty request body, which should trigger a 400 response
+
+        expect(response.status).toBe(400);
+        expect(response.text).toBe("Error: \"newPassword\" not in request JSON.")
+    });
+
+    test("401 - Invalid token", async () => {
+        const response = await req
+            .post("/api/changePassword")
+            .send({
+                "token": "randomstuff",
+                "oldPassword": "doesnt_matter",
+                "newPassword": "really_doesnt_matter"
+            }); // Empty request body, which should trigger a 400 response
 
         expect(response.status).toBe(401);
-        expect(response.text).toBe("Error: Username or password does not exist.")
+        expect(response.text).toBe("Error: Invalid token provided.")
     });
 
-    test("401 - Password isn't valid", async () => {
-        db.get = jest.fn((stmt, callback) => {
-            // @ts-ignore
-            callback(null, null);
-        }) as jest.MockedFunction<DBGetType>;
-
+    test("400 - Insecure password", async () => {
         const response = await req
-            .post("/api/login")
-            .send({ username: "username", password: "password" });
+            .post("/api/changePassword")
+            .send({
+                "token": token,
+                "oldPassword": "doesnt_matter",
+                "newPassword": "insecure"
+            }); // Empty request body, which should trigger a 400 response
 
-        expect(response.status).toBe(401);
-        expect(response.text).toBe("Error: Username or password does not exist.")
+        expect(response.status).toBe(400);
+        expect(response.text).toBe("Error: New password is insecure. It must have at least 12 characters, one digit, and one special character.")
     });
-
-    test("500 - SQL error", async () => {
-        db.get = jest.fn((stmt, callback) => {
-            // @ts-ignore
-            callback(new Error("Database Error"), null);
-        }) as jest.MockedFunction<DBGetType>;
-        
-        const response = await req
-            .post("/api/login")
-            .send({ username: "username", password: "password" });
-
-        expect(response.status).toBe(500);
-        expect(response.text).toBe("Server Error: Error: Database Error")
-    });
-    */
 });
