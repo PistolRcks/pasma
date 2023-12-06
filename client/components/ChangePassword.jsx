@@ -1,7 +1,8 @@
 const React = require('react')
+const { useNavigate } = require('react-router-dom')
 const { useState, useEffect } = require('react');
 const PropTypes = require('prop-types');
-const { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, useDisclosure } = require("@nextui-org/react");
+const { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Popover, PopoverTrigger, PopoverContent, useDisclosure } = require("@nextui-org/react");
 const { generatePassword } = require('../passwordGenerator.js');
 const { sendUpdatedPassword } = require('../dataHelper.js');
 const { useCookies } = require('react-cookie');
@@ -21,7 +22,7 @@ function ChangePassword (props) {
     const navigate = useNavigate();
 
     // May not need this....
-    const passwordRef = useRef(null);
+    // const passwordRef = useRef(null);
 
     // Set the cookie name that holds the session cookie
     const [cookie, setCookie] = useCookies(['token']);
@@ -58,8 +59,8 @@ function ChangePassword (props) {
                     setIsLoading(false);
                 }
 
-                // nativate somewhere??? eventually???
-                // navigate("/feed");
+                // nativate to login page
+                navigate("/");
             })
             .catch((reason) => {
                 // Got an error from the backend; launch the popover
