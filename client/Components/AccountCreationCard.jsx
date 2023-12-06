@@ -82,7 +82,7 @@ function AccountCreationCard (props) {
                                             <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
                                                 {profilePictures.map((item, index) => (
                                                     <Image key={item} onClick={() => {
-                                                        if(!isFormDisabled) {
+                                                        if (!isFormDisabled) {
                                                             setProfilePicture(item)
                                                             setIsPopoverOpen(false)
                                                         }
@@ -103,7 +103,7 @@ function AccountCreationCard (props) {
                                 isRequired
                                 label="Username"
                                 labelPlacement="outside"
-                                color={username != "" ? "success" : "default"}
+                                color={username ? "success" : "default"}
                                 onValueChange={setUsername}
                                 size="lg"
                                 placeholder="Enter a username..."
@@ -130,12 +130,12 @@ function AccountCreationCard (props) {
                                 className="pt-2"
                                 label="Password"
                                 labelPlacement="outside"
-                                type={isPasswordVisible ? "text" :"password"}
+                                type={isPasswordVisible ? "text" : "password"}
                                 size="lg"
-                                color={password != "" ? "success" : "default"}
+                                color={password ? "success" : "default"}
                                 value={password}
                                 onClick={() => {
-                                    if(!isFormDisabled){
+                                    if (!isFormDisabled){
                                         const newPassword = generatePassword(2)
                                         setPassword("")
                                         setPassword(newPassword)
@@ -143,7 +143,7 @@ function AccountCreationCard (props) {
                                     }
                                 }}
                                 placeholder=" "
-                                description={password != "" ? "Copied to clipboard. Don't forget to save this!" : "Click the field to generate a new password."}
+                                description={password ? "Copied to clipboard. Don't forget to save this!" : "Click the field to generate a new password."}
                                 endContent={
                                     <button type="button" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
                                         { isPasswordVisible ? <EyeSlash/> : <Eye/> }
@@ -164,12 +164,15 @@ function AccountCreationCard (props) {
                             }
                             response = await createNewAccount(JSON.parse(JSON.stringify(newAccount)))
                             if(response && typeof(response) == "object" && response.token) {
-                                await setCookie("token", response.token, {path: "/", maxAge: 86400})
-                                await setCookie("username", response.username, {path: "/", maxAge: 86400})
-                                await setCookie("profilePicture", response.profilePicture, {path: "/", maxAge: 86400})
-                                await setCookie("userType", response.userType, {path: "/", maxAge: 86400})
+                                setCookie("token", response.token, {path: "/", maxAge: 86400})
+                                setCookie("username", response.username, {path: "/", maxAge: 86400})
+                                setCookie("profilePicture", response.profilePicture, {path: "/", maxAge: 86400})
+                                setCookie("userType", response.userType, {path: "/", maxAge: 86400})
 
                                 navigateTo("/feed")
+                            }
+                            else {
+                                setIsFormDisabled(false)
                             }
                         }}>
                             Create Account

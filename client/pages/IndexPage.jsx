@@ -15,7 +15,7 @@ function IndexPage(props) {
         <div className="flex h-screen items-center justify-center">
             <div className="h-56 grid grid-cols-1 gap-2">
                 <p>This page is "/" (the index page).</p>
-				<Button onClick={onOpen}>Create Account Card</Button>
+				<Button radius="full" onClick={onOpen}>Create Account</Button>
                 <AccountCreationCard isOpen={isOpen} onOpenChange={onOpenChange}></AccountCreationCard>
                 <LoginModalButton />
             </div>

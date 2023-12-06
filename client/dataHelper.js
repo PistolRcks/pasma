@@ -190,17 +190,15 @@ export async function flipDislike(token, id) {
  */
 export async function getAllProfilePictures(token) {
     const getProfilePictures = await fetch("/api/getProfilePictures", {
-        //method: "POST",
         method: "GET",
         headers: {
             "Content-Type": "application/json"
-        }//,
-        //body: JSON.stringify({"token": token})
+        }
     })
-    if(getProfilePictures.status === 403 || getProfilePictures.status === 500) {
-        window.alert((await getProfilePictures.text()).toString())
-    } else if(getProfilePictures.status === 200) {
-        return JSON.parse(await getProfilePictures.text())
+    if (!getProfilePictures.status === 200) {
+        window.alert(await getProfilePictures.text())
+    } else {
+        return await getProfilePictures.json()
     }
 }
 /**
@@ -218,17 +216,17 @@ export async function createNewAccount(newAccount) {
             },
             body: JSON.stringify(newAccount)
         })
-        if(response.status === 400  || response.status === 500) {
-            window.alert((await response.text()).toString())
-            setIsFormDisabled(false)
+        if(!response.status === 200) {
+            window.alert(await response.text())
             return false;
         }
-        else if(response.status === 200) {
-            newUserJSON = JSON.parse(await response.text())
-            return newUserJSON;
+        else {
+            return await response.json()
         }
 
-    } catch (error) {}
+    } catch (error) {
+        window.alert(error)
+    }
     return null;
 }
 
