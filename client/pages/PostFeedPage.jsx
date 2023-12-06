@@ -1,6 +1,8 @@
 const React = require("react");
 const { useState, useEffect } = require("react");
-const { Button, Spinner } = require("@nextui-org/react");
+const { useNavigate } = require('react-router-dom')
+const { Button, Spinner, Tooltip } = require("@nextui-org/react");
+const { NotePencil } = require('@phosphor-icons/react')
 const { Link } = require("react-router-dom");
 const { useCookies } = require("react-cookie");
 const { retrievePostFeedData } = require("../dataHelper");
@@ -11,6 +13,7 @@ const PostCard = require("../components/PostCard");
  * @param {object} props - Unused.
  */
 function PostFeedPage(props) {
+    const navigateTo = useNavigate()
     const [cookies, setCookie, removeCookie] = useCookies();
     const [isFetching, setIsFetching] = useState(false);
     const [posts, setPosts] = useState([]);
@@ -80,7 +83,7 @@ function PostFeedPage(props) {
         );
     } else {
         return (
-            <div className="flex items-center justify-center p-8">
+            <div className="flex items-start justify-center p-8">
                 <div className="w-1/2 grid grid-cols-1 gap-12 justify-stretch">
                     {posts}
                     {!isFetching && <Button
@@ -94,6 +97,11 @@ function PostFeedPage(props) {
                     >
                         Reload Posts
                     </Button>}
+                </div>
+                <div className="pl-4">
+                    <Tooltip placement="right" content="Create Post">
+                        <Button isIconOnly size="lg" radius="full" onClick={() => {navigateTo("/create")}}><NotePencil size={32}/></Button>
+                    </Tooltip>
                 </div>
             </div>
         );
