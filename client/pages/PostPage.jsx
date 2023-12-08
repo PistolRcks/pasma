@@ -76,6 +76,13 @@ function PostPage(props) {
                         );
                     }
                 });
+                
+                // If we don't get any comments, put some text there
+                if (commentComps.length == !"0") {
+                    commentComps = (
+                        <p className="text-xl font-bold flex justify-self-center">No Comments</p>
+                    )
+                }
 
                 setCommentComponents(commentComps);
                 setIsFetching(false);
