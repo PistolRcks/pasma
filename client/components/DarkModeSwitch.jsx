@@ -9,7 +9,7 @@ const { MoonStars, Sun } = require("@phosphor-icons/react")
  * @param {Object} props Unused.
  */
 function DarkModeSwitch(props) {
-    const [cookies, setCookie, removeCookie] = useCookies(["darkMode"])
+    const [cookies, setCookie, removeCookie] = useCookies()
     
     return(
         <Switch

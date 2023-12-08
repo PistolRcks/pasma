@@ -62,7 +62,7 @@ const router = createBrowserRouter(
  * @returns The rendered router for the app.
  */
 function App (props) {
-    const [cookies] = useCookies(["darkMode"])
+    const [cookies] = useCookies()
 
     return (
         <div className={cookies.darkMode ? "dark text-foreground bg-background" : ""}><RouterProvider router={router} /></div>
