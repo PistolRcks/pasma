@@ -83,8 +83,8 @@ function PostFeedPage(props) {
         );
     } else {
         return (
-            <div className="flex items-start justify-center p-8">
-                <div className="w-1/2 grid grid-cols-1 gap-12 justify-stretch">
+            <div className="flex grid grid-cols-4 p-8">
+                <div className="flex col-start-2 col-span-2 grid grid-cols-1 gap-12 justify-stretch">
                     {posts}
                     {!isFetching && <Button
                         className="justify-self-center"
