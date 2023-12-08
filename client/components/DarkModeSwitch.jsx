@@ -3,13 +3,17 @@ const { useCookies } = require('react-cookie')
 const { Switch } = require("@nextui-org/react")
 const { MoonStars, Sun } = require("@phosphor-icons/react")
 
-
+/**
+ * Creates a switch that controls dark mode across the site through the use of a cookie.
+ * 
+ * @param {Object} props Unused.
+ */
 function DarkModeSwitch(props) {
     const [cookies, setCookie, removeCookie] = useCookies(["darkMode"])
     
     return(
         <Switch
-            defaultSelected
+            defaultSelected={!cookies.darkMode}
             size="lg"
             color="primary"
             thumbIcon={({ isSelected, className }) =>
