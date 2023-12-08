@@ -81,6 +81,7 @@ function NavBar(props) {
                             <Dropdown>
                                 <DropdownTrigger>
                                     <Button
+                                        className="flex self-center"
                                         isIconOnly
                                         radius="full"
                                         data-testid="navBarProfilePicture"
