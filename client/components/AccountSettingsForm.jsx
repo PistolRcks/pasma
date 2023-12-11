@@ -1,7 +1,7 @@
 const React = require('react')
 const { useNavigate } = require('react-router-dom')
 const { useCookies } = require('react-cookie')
-const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalHeader, Spinner, Textarea, Tooltip, Popover, PopoverTrigger, PopoverContent, Skeleton, useDisclosure } = require('@nextui-org/react')
+const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalHeader, Spinner, Textarea, Tooltip, Popover, PopoverTrigger, PopoverContent, Skeleton, Input, useDisclosure } = require('@nextui-org/react')
 const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const ChangePassword = require('./ChangePassword.jsx')
 const { getAllProfilePictures } = require('../dataHelper.js')
@@ -12,7 +12,7 @@ const { getAllProfilePictures } = require('../dataHelper.js')
  */
 function AccountSettingsForm (props) {
     const navigateTo = useNavigate()
-    const [cookies] = useCookies(["token", "username"])
+    const [cookies] = useCookies(["token", "username", "profilePicture"])
     const [profilePictures, setProfilePictures] = React.useState([]);
     const [profilePicture, setProfilePicture] = React.useState("botttsNeutral-1695826814739.png")
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false)
@@ -26,6 +26,9 @@ function AccountSettingsForm (props) {
         onStart()
     }, [])
     async function onStart() {
+        // Set default profile picture
+        setProfilePicture(cookies.profilePicture)
+        // Make list of profile pictures
         setProfilePictures(await getAllProfilePictures())
     }
 
@@ -44,7 +47,7 @@ function AccountSettingsForm (props) {
                         Back to Feed
                     </Button>
                 </CardHeader>
-                <CardBody>
+                <CardBody className="grid grid-flow-col auto-cols-max">
                     <div className="pl-2 pr-6 w-48">
                         <Popover showArrow isOpen={isPopoverOpen} onOpenChange={(open) => setIsPopoverOpen(open)} placement="right">
                             <PopoverTrigger>
@@ -57,10 +60,8 @@ function AccountSettingsForm (props) {
                                         <div className="grid grid-cols-3 gap-4 py-3 pr-4 overflow-y-scroll">
                                             {profilePictures.map((item, index) => (
                                                 <Image key={item} onClick={() => {
-                                                    if(!isFormDisabled) {
                                                         setProfilePicture(item)
                                                         setIsPopoverOpen(false)
-                                                    }
                                                 }} className="cursor-pointer" src={imagePath + item} width={100} radius="full" />
                                             ))}
                                         </div>
@@ -72,12 +73,21 @@ function AccountSettingsForm (props) {
                         </Popover>
                         <p className="text-center pt-2">Click on the photo above to select a different profile picture.</p>
                     </div>
-                    <ChangePassword username={cookies.username} />
+                    <div className="w-72">
+                        <Input
+                            readOnly
+                            className="pt-2"
+                            label="Username"
+                            labelPlacement="outside"
+                            size="lg"
+                            placeholder={cookies.username}
+                            defaultValue={cookies.username}
+                        />
+                        <br />
+                        <ChangePassword username={cookies.username} />
+                    </div>
                 </CardBody>
                 <CardFooter className="flex justify-between items-end">
-                    
-                    
-
                     <Button
                         size="sm"
                         radius="full"
