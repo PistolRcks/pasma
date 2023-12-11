@@ -4,6 +4,7 @@ const { useCookies } = require('react-cookie')
 const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody, ModalContent, ModalHeader, Spinner, Textarea, Tooltip, Popover, PopoverTrigger, PopoverContent, Skeleton, useDisclosure } = require('@nextui-org/react')
 const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const ChangePassword = require('./ChangePassword.jsx')
+const { getAllProfilePictures } = require('../dataHelper.js')
 
 /**
  * Renders the account settings form.
