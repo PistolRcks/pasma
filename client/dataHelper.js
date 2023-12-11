@@ -183,6 +183,54 @@ export async function flipDislike(token, id) {
 }
 
 /**
+ * Retrieves a list of valid profile picture file names from the database
+ * 
+ * @param {String} token The session token from the cookie system
+ * @returns {Array} A list of file names as an array
+ */
+export async function getAllProfilePictures(token) {
+    const getProfilePictures = await fetch("/api/getProfilePictures", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    if (!getProfilePictures.status === 200) {
+        window.alert(await getProfilePictures.text())
+    } else {
+        return await getProfilePictures.json()
+    }
+}
+/**
+ * Creates a new account from the JSON object data it receives
+ * 
+ * @param {Object} newAccount A JSON object consisting of 
+ * @returns {*} The JSON for cookie setting or false if an error occurred; null in all other cases
+ */
+export async function createNewAccount(newAccount) {
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newAccount)
+        })
+        if(!response.status === 200) {
+            window.alert(await response.text())
+            return false;
+        }
+        else {
+            return await response.json()
+        }
+
+    } catch (error) {
+        window.alert(error)
+    }
+    return null;
+}
+
+/**
  * Logs a user out
  * 
  * @param {*} token The User's valid session token
