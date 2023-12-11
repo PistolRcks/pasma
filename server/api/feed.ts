@@ -44,7 +44,7 @@ export function feed(req: Request, res: Response) {
     let params: any[] = [sessions.get(req.body.token).username];
 
     if ("id" in req.body) {
-        if (typeof req.body.id === "number") {
+        if (typeof parseInt(req.body.id) === "number") {
             stringBuilder += `(p.ID = ? OR p.ParentID = ?)\n`;
             params.push(req.body.id);
             params.push(req.body.id);
@@ -65,7 +65,7 @@ export function feed(req: Request, res: Response) {
             params.push(startDate);
         } else {
             console.log("[API] Feed get failed! (invalid request)");
-            res.status(500).send("Error: Invalid startDate, please provide a valid number!");
+            res.status(400).send("Error: Invalid startDate, please provide a valid number!");
             return;
         }
     }
@@ -77,7 +77,7 @@ export function feed(req: Request, res: Response) {
             params.push(endDate);
         } else {
             console.log("[API] Feed get failed! (invalid request)");
-            res.status(500).send("Error: Invalid endDate, please provide a valid number that is greater than startDate!");
+            res.status(400).send("Error: Invalid endDate, please provide a valid number that is greater than startDate!");
             return;
         }
     }
@@ -96,7 +96,7 @@ export function feed(req: Request, res: Response) {
             params.push(userType);
         } else {
             console.log("[API] Feed get failed! (invalid request)");
-            res.status(500).send("Error: Invalid userType, please provide a valid userType string!");
+            res.status(400).send("Error: Invalid userType, please provide a valid userType string!");
             return;
         }
     }

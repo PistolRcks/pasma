@@ -30,13 +30,13 @@ export async function retrieveProfilePicture(username) {
 
 /**
  * Sends updated password to server
- * 
- * @param {*} token 
- * @param {*} oldPass 
- * @param {*} newPass 
- * @returns 
+ *
+ * @param {*} token
+ * @param {*} oldPass
+ * @param {*} newPass
+ * @returns
  */
-export async function sendUpdatedPassword (token, oldPass, newPass) {
+export async function sendUpdatedPassword(token, oldPass, newPass) {
     try {
         // Send an AJAX request
         const response = await fetch(`api/profile/settings/password`, {
@@ -148,9 +148,9 @@ export async function retrievePostFeedData(token) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({token})
+        body: JSON.stringify({ token }),
     });
-    
+
     if (response.status !== 200) {
         throw new Error(`Error ${response.status} - ${await response.text()}`);
     }
@@ -172,9 +172,9 @@ export async function flipDislike(token, id) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({token, id})
+        body: JSON.stringify({ token, id }),
     });
-    
+
     if (response.status !== 200) {
         throw new Error(`Error ${response.status} - ${await response.text()}`);
     }
@@ -232,36 +232,34 @@ export async function createNewAccount(newAccount) {
 
 /**
  * Logs a user out
- * 
+ *
  * @param {*} token The User's valid session token
  * @returns Returns OK if the user has successfully been logged out otherwise returns error
  */
-export async function logOut (token) {
+export async function logOut(token) {
     try {
         // Send an AJAX request
         const response = await fetch(`api/logout`, {
-          method: "POST",
-          body: JSON.stringify({
-            token: token
-          }),
-          headers: {
-              "Content-type": "application/json; charset=UTF-8"
-          }
-        })
-  
+            method: "POST",
+            body: JSON.stringify({
+                token: token,
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        });
+
         if (response.status >= 400) {
-          throw new Error(`Error ${response.status} - Logout failed`)
+            throw new Error(`Error ${response.status} - Logout failed`);
+        } else {
+            // Return the response
+            return await response.text();
         }
-        else {
-          // Return the response
-          return await response.text()
-        }
-  
     } catch (err) {
         // something went wrong so return null
-        console.error('Failed to logout')
-        console.error(err)
-        return null
+        console.error("Failed to logout");
+        console.error(err);
+        return null;
     }
 }
 
@@ -289,5 +287,34 @@ export async function attemptLogin(username, password) {
         throw new Error(`Error ${response.status} - ${await response.text()}`);
     }
 
+    return await response.json();
+}
+
+/**
+ * Retrieves post data for a specific post
+ * @param {string} token - A valid token used in the API call.
+ * @param {string} id - the ID of the post to look for
+ * @returns {Promise} - resolves to an object
+ * @throws an Error with the text defining what status code we got and
+ *      what error occurred.
+ */
+export async function getIndividualPost(token, id) {
+    // Send an AJAX request
+    const response = await fetch(`/api/feed`, {
+        method: "POST",
+        body: JSON.stringify({
+            token,
+            id,
+        }),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (response.status !== 200) {
+        throw new Error(`Error ${response.status} - ${await response.text()}`);
+    } 
+
+    // Return the response
     return await response.json();
 }
