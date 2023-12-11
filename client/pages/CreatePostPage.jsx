@@ -1,4 +1,5 @@
 const React = require('react')
+const { useCookies } = require('react-cookie')
 const CreatePostForm = require('../components/CreatePostForm')
 
 /**
@@ -6,8 +7,12 @@ const CreatePostForm = require('../components/CreatePostForm')
  * @param {object} props - Unused.
  */
 function CreatePostPage(props) {
+    const [cookies] = useCookies()
+
     return (
-        <CreatePostForm/>
+        <div className={cookies.darkMode ? "dark text-foreground bg-background h-screen" : ""}>
+            <CreatePostForm/>
+        </div>
     )
 }
 
