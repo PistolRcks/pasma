@@ -11,18 +11,26 @@ Vestibulum venenatis tellus pharetra maximus gravida. Etiam fermentum maximus an
 Nullam ultricies, ante at aliquet porttitor, eros lectus interdum neque, a sollicitudin leo massa et leo. Ut nec lorem quis massa sodales pellentesque. 
 Nulla risus quam, finibus vitae venenatis eu, scelerisque ut quam.`;
 
-/**
- * Initializes SQLite database from a file, and creates the Users and Posts tables
- * if they do not yet exist.
- * @param {string} dbFile relative path to SQLite database
- * @returns {Database} SQLite database
- */
-export function initDB(dbFile: string): Database {
+function createDBTables(dbFile: Database, callback: any) {
     // open database "db.sqlite". create if it does not exist
-    const newDB = new Database(dbFile);
+    const newDB = dbFile;
 
     // create tables for database if they do not exist.
     newDB.serialize(() => {
+        newDB.run(`PRAGMA foreign_keys = ON;`);
+
+        newDB.run(`CREATE TABLE if not exists "ProfilePictures" (
+            Picture TEXT PRIMARY KEY
+        );`);
+
+        newDB.run(`CREATE TABLE if not exists "StockImages" (
+            Picture TEXT PRIMARY KEY
+        );`);
+
+        newDB.run(`CREATE TABLE if not exists "PostPhrases" (
+            Phrase TEXT PRIMARY KEY
+        );`);
+
         newDB.run(`CREATE TABLE if not exists "Users" (
             Username TEXT PRIMARY KEY, 
             Password TEXT NOT NULL, 
@@ -47,19 +55,6 @@ export function initDB(dbFile: string): Database {
             FOREIGN KEY(ParentID) REFERENCES Posts(ID)
         );`);
 
-        newDB.run(`CREATE TABLE if not exists "StockImages" (
-            Picture TEXT PRIMARY KEY
-        );`);
-
-        newDB.run(`CREATE TABLE if not exists "ProfilePictures" (
-            Picture TEXT PRIMARY KEY
-        );`);
-
-        newDB.run(`CREATE TABLE if not exists "PostPhrases" (
-            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            Phrase TEXT NOT NULL
-        );`);
-
         newDB.run(`CREATE TABLE if not exists "PostDislikes" (
             ID TEXT, 
             Username TEXT,
@@ -77,66 +72,88 @@ export function initDB(dbFile: string): Database {
             FOREIGN KEY (ID) REFERENCES Posts(ID),
             FOREIGN KEY (Username) REFERENCES Users(Username)
         );`);
+        callback();
+    });
+}
 
-        // insert test user (for now)
-        const salt: Buffer = crypto.randomBytes(16);
-        const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512");
+export function fillDBTables(dbFile: Database, callback: any) {
 
-        newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, ProfilePicture, UserType)
-            VALUES(?, ?, ?, ?, ?);
-        `,
-            ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png", "standard"]);
+    const newDB = dbFile;
 
-        // insert stock images from the stock_image directory
-        const fs = require("fs");
-        const path = require("path");
-        const stock_image_dir = path.join(__dirname, "../public/pictures/stock_images");
-        fs.readdir(stock_image_dir, (err: any, files: any) => {
-            if (files) {
-                files.forEach((file: any) => {
-                    newDB.run(`INSERT OR IGNORE INTO StockImages(Picture)
-                        VALUES(?);
-                    `,
-                        [file]);
-                });
-            }
+    // insert stock images from the stock_image directory
+    const fs = require("fs");
+    const path = require("path");
+
+    const stock_image_dir = path.join(__dirname, "../public/pictures/stock_images");
+    let stockImages = fs.readdirSync(stock_image_dir);
+    stockImages.forEach((file: any) => {
+        newDB.serialize(() => {
+            newDB.run(`INSERT OR IGNORE INTO StockImages(Picture)
+                                VALUES(?);
+                            `,
+                [file]);
         });
 
-        // insert profile pictures from the profile_pictures directory
-        // use fs from above
-        // use path from above
-        const profile_pictures_image_dir = path.join(__dirname, "../public/pictures/profile_pictures");
-        fs.readdir(profile_pictures_image_dir, (err: any, files: any) => {
-            if (files) {
-                files.forEach((file: any) => {
-                    newDB.run(`INSERT OR IGNORE INTO ProfilePictures(Picture)
-                        VALUES(?);
-                    `,
-                        [file]);
-                });
-            }
-        });
+    });
 
-        // Generate random posts based on lorem ipsum text
-        const lipsum_sublength = Math.floor(LIPSUM.length / 10);
-        for (let i = 0; i < 10; i++) {
-            newDB.run(`INSERT OR IGNORE INTO Posts(ID, Username, Content, Picture, Timestamp, Private)
-                VALUES(?, ?, ?, ?, ?, ?)
+    const profile_pictures_image_dir = path.join(__dirname, "../public/pictures/profile_pictures");
+    let profileImages = fs.readdirSync(profile_pictures_image_dir);
+    profileImages.forEach((file: any) => {
+        newDB.serialize(() => {
+            newDB.run(`INSERT OR IGNORE INTO ProfilePictures(Picture)
+                                VALUES(?);
+                            `,
+                [file.toString()]);
+        });
+    });
+
+    // Generate random posts based on lorem ipsum text
+    const lipsum_sublength = Math.floor(LIPSUM.length / 10);
+
+    // generate some example phrases
+    for (let i = 0; i < 10; i++) {
+        newDB.serialize(() => {
+            newDB.run(`INSERT OR IGNORE INTO PostPhrases(Phrase) VALUES (?)`, [LIPSUM.slice(i * lipsum_sublength, (i + 1) * lipsum_sublength)]);
+        });
+    }
+
+    callback();
+}
+
+/**
+ * Initializes SQLite database from a file, and creates the Users and Posts tables
+ * if they do not yet exist.
+ * @param {string} dbFile relative path to SQLite database
+ * @returns {Database} SQLite database
+ */
+export function initDB(dbFile: string): Database {
+    const newDB = new Database(dbFile);
+
+    createDBTables(newDB, () => {
+        fillDBTables(newDB, () => {
+            const salt: Buffer = crypto.randomBytes(16);
+            const testPassword: Buffer = crypto.pbkdf2Sync("alice_password", salt, 1000, 64, "sha512");
+
+            newDB.run(`INSERT OR IGNORE INTO Users(Username, Password, Salt, ProfilePicture, UserType)
+                VALUES(?, ?, ?, ?, ?);
             `,
-                [
-                    i,
-                    "alice",
-                    LIPSUM.slice(i * lipsum_sublength, (i + 1) * lipsum_sublength),
-                    null,
-                    Date.now(),
-                    false
-                ]);
-        }
+                ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png", "standard"]);
 
-        // generate some example phrases
-        for (let i = 0; i < 10; i++) {
-            newDB.run(`INSERT OR IGNORE INTO PostPhrases VALUES (?,?)`, ["" + i, LIPSUM.slice(i * lipsum_sublength, (i+1) * lipsum_sublength)]);
-        }
+            const lipsum_sublength = Math.floor(LIPSUM.length / 10);
+            for (let i = 0; i < 10; i++) {
+                newDB.run(`INSERT OR IGNORE INTO Posts(ID, Username, Content, Picture, Timestamp, Private)
+                    VALUES(?, ?, ?, ?, ?, ?)
+                `,
+                    [
+                        i,
+                        "alice",
+                        LIPSUM.slice(i * lipsum_sublength, (i + 1) * lipsum_sublength),
+                        null,
+                        Date.now(),
+                        false
+                    ]);
+            }
+        });
     });
 
     return newDB;

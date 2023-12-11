@@ -17,6 +17,7 @@ import { feed } from './api/feed';
 import { dbStockImages } from './api/getStockImages';
 import { getProfilePictures } from './api/getProfilePictures';
 import { changePassword } from './api/changePassword';
+import { changeProfilePicture } from './api/changeProfilePicture';
 
 
 /**
@@ -57,10 +58,11 @@ api.post("/createPhrase", phrase);
 api.post("/edit", edit);
 api.post("/login", login);
 api.post("/logout", logout);
-api.post("/changePassword", changePassword)
 api.post("/react", react);
 api.post("/register", register);
 api.post("/post", post);
+api.post("/profile/settings/password", changePassword)
+api.post("/profile/settings/profile_picture", changeProfilePicture)
 
 api.post("/feed", feed);        // not really a POST but still must be POST due to how JS fetch works
 api.post("/getPhrases", getPhrases);

@@ -32,9 +32,8 @@ beforeAll(() => {
 });
 
 describe("Tests for the /api/changePassword endpoint", () => {
-    let token: string;
+    let token = addSession({ username: "alice" });
     beforeEach(() => {
-        token = addSession({ username: "alice" })
         db.get = jest.fn((stmt, params, callback) => {
             // @ts-ignore
             callback(null, { 
@@ -54,7 +53,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
     // Create dummy user 
     test("200 - Normal Login", async () => {
         const responseChangePassword = await req
-            .post("/api/changePassword")
+            .post("/api/profile/settings/password")
             .send({ token: token, oldPassword: "password", newPassword: "new-password-21" });
 
         expect(responseChangePassword.status).toBe(200);
@@ -64,7 +63,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
     test("400 - Missing token", async () => {
 
         const response = await req
-            .post("/api/changePassword")
+            .post("/api/profile/settings/password")
             .send({
                 "oldPassword": "doesnt_matter",
                 "newPassword": "really_doesnt_matter"
@@ -77,7 +76,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
     test("400 - Missing oldPassword", async () => {
 
         const response = await req
-            .post("/api/changePassword")
+            .post("/api/profile/settings/password")
             .send({
                 "token": token,
                 "newPassword": "really_doesnt_matter"
@@ -90,7 +89,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
     test("400 - Missing newPassword", async () => {
 
         const response = await req
-            .post("/api/changePassword")
+            .post("/api/profile/settings/password")
             .send({
                 "token": token,
                 "oldPassword": "really_doesnt_matter"
@@ -102,7 +101,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
 
     test("401 - Invalid token", async () => {
         const response = await req
-            .post("/api/changePassword")
+            .post("/api/profile/settings/password")
             .send({
                 "token": "randomstuff",
                 "oldPassword": "doesnt_matter",
@@ -115,7 +114,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
 
     test("400 - Insecure password", async () => {
         const response = await req
-            .post("/api/changePassword")
+            .post("/api/profile/settings/password")
             .send({
                 "token": token,
                 "oldPassword": "doesnt_matter",
