@@ -122,14 +122,14 @@ function CreatePostForm (props) {
                     >Create Post</Button>
                 </CardFooter>
             </Card>
-            <Modal size="2xl" scrollBehavior="inside" isOpen={isOpen} onOpenChange={onOpenChange}>
+            <Modal className={cookies.darkMode ? "dark text-foreground bg-background" : ""} size="2xl" scrollBehavior="inside" isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
                     <ModalHeader>
                         {modalState ? <p>Select a Phrase</p> : <p>Select a Photo</p>}
                     </ModalHeader>
                     <ModalBody>
                         {modalState ?
-                            stockPhrases.length > 0 ?
+                            stockPhrases && stockPhrases.length > 0 ?
                                 <div className="columns-2">
                                     {stockPhrases.map((item, index) => (
                                         <PostModalCard key={item} phraseString={item} sendProperty={selectPhrase}/>
@@ -138,7 +138,7 @@ function CreatePostForm (props) {
                                 :
                                 <Spinner className="pb-4" label="Loading phrases..." size="lg" color="warning" />
                             :
-                            stockImages.length > 0 ?
+                            stockImages && stockImages.length > 0 ?
                                 <div className="columns-3">
                                     {stockImages.map((item, index) => (
                                         <PostModalCard key={item} imageURL={item} sendProperty={selectPicture}/>
