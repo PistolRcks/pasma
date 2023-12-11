@@ -1,26 +1,19 @@
-const {
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Button,
-    Image,
-} = require("@nextui-org/react");
 const React = require("react");
 const { useState, useEffect } = require("react");
-const PropTypes = require("prop-types");
-const ProfilePicture = require("../components/ProfilePicture");
+const { Button, Image } = require("@nextui-org/react");
 const {
     ThumbsDown,
-    ChatText,
     UserCircleGear,
     CurrencyCircleDollar,
+    UserCircle,
 } = require("@phosphor-icons/react");
+const PropTypes = require("prop-types");
 const { Link } = require("react-router-dom");
 const { flipDislike } = require("../dataHelper");
+const ProfilePicture = require("../components/ProfilePicture");
 
 /**
- * Generates a Card representing a Post.
+ * Renders the "Hero Post" (the post at the top of the PostPage).
  * @param {object} props - Has the following:
  *  - token (session token for the user)
  *  - id (id of the post)
@@ -33,7 +26,7 @@ const { flipDislike } = require("../dataHelper");
  *  - numDislikes
  *  - isDisliked
  */
-function PostCard(props) {
+function HeroPostCard(props) {
     const {
         token,
         id,
@@ -46,10 +39,36 @@ function PostCard(props) {
         numDislikes,
         isDisliked,
     } = props;
+
+    let userTypeComponent;
+    if (userType === "moderator") {
+        userTypeComponent = (
+            <div className="flex align-center">
+                <UserCircleGear size={32} />
+                <p className="text-xl">Moderator</p>
+            </div>
+        );
+    } else if (userType === "brand") {
+        userTypeComponent = (
+            <div className="flex align-center">
+                <CurrencyCircleDollar size={32} />
+                <p className="text-xl">Brand</p>
+            </div>
+        );
+    } else {
+        userTypeComponent = (
+            <div className="flex align-center">
+                <UserCircle size={32} />
+                <p className="text-xl">User</p>
+            </div>
+        );
+    }
+
     const [isDislikedState, setIsDislikedState] = useState(!!isDisliked);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [isDebouncing, setIsDebouncing] = useState(false);
 
+    // Disliking
     // Set 1 second debounce for when the dislike occurs
     useEffect(() => {
         // Ignore when we load
@@ -69,54 +88,41 @@ function PostCard(props) {
 
     useEffect(() => {
         setIsFirstLoad(false);
-    }, [])
-    
-
-    let userTypeComponent = <></>;
-    if (userType === "moderator") {
-        userTypeComponent = <UserCircleGear size={16} />;
-    } else if (userType === "brand") {
-        userTypeComponent = <CurrencyCircleDollar size={16} />;
-    }
+    }, []);
 
     return (
-        <Card>
-            <CardHeader className="justify-between">
-                <div className="flex gap-5 items-center">
-                    <Link to={`/profile/${username}`}>
-                        <ProfilePicture username={username} size="lg" />
-                    </Link>
-                    <div className="flex flex-col items-start">
-                        <Link to={`/profile/${username}`}>
-                            <div className="flex gap-1 items-center">
-                                <p className="font-semibold">{`@${username}`}</p>
-                                {userTypeComponent}
-                            </div>
-                        </Link>
-                        <p>{new Date(timestamp).toLocaleString()}</p>
-                    </div>
-                </div>
-            </CardHeader>
-            <CardBody>
-                <div className="grid grid-cols-1 justify-items-center gap-4">
-                    <p className="text-xl justify-self-start">{content}</p>
-                    {picture && picture != "" && (
-                        <Image
-                            alt={`Picture for post ${id}`}
-                            src={`/pictures/stock_images/${picture}`}
-                        />
-                    )}
-                </div>
-            </CardBody>
-            <CardFooter className="place-content-between">
-                <Link to={`/post/${id}`}>
-                    <Button variant="bordered">
-                        <div className="flex gap-2">
-                            <ChatText size={24} />
-                            <p>{numComments}</p>
-                        </div>
-                    </Button>
+        <div className="grid grid-cols-1 gap-6">
+            {/* Header */}
+            <div className="flex gap-5 items-center">
+                <Link to={`/profile/${username}`}>
+                    <ProfilePicture
+                        username={username}
+                        styling="w-20 h-20 text-large"
+                    />
                 </Link>
+                <div className="flex grid grid-cols-1">
+                    <Link to={`/profile/${username}`}>
+                        <p className="font-semibold text-xl">{`@${username}`}</p>
+                    </Link>
+                    {userTypeComponent}
+                    <p>{new Date(timestamp).toLocaleString()}</p>
+                </div>
+            </div>
+            {/* Body */}
+            <div className="grid grid-cols-1 justify-items-center gap-4">
+                <p className="text-xl justify-self-start">{content}</p>
+                {picture && picture != "" && (
+                    <Image
+                        alt={`Picture for post ${id}`}
+                        src={`/pictures/stock_images/${picture}`}
+                    />
+                )}
+            </div>
+            {/* Footer */}
+            <div className="flex items-center place-content-between">
+                <p className="font-bold text-xl">{`${numComments} comment${
+                    numComments === 1 ? "" : "s"
+                }`}</p>
                 <Button
                     variant={isDislikedState ? "solid" : "bordered"}
                     color={isDislikedState ? "danger" : "default"}
@@ -129,14 +135,14 @@ function PostCard(props) {
                         <ThumbsDown size={24} />
                     </div>
                 </Button>
-            </CardFooter>
-        </Card>
+            </div>
+        </div>
     );
 }
 
-module.exports = PostCard;
+module.exports = HeroPostCard;
 
-PostCard.propTypes = {
+HeroPostCard.propTypes = {
     token: PropTypes.string,
     id: PropTypes.string,
     username: PropTypes.string,
@@ -149,7 +155,7 @@ PostCard.propTypes = {
     isDisliked: PropTypes.number,
 };
 
-PostCard.defaultProps = {
+HeroPostCard.defaultProps = {
     token: "",
     id: 0,
     username: "<No User>",
