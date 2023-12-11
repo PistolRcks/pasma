@@ -74,21 +74,18 @@ export async function sendUpdatedPassword(token, oldPass, newPass) {
  * @returns {Array} A list of phrases as an array
  */
 export async function getAllPhrases(token) {
-    const getPhrases = await fetch("/api/getPhrases", {
+    const response = await fetch("/api/getPhrases", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token: token }),
+        body: JSON.stringify({ token }),
     });
-    if (
-        getPhrases.status === 400 ||
-        getPhrases.status === 401 ||
-        getPhrases.status === 500
-    ) {
-        window.alert((await getPhrases.text()).toString());
-    } else if (getPhrases.status === 200) {
-        return JSON.parse(await getPhrases.text());
+
+    if (response.status !== 200) {
+        console.error(await response.text());
+    } else {
+        return await response.json();
     }
 }
 
@@ -99,21 +96,18 @@ export async function getAllPhrases(token) {
  * @returns {Array} A list of file names as an array
  */
 export async function getAllStockImages(token) {
-    const getStockImages = await fetch("/api/getStockImages", {
+    const response = await fetch("/api/getStockImages", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token: token }),
+        body: JSON.stringify({ token }),
     });
-    if (
-        getStockImages.status === 400 ||
-        getStockImages.status === 401 ||
-        getStockImages.status === 500
-    ) {
-        window.alert((await getStockImages.text()).toString());
-    } else if (getStockImages.status === 200) {
-        return JSON.parse(await getStockImages.text());
+    
+    if (response.status !== 200) {
+        window.alert(await response.text());
+    } else {
+        return await response.json();
     }
 }
 
@@ -132,13 +126,9 @@ export async function createPost(newPost) {
         body: JSON.stringify(newPost),
     });
 
-    if (response.status === 401 || response.status === 500) {
-        window.alert((await response.text()).toString());
+    if (response.status !== 200) {
+        window.alert(await response.text());
         setIsFormDisabled(false);
-    } else if (response.status === 200) {
-        window.alert(
-            "Post created successfully!\nPost id: " + (await response.text())
-        );
     }
 
     return response.status;
@@ -198,16 +188,16 @@ export async function flipDislike(token, id) {
  * @returns {Array} A list of file names as an array
  */
 export async function getAllProfilePictures(token) {
-    const getProfilePictures = await fetch("/api/getProfilePictures", {
+    const response = await fetch("/api/getProfilePictures", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
         },
     });
-    if (getProfilePictures.status !== 200) {
-        window.alert(await getProfilePictures.text());
+    if (response.status !== 200) {
+        window.alert(await response.text());
     } else {
-        return await getProfilePictures.json();
+        return await response.json();
     }
 }
 /**
