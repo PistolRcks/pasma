@@ -24,11 +24,12 @@ const { attemptLogin } = require("../dataHelper");
  * @param {object} props
  *  - text: what to display on the Button component (default: 'Login')
  *  - color: passed into the Button component (default: 'primary')
+ *  - size: passed into the Button component (default: 'md')
  *  - variant: passed into the Button component (default: 'solid')
  *  - styling: passed into the Button component's `className` prop (default: '')
  */
 function LoginModalButton(props) {
-    const { text, color, variant, styling } = props;
+    const { text, color, variant, size, styling } = props;
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [cookies, setCookies] = useCookies();
@@ -79,6 +80,7 @@ function LoginModalButton(props) {
                 color={color}
                 variant={variant}
                 radius="full"
+                size={size}
                 className={styling}
                 onPress={onOpen}
             >
@@ -183,6 +185,7 @@ LoginModalButton.defaultProps = {
     text: "Login",
     color: "primary",
     variant: "solid",
+    size: "md",
     styling: "",
 };
 

@@ -54,6 +54,7 @@ function AccountCreationCard (props) {
     React.useEffect(() => {
         onStart()
     }, [])
+
     async function onStart() {
         setProfilePictures(await getAllProfilePictures())
     }
