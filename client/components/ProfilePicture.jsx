@@ -5,7 +5,7 @@ const PropTypes = require('prop-types')
 const { Avatar } = require("@nextui-org/react");
 
 function ProfilePicture (props) {
-    const { username, size } = props
+    const { username, size, styling } = props
 
     const [profilePictureName, setProfilePictureName] = useState('')
     useEffect(() => {
@@ -23,21 +23,24 @@ function ProfilePicture (props) {
       <div>
         <Avatar
             showFallback
-            name= {`${username}`}
+            name= {username}
             src={`/pictures/profile_pictures/${profilePictureName}`}
-            size={`${size}`}/>
+            size={size}
+            className={styling}/>
       </div>
     )
 }
 
-module.exports = ProfilePicture;
+module.exports = ProfilePicture
 
 ProfilePicture.propTypes = {
     username: PropTypes.string,
-    size: PropTypes.string
+    size: PropTypes.string,
+    styling: PropTypes.string,
 }
 
 ProfilePicture.defaultProps = {
     username: "default.png",
-    size: "md"
+    size: "md",
+    styling: "",
 }

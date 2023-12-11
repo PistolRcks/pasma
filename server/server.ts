@@ -64,7 +64,7 @@ api.post("/feed", feed);        // not really a POST but still must be POST due 
 api.post("/getPhrases", getPhrases);
 api.get('/getProfilePicture/:Username', dbProfilePicture)
 api.post('/getStockImages', dbStockImages)
-api.post('/getProfilePictures', getProfilePictures)
+api.get('/getProfilePictures', getProfilePictures)
 
 
 app.use("/api", api);
