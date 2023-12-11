@@ -30,13 +30,13 @@ export async function retrieveProfilePicture(username) {
 
 /**
  * Sends updated password to server
- * 
- * @param {*} token 
- * @param {*} oldPass 
- * @param {*} newPass 
- * @returns 
+ *
+ * @param {*} token
+ * @param {*} oldPass
+ * @param {*} newPass
+ * @returns
  */
-export async function sendUpdatedPassword (token, oldPass, newPass) {
+export async function sendUpdatedPassword(token, oldPass, newPass) {
     try {
         // Send an AJAX request
         const response = await fetch(`api/profile/settings/password`, {
@@ -69,7 +69,7 @@ export async function sendUpdatedPassword (token, oldPass, newPass) {
 
 /**
  * Retrieves a list of valid phrases from the database
- * 
+ *
  * @param {String} token The session token from the cookie system
  * @returns {Array} A list of phrases as an array
  */
@@ -77,20 +77,24 @@ export async function getAllPhrases(token) {
     const getPhrases = await fetch("/api/getPhrases", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify({"token": token})
-    })
-    if(getPhrases.status === 400 || getPhrases.status === 401 || getPhrases.status === 500) {
-        window.alert((await getPhrases.text()).toString())
-    } else if(getPhrases.status === 200) {
-        return JSON.parse(await getPhrases.text())
+        body: JSON.stringify({ token: token }),
+    });
+    if (
+        getPhrases.status === 400 ||
+        getPhrases.status === 401 ||
+        getPhrases.status === 500
+    ) {
+        window.alert((await getPhrases.text()).toString());
+    } else if (getPhrases.status === 200) {
+        return JSON.parse(await getPhrases.text());
     }
 }
 
 /**
  * Retrieves a list of valid stock image file names from the database
- * 
+ *
  * @param {String} token The session token from the cookie system
  * @returns {Array} A list of file names as an array
  */
@@ -98,20 +102,24 @@ export async function getAllStockImages(token) {
     const getStockImages = await fetch("/api/getStockImages", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify({"token": token})
-    })
-    if(getStockImages.status === 400 || getStockImages.status === 401 || getStockImages.status === 500) {
-        window.alert((await getStockImages.text()).toString())
-    } else if(getStockImages.status === 200) {
-        return JSON.parse(await getStockImages.text())
+        body: JSON.stringify({ token: token }),
+    });
+    if (
+        getStockImages.status === 400 ||
+        getStockImages.status === 401 ||
+        getStockImages.status === 500
+    ) {
+        window.alert((await getStockImages.text()).toString());
+    } else if (getStockImages.status === 200) {
+        return JSON.parse(await getStockImages.text());
     }
 }
 
 /**
  * Creates a new post from the content passed into it
- * 
+ *
  * @param {Object} newPost JSON object consisting of the session token, post content, and picture file name
  * @returns {int} Response code from the API
  */
@@ -119,20 +127,21 @@ export async function createPost(newPost) {
     const response = await fetch("/api/post", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(newPost)
-    })
-    
-    if(response.status === 401 || response.status === 500) {
-        window.alert((await response.text()).toString())
-        setIsFormDisabled(false)
-    }
-    else if(response.status === 200) {
-        window.alert("Post created successfully!\nPost id: " + (await response.text()))
+        body: JSON.stringify(newPost),
+    });
+
+    if (response.status === 401 || response.status === 500) {
+        window.alert((await response.text()).toString());
+        setIsFormDisabled(false);
+    } else if (response.status === 200) {
+        window.alert(
+            "Post created successfully!\nPost id: " + (await response.text())
+        );
     }
 
-    return response.status
+    return response.status;
 }
 
 /**
@@ -148,9 +157,9 @@ export async function retrievePostFeedData(token) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({token})
+        body: JSON.stringify({ token }),
     });
-    
+
     if (response.status !== 200) {
         throw new Error(`Error ${response.status} - ${await response.text()}`);
     }
@@ -172,9 +181,9 @@ export async function flipDislike(token, id) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({token, id})
+        body: JSON.stringify({ token, id }),
     });
-    
+
     if (response.status !== 200) {
         throw new Error(`Error ${response.status} - ${await response.text()}`);
     }
@@ -184,7 +193,7 @@ export async function flipDislike(token, id) {
 
 /**
  * Retrieves a list of valid profile picture file names from the database
- * 
+ *
  * @param {String} token The session token from the cookie system
  * @returns {Array} A list of file names as an array
  */
@@ -192,19 +201,19 @@ export async function getAllProfilePictures(token) {
     const getProfilePictures = await fetch("/api/getProfilePictures", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    if (!getProfilePictures.status === 200) {
-        window.alert(await getProfilePictures.text())
+            "Content-Type": "application/json",
+        },
+    });
+    if (getProfilePictures.status !== 200) {
+        window.alert(await getProfilePictures.text());
     } else {
-        return await getProfilePictures.json()
+        return await getProfilePictures.json();
     }
 }
 /**
  * Creates a new account from the JSON object data it receives
- * 
- * @param {Object} newAccount A JSON object consisting of 
+ *
+ * @param {Object} newAccount A JSON object consisting of
  * @returns {*} The JSON for cookie setting or false if an error occurred; null in all other cases
  */
 export async function createNewAccount(newAccount) {
@@ -212,56 +221,52 @@ export async function createNewAccount(newAccount) {
         const response = await fetch("/api/register", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(newAccount)
-        })
-        if(!response.status === 200) {
-            window.alert(await response.text())
+            body: JSON.stringify(newAccount),
+        });
+        if (response.status !== 200) {
+            window.alert(await response.text());
             return false;
+        } else {
+            return await response.json();
         }
-        else {
-            return await response.json()
-        }
-
     } catch (error) {
-        window.alert(error)
+        window.alert(error);
     }
     return null;
 }
 
 /**
  * Logs a user out
- * 
+ *
  * @param {*} token The User's valid session token
  * @returns Returns OK if the user has successfully been logged out otherwise returns error
  */
-export async function logOut (token) {
+export async function logOut(token) {
     try {
         // Send an AJAX request
         const response = await fetch(`api/logout`, {
-          method: "POST",
-          body: JSON.stringify({
-            token: token
-          }),
-          headers: {
-              "Content-type": "application/json; charset=UTF-8"
-          }
-        })
-  
+            method: "POST",
+            body: JSON.stringify({
+                token: token,
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        });
+
         if (response.status >= 400) {
-          throw new Error(`Error ${response.status} - Logout failed`)
+            throw new Error(`Error ${response.status} - Logout failed`);
+        } else {
+            // Return the response
+            return await response.text();
         }
-        else {
-          // Return the response
-          return await response.text()
-        }
-  
     } catch (err) {
         // something went wrong so return null
-        console.error('Failed to logout')
-        console.error(err)
-        return null
+        console.error("Failed to logout");
+        console.error(err);
+        return null;
     }
 }
 
