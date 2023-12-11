@@ -67,7 +67,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
             .send({
                 "oldPassword": "doesnt_matter",
                 "newPassword": "really_doesnt_matter"
-            }); // Empty request body, which should trigger a 400 response
+            });
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: \"token\" not in request JSON.")
@@ -80,7 +80,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
             .send({
                 "token": token,
                 "newPassword": "really_doesnt_matter"
-            }); // Empty request body, which should trigger a 400 response
+            });
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: \"oldPassword\" not in request JSON.")
@@ -93,7 +93,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
             .send({
                 "token": token,
                 "oldPassword": "really_doesnt_matter"
-            }); // Empty request body, which should trigger a 400 response
+            });
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: \"newPassword\" not in request JSON.")
@@ -106,7 +106,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
                 "token": "randomstuff",
                 "oldPassword": "doesnt_matter",
                 "newPassword": "really_doesnt_matter"
-            }); // Empty request body, which should trigger a 400 response
+            });
 
         expect(response.status).toBe(401);
         expect(response.text).toBe("Error: Invalid token provided.")
@@ -119,7 +119,7 @@ describe("Tests for the /api/changePassword endpoint", () => {
                 "token": token,
                 "oldPassword": "doesnt_matter",
                 "newPassword": "insecure"
-            }); // Empty request body, which should trigger a 400 response
+            });
 
         expect(response.status).toBe(400);
         expect(response.text).toBe("Error: New password is insecure. It must have at least 12 characters, one digit, and one special character.")

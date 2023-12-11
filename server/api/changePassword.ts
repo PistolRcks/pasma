@@ -16,7 +16,6 @@ import { sessions } from "../types/Session";
  *      error (beginning with "Error:"), or with the newly generated session token in the case of
  *      a success.
  */
-
 export function changePassword(req: Request, res: Response) {
     // ensure valid request 
     if (!("token" in req.body)) {
@@ -60,7 +59,6 @@ export function changePassword(req: Request, res: Response) {
             return;
             // Need to narrow here or else we are not able to use the result we got
         } else if (isUser(user)) {
-            console.log(JSON.stringify(user));
             // Verify (assuming sent password is plaintext)
             const oldPasswordHash = crypto.pbkdf2Sync(req.body.oldPassword, user.Salt, 1000, 64, "sha512").toString('hex');
             if (user.Password === oldPasswordHash) {
@@ -68,10 +66,7 @@ export function changePassword(req: Request, res: Response) {
                 const newSalt = crypto.randomBytes(16);
                 const newPasswordHashed = crypto.pbkdf2Sync(req.body.newPassword, newSalt, 1000, 64, "sha512");
 
-                // Dynamically generate the SQL statement based on what we've got
-                let params = [newPasswordHashed.toString("hex"), newSalt, user.Username];
-
-                db.run(`UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?`, params, function (err) {
+                db.run(`UPDATE Users SET Password = ?, Salt = ? WHERE Username = ?`, [newPasswordHashed.toString("hex"), newSalt, user.Username], function (err) {
                     if (err) {
                         res.status(500).send(`Server Error: ${err}`);
                         return;

@@ -3,14 +3,13 @@ import { db } from "../database";
 import { sessions } from "../types/Session";
 
 /**
- * Changes a user's username, given a valid session token and valid new password.
+ * Changes a user's profile picture, given a valid session token and valid new profile picture.
  * @param {Request} req - Requests a JSON object in the body containing 
- *      "token" and "username" field.
+ *      "token" and "profile_picture" field.
  * @param {Response} res - Responds with error text in the case of a user or internal 
  *      error (beginning with "Error:"), or with the newly generated session token in the case of
  *      a success.
  */
-
 export function changeProfilePicture(req: Request, res: Response) {
     if ("token" in req.body && "profile_picture" in req.body) {
 
@@ -21,9 +20,7 @@ export function changeProfilePicture(req: Request, res: Response) {
             return;
         }
 
-        let oldUsername = sessions.get(req.body.token).username;
-
-        db.run(`UPDATE Users SET ProfilePicture = ? WHERE Username = ?`, [req.body.profile_picture, oldUsername], function (err) {
+        db.run(`UPDATE Users SET ProfilePicture = ? WHERE Username = ?`, [req.body.profile_picture, sessions.get(req.body.token).username], function (err) {
             if (err) {
                 res.status(500).send(`Server Error: ${err}`);
                 return;

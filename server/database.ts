@@ -84,8 +84,8 @@ export function fillDBTables(dbFile: Database, callback: any) {
     const fs = require("fs");
     const path = require("path");
 
-    const stock_image_dir = path.join(__dirname, "../public/pictures/stock_images");
-    let stockImages = fs.readdirSync(stock_image_dir);
+    const stockImageDir = path.join(__dirname, "../public/pictures/stock_images");
+    const stockImages = fs.readdirSync(stockImageDir);
     stockImages.forEach((file: any) => {
         newDB.serialize(() => {
             newDB.run(`INSERT OR IGNORE INTO StockImages(Picture)
@@ -96,8 +96,8 @@ export function fillDBTables(dbFile: Database, callback: any) {
 
     });
 
-    const profile_pictures_image_dir = path.join(__dirname, "../public/pictures/profile_pictures");
-    let profileImages = fs.readdirSync(profile_pictures_image_dir);
+    const profilePicturesImageDir = path.join(__dirname, "../public/pictures/profile_pictures");
+    const profileImages = fs.readdirSync(profilePicturesImageDir);
     profileImages.forEach((file: any) => {
         newDB.serialize(() => {
             newDB.run(`INSERT OR IGNORE INTO ProfilePictures(Picture)
