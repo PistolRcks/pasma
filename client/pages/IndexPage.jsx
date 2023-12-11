@@ -1,4 +1,7 @@
 const React = require("react");
+const AccountCreationCard = require("../components/AccountCreationCard");
+const { Button } = require("@nextui-org/react");
+const { useDisclosure } = require("@nextui-org/react")
 const LoginModalButton = require("../components/LoginModalButton");
 const { Image, Card, CardBody, Button } = require("@nextui-org/react");
 
@@ -7,6 +10,8 @@ const { Image, Card, CardBody, Button } = require("@nextui-org/react");
  * @param {object} props - Unused.
  */
 function IndexPage(props) {
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
     return (
         <div className="bg-[url('/pictures/bgs/landing_bg.svg')] bg-cover bg-center">
             <div className="h-screen grid grid-cols-2 place-content-around justify-items-center">
