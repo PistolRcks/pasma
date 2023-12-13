@@ -39,7 +39,7 @@ const router = createBrowserRouter(
             }
         >
             <Route path='/create' element={<CreatePostPage />}/>
-            <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
+            <Route path='/feed' element={<PostFeedPage />} />
             <Route path='/post/:id' element={<PostPage />} />
             <Route path='/profile/:username' element={<ProfilePage />} />
             <Route path='/account' element={<AccountSettingsPage />} />
