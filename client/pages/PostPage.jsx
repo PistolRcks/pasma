@@ -120,6 +120,11 @@ function PostPage(props) {
                     {/* Post and comments */}
                     <div className="grid grid-cols-1 gap-8">
                         {heroPostComponent}
+                        <Button radius="full" color="primary" onClick={() => {
+                            navigate(`/comment/${id}`)
+                        }}>
+                            Make a Comment
+                        </Button>
                         {commentComponents}
                     </div>
                 </div>

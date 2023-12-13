@@ -103,7 +103,7 @@ export async function getAllStockImages(token) {
         },
         body: JSON.stringify({ token }),
     });
-    
+
     if (response.status !== 200) {
         window.alert(await response.text());
     } else {
@@ -310,7 +310,39 @@ export async function getIndividualPost(token, id) {
 
     if (response.status !== 200) {
         throw new Error(`Error ${response.status} - ${await response.text()}`);
-    } 
+    }
+
+    // Return the response
+    return await response.json();
+}
+
+/**
+ * Creates a comment under a post.
+ * @param {string} token - A valid token used in the API call.
+ * @param {string} id - the ID of the parent post to comment under
+ * @param {string} content - the content of the comment
+ * @returns {Promise} - resolves to an object
+ * @throws an Error with the text defining what status code we got and
+ *      what error occurred.
+ */
+export async function createComment(token, id, content) {
+    const response = await fetch(`/api/comment`, {
+        method: "POST",
+        body: JSON.stringify({
+            token,
+            id,
+            content,
+        }),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    
+    console.log(JSON.stringify({token, id, content}))
+
+    if (response.status !== 200) {
+        throw new Error(`Error ${response.status} - ${await response.text()}`);
+    }
 
     // Return the response
     return await response.json();
