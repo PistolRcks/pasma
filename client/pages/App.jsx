@@ -22,6 +22,7 @@ const IndexPage = require('./IndexPage.jsx');
 const PostFeedPage = require('./PostFeedPage.jsx');
 const PostPage = require('./PostPage.jsx');
 const ProfilePage = require('./ProfilePage.jsx');
+const EditPostPage = require('./EditPostPage.jsx');
 
 // Error Pages
 const FourOhFourPage = require('./404Page.jsx');
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
         >
             <Route path='/create' element={<CreatePostPage />}/>
             <Route path='/feed' element={<PostFeedPage />} />
+            <Route path='/edit/:id' element={<EditPostPage />} />
             <Route path='/post/:id' element={<PostPage />} />
             <Route path='/profile/:username' element={<ProfilePage />} />
             <Route path='/account' element={<AccountSettingsPage />} />
