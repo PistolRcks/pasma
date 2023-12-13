@@ -103,7 +103,7 @@ describe("Tests for the /api/feed endpoint", () => {
             });
 
         expect(response.text).toBe("Error: Invalid startDate, please provide a valid number!");
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(400);
     });
 
     test("200 - normal usage, custom parameters with invalid endDate", async () => {
@@ -116,7 +116,7 @@ describe("Tests for the /api/feed endpoint", () => {
             });
 
         expect(response.text).toBe("Error: Invalid endDate, please provide a valid number that is greater than startDate!");
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(400);
     });
 
     test("200 - normal usage, custom parameters with invalid userType", async () => {
@@ -128,7 +128,7 @@ describe("Tests for the /api/feed endpoint", () => {
             });
 
         expect(response.text).toBe("Error: Invalid userType, please provide a valid userType string!");
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(400);
     });
 
     test("200 - normal usage, handle null return from `db.all`", async () => {

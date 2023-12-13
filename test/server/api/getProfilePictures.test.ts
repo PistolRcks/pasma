@@ -33,35 +33,26 @@ describe("Tests for the /api/getProfilePictures endpoint", () => {
         }) as jest.MockedFunction<DBAllType>;
 
         const response = await req
-            .post("/api/getProfilePictures")
-            .send({ token: sessionToken });
+            .get("/api/getProfilePictures").send();
 
         // only going to check for properties once
-        expect(response.body[0]).toBe("JaredD-2023.png");
         expect(response.status).toBe(200);
+        expect(response.body).toEqual(["JaredD-2023.png"]);
     });
     
     test("200 - normal usage, handle null return from `db.all`", async () => {
         db.all = jest.fn((stmt, callback) => {
+            // fake row
+            let rows: any = [];
             // @ts-ignore
-            callback(null, null);
+            callback(null, rows);
         }) as jest.MockedFunction<DBAllType>;
 
         const response = await req
-            .post("/api/getProfilePictures")
-            .send({ token: sessionToken });
+            .get("/api/getProfilePictures").send();
 
         expect(response.text).toBe("[]"); 
         expect(response.status).toBe(200);
-    });
-    
-    test("400 - token not present", async () => {
-        const response = await req
-            .post("/api/getProfilePictures")
-            .send({});
-
-        expect(response.status).toBe(400);
-        expect(response.text).toBe("Error: \"token\" not in request JSON.");
     });
     
     test("500 - database error", async () => {
@@ -71,8 +62,7 @@ describe("Tests for the /api/getProfilePictures endpoint", () => {
         }) as jest.MockedFunction<DBAllType>;
         
         const response = await req
-            .post("/api/getProfilePictures")
-            .send({ token : sessionToken });
+            .get("/api/getProfilePictures").send();
         
         expect(response.status).toBe(500);
         expect(response.text).toBe("Error: Database error!");
