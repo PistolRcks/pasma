@@ -30,6 +30,7 @@ const FourOhFourPage = require('./404Page.jsx');
 const router = createBrowserRouter(
     createRoutesFromElements(
         <>
+        <Route index element={<IndexPage />} />
         <Route
             element={
                 <div>
@@ -38,9 +39,7 @@ const router = createBrowserRouter(
                 </div>
             }
         >
-            <Route index element={<IndexPage />} />
             <Route path='/create' element={<CreatePostPage />}/>
-            <Route path='/login' element={<CookieTest cookieName='token' />} />
             <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
             <Route path='/post/:id' element={<PostPage />} />
             <Route path='/profile/:username' element={<ProfilePage />} />

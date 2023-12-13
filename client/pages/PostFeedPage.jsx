@@ -20,7 +20,7 @@ function PostFeedPage(props) {
     
     const fetchPosts = () => {
         // Set spinner
-        setPosts(<Spinner label="Loading Posts..." color="Primary" />);
+        setPosts(<Spinner label="Loading Posts..." color="primary" />);
         setIsFetching(true);
 
         // Load data
