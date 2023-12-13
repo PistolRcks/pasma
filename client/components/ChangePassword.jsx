@@ -1,7 +1,8 @@
 const React = require('react')
+const { useNavigate } = require('react-router-dom')
 const { useState, useEffect } = require('react');
 const PropTypes = require('prop-types');
-const { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, useDisclosure } = require("@nextui-org/react");
+const { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Popover, PopoverTrigger, PopoverContent, useDisclosure } = require("@nextui-org/react");
 const { generatePassword } = require('../passwordGenerator.js');
 const { sendUpdatedPassword } = require('../dataHelper.js');
 const { useCookies } = require('react-cookie');
@@ -15,9 +16,18 @@ function ChangePassword (props) {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [newPasswordsMatch, setNewPasswordsMatch] = useState(false);
 
+    const [errorText, setErrorText] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [isErrorPopoverOpen, setIsErrorPopoverOpen] = useState(false);
+    const navigate = useNavigate();
+
+    // May not need this....
+    // const passwordRef = useRef(null);
+
     // Set the cookie name that holds the session cookie
     const [cookie, setCookie] = useCookies(['token']);
 
+    /*
     const handleSubmit = () => {
         const passwordResponse = sendUpdatedPassword(cookie.token, oldPassword, newPassword)
         if (passwordResponse == "OK") {
@@ -30,6 +40,34 @@ function ChangePassword (props) {
         } else {
             alert(`Password Update Failed!`)
         }
+    };
+    */
+
+    const handleSubmit = () => {
+        setIsLoading(true);
+        sendUpdatedPassword(cookie.token, oldPassword, newPassword)
+            .then((data) => {
+                if (data == "OK") {
+                    alert("Password Updated!")
+        
+                    setOldPassword('');
+                    setNewPassword('');
+                    setConfirmNewPassword('');
+                    setNewPasswordsMatch(false);
+                } else {
+                    setIsErrorPopoverOpen(true);
+                    setIsLoading(false);
+                }
+
+                // nativate to login page
+                navigate("/");
+            })
+            .catch((reason) => {
+                // Got an error from the backend; launch the popover
+                setErrorText(reason.message);
+                setIsErrorPopoverOpen(true);
+                setIsLoading(false);
+            });
     };
 
     return (
@@ -83,17 +121,40 @@ function ChangePassword (props) {
                                 <Button color="danger" variant="light" onPress={onClose}>
                                     Cancel
                                 </Button>
-                                <Button
-                                    title="changePasswordButton"
-                                    isDisabled={!newPasswordsMatch || !cookie.token}
-                                    color="primary"
-                                    onPress={() => {
-                                        handleSubmit();
-                                        onClose();
-                                    }}
+                                <Popover
+                                    color="danger"
+                                    isOpen={isErrorPopoverOpen}
+                                    onOpenChange={(open) =>
+                                        setIsErrorPopoverOpen(open)
+                                    }
                                 >
-                                    Change Password
-                                </Button>
+                                    <PopoverTrigger>
+                                        <Button
+                                            title="changePasswordButton"
+                                            color="primary"
+                                            disabled={isLoading}
+                                            isDisabled={!newPasswordsMatch || !cookie.token}
+                                            isLoading={isLoading}
+                                            onPress={handleSubmit}
+                                            radius="full"
+                                        >
+                                            Change Password
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                        <div className="px-1 py-2">
+                                            <div className="text-small font-bold">
+                                                Error
+                                            </div>
+                                            <div className="text-tiny">
+                                                {errorText}
+                                                <br />
+                                                Check your username and password
+                                                and try again.
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
                             </ModalFooter>  
                         </>
                     )}

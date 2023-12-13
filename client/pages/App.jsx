@@ -16,7 +16,7 @@ const ChangePassword = require('../components/ChangePassword.jsx');
 const NavBar = require('../components/NavBar.jsx');
 
 // Pages
-const AccountPage = require('./AccountPage.jsx');
+const AccountSettingsPage = require('./AccountSettingsPage.jsx');
 const CreatePostPage = require('./CreatePostPage.jsx');
 const IndexPage = require('./IndexPage.jsx');
 const PostFeedPage = require('./PostFeedPage.jsx');
@@ -42,7 +42,7 @@ const router = createBrowserRouter(
             <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
             <Route path='/post/:id' element={<PostPage />} />
             <Route path='/profile/:username' element={<ProfilePage />} />
-            <Route path='/account' element={/* Eventually, this should be a verified page */ <AccountPage />} />
+            <Route path='/account' element={<AccountSettingsPage />} />
             <Route path='/test/profile_picture' element={<ProfilePicture username='alice' />} />
             <Route path='/test/change_password' element={<ChangePassword username='alice' />} /> 
             <Route path='/test/cookie' element={<CookieTest cookieName='token' />} /> 
