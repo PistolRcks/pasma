@@ -63,7 +63,7 @@ function CreatePostForm (props) {
                         placeholder="Propagate passive aggression responsibly!"
                         description="Click the field above to select a predefined phrase for your post."
                         onClick={async () => {
-                            if(!isFormDisabled) {
+                            if (!isFormDisabled) {
                                 setStockPhrases(await getAllPhrases(cookies.token))
                                 await setModalState(true)
                                 onOpen()
