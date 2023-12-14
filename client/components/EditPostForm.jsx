@@ -43,8 +43,8 @@ function CreatePostForm (props) {
 
     async function onStart() {
         await getIndividualPost(cookies.token, id).then((postData) => {
-            setPhrase(postData.content);
-            setPicture(postData.picture);
+            setPhrase(postData[0].content);
+            setPicture(imagePath + postData[0].picture);
         })
     }
 
@@ -101,10 +101,11 @@ function CreatePostForm (props) {
                                 size={picture ? "sm" : "md"}
                                 radius="full"
                                 onPress={async () => {
+                                    setStockImages(getAllStockImages(cookies.token))
                                     if(picture) {
                                         setPicture(null)
                                     } else {
-                                        setStockImages(await getAllStockImages(cookies.token))
+                                        // setStockImages(await getAllStockImages(cookies.token))
                                         await setModalState(false)
                                         onOpen()
                                     }
