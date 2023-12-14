@@ -49,7 +49,7 @@ function createDBTables(dbFile: Database, callback: any) {
             ParentID TEXT,
             CommentCount INTEGER NOT NULL DEFAULT 0,
             Private BOOLEAN,
-            FOREIGN KEY(Content) REFERENCES PostPhrases(Phrase)
+            FOREIGN KEY(Content) REFERENCES PostPhrases(Phrase),
             FOREIGN KEY(Picture) REFERENCES StockImages(Picture),
             FOREIGN KEY(Username) REFERENCES Users(Username),
             FOREIGN KEY(ParentID) REFERENCES Posts(ID)
