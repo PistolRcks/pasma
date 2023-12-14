@@ -5,13 +5,13 @@ const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody,
 const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const PostModalCard = require('./PostModalCard')
 const ImageIcon = require('@phosphor-icons/react').Image // Alias for Phosphor Icons "Image", since it shares the same name as NextUI's "Image"
-const { createPost, getIndividualPost, getAllPhrases, getAllStockImages } = require('../dataHelper.js')
+const { getIndividualPost, getAllPhrases, getAllStockImages } = require('../dataHelper.js')
 
 /**
  * Renders the create post form.
  * @param {object} props - Unused.
  */
-function CreatePostForm (props) {
+function EditPostForm (props) {
     const { id } = useParams();
     const navigateTo = useNavigate()
     const [cookies] = useCookies(["token"])
@@ -24,7 +24,7 @@ function CreatePostForm (props) {
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
 
-    const imagePath = "pictures/stock_images/"
+    const imagePath = "/pictures/stock_images/"
 
     const selectPhrase = (phraseString) => {
         setPhrase(phraseString)
@@ -44,7 +44,10 @@ function CreatePostForm (props) {
     async function onStart() {
         await getIndividualPost(cookies.token, id).then((postData) => {
             setPhrase(postData[0].content);
-            setPicture(imagePath + postData[0].picture);
+            setPicture(postData[0].picture);
+        })
+        await getAllStockImages(cookies.token).then((imageData) => {
+            setStockImages(imageData);
         })
     }
 
@@ -87,7 +90,7 @@ function CreatePostForm (props) {
                 <CardFooter className="flex justify-between items-end">
                     <div className="grid gap-x-0.5 grid-cols-2">
                         {picture ?
-                            <Image isZoomed className="cursor-pointer h-16 w-16" src={imagePath + picture} onClick={() => {
+                            <Image isZoomed className="cursor-pointer h-16 w-16" src={imagePath + picture} onClick={async () => {
                                 setModalState(false)
                                 onOpen()
                             }}/>
@@ -101,11 +104,9 @@ function CreatePostForm (props) {
                                 size={picture ? "sm" : "md"}
                                 radius="full"
                                 onPress={async () => {
-                                    setStockImages(getAllStockImages(cookies.token))
                                     if(picture) {
                                         setPicture(null)
                                     } else {
-                                        // setStockImages(await getAllStockImages(cookies.token))
                                         await setModalState(false)
                                         onOpen()
                                     }
@@ -123,6 +124,7 @@ function CreatePostForm (props) {
                         endContent={<PencilSimple className="h-6 w-6"/>}
                         onClick={async () => {
                             await setIsFormDisabled(true)
+                            /*
                             const newPost = {
                                 "token": cookies.token,
                                 "content": phrase,
@@ -132,6 +134,8 @@ function CreatePostForm (props) {
                             if (status === 200) {
                                 navigateTo("/feed")
                             }
+                            */
+                           navigateTo("/feed")
                         }}
                     >Save</Button>
                 </CardFooter>
@@ -168,4 +172,4 @@ function CreatePostForm (props) {
     )
 }
 
-module.exports = CreatePostForm
+module.exports = EditPostForm
