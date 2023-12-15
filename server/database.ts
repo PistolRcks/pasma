@@ -1,15 +1,39 @@
 import { Database } from "sqlite3";
 import crypto from "crypto";
 
-// Lorem ipsum for dummytext
-const LIPSUM = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porttitor sagittis neque sed gravida. Nullam porta tristique maximus. 
-Nulla in mi eu magna cursus pellentesque ac at lectus. Phasellus euismod pulvinar faucibus. Quisque felis enim, feugiat eget est eget, aliquam fringilla magna. 
-In viverra, leo nec ornare luctus, ligula risus aliquet nibh, nec porttitor ligula metus vel risus. Sed ut massa ut lorem viverra laoreet at ac est. 
-Sed et felis fermentum, efficitur est eget, dapibus lacus. Etiam tempor gravida dictum. In ullamcorper tortor non cursus hendrerit. 
-Donec at ultrices tellus, at pharetra neque. Nulla commodo nunc non gravida auctor. Mauris ac tortor mauris. Nullam euismod at nunc eu iaculis. 
-Vestibulum venenatis tellus pharetra maximus gravida. Etiam fermentum maximus ante et semper. Nullam sed consequat justo. Vivamus dignissim purus vel suscipit scelerisque. 
-Nullam ultricies, ante at aliquet porttitor, eros lectus interdum neque, a sollicitudin leo massa et leo. Ut nec lorem quis massa sodales pellentesque. 
-Nulla risus quam, finibus vitae venenatis eu, scelerisque ut quam.`;
+// TODO: in the future, this might be read from a file
+const STARTING_PHRASES = [
+    "Oh brother, THIS GUY STINKS!!!",
+    "The colonial minister's proclamation of \"No more pirates!\" is childish and outdated. Space piracy is good for the economy and you're an idiot if you think otherwise.",
+    "Wow, that's interesting!",
+    'insinuating that "twitter" (or "x" or whatever elon\'s calling it nowadays) is a good platform is like saying that you wished you were still in high school (if you don\'t understand this, then you\'re the problem)',
+    'Evil Santa be like "Oh oh oh! Terrible Christmas!"',
+    "I love this image. My friend's daughter's dog's former roommate made it.",
+    "This image is garbage and you should delete your account NOW",
+    "tomorrow. it's happening. yes, it's true.",
+    "just got on pasma whhheeeyyyyyyy",
+    "This looks like the last time I tripped in Tahiti. I'm not allowed there again.",
+    "Patrolling the post feed almost makes you wish for a nuked database.",
+    "I LOVE PASMA!!!! IT'S MY FAVORITE WEBSITE!!!! I'M NOT BEING FINANCIALLY INCENTIVIZED TO MAKE THIS POST!!!!",
+    "// FIXME: add a post in here",
+    "Impressive. Very nice. Let's see Paul Allen's comment.",
+    "I would find this very humorous...if I was a lesser being. Unfortunately for you, I am not.",
+    "error 403: automatic post was refused by server",
+    "Picked this post up from the code yesterday. It's React. And the stylesheet is something called 'NextUI.'",
+    "NextUI? More like CRAPUI",
+    "This is really super. How'd a nitwit like you get so tasteful?",
+    "can't even dark mode right smfh",
+    "friend system when",
+    "mods, snap his neck, thank you",
+    "ban system when",
+    "pasma team pls fix",
+    "According to all known laws of programming, there is no way that PASMA should be able to run. Its test files are too small to get its fat little codebase off the ground. PASMA, of course, runs anyways. Because PASMA doesn't care what humans think is impossible.",
+    "i don't want to get political, but i think we can all agree that starving to death is not a good thing. the attached image describes my stance in more detail",
+    "at least pasma doesn't have a character limit",
+    "i hope you STARVE!!!!!!!!!!1",
+    "This post is a private post. To view this post, please insert exactly 0.0000324 BTC into your Bitcoin Allowance Port which came with your PASMA instruction manual.",
+    "Ten years in the joint made you a [REDACTED]"
+  ];
 
 function createDBTables(dbFile: Database, callback: any) {
     // open database "db.sqlite". create if it does not exist
@@ -107,13 +131,11 @@ export function fillDBTables(dbFile: Database, callback: any) {
         });
     });
 
-    // Generate random posts based on lorem ipsum text
-    const lipsum_sublength = Math.floor(LIPSUM.length / 10);
 
-    // generate some example phrases
-    for (let i = 0; i < 10; i++) {
+    // insert starter phrases
+    for (let i = 0; i < STARTING_PHRASES.length; i++) {
         newDB.serialize(() => {
-            newDB.run(`INSERT OR IGNORE INTO PostPhrases(Phrase) VALUES (?)`, [LIPSUM.slice(i * lipsum_sublength, (i + 1) * lipsum_sublength)]);
+            newDB.run(`INSERT OR IGNORE INTO PostPhrases(Phrase) VALUES (?)`, [STARTING_PHRASES[i]]);
         });
     }
 
@@ -139,20 +161,6 @@ export function initDB(dbFile: string): Database {
             `,
                 ["alice", testPassword.toString("hex"), salt, "JaredD-2023.png", "standard"]);
 
-            const lipsum_sublength = Math.floor(LIPSUM.length / 10);
-            for (let i = 0; i < 10; i++) {
-                newDB.run(`INSERT OR IGNORE INTO Posts(ID, Username, Content, Picture, Timestamp, Private)
-                    VALUES(?, ?, ?, ?, ?, ?)
-                `,
-                    [
-                        i,
-                        "alice",
-                        LIPSUM.slice(i * lipsum_sublength, (i + 1) * lipsum_sublength),
-                        null,
-                        Date.now(),
-                        false
-                    ]);
-            }
         });
     });
 
