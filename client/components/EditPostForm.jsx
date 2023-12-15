@@ -80,8 +80,10 @@ function EditPostForm (props) {
                         description="Click the field above to select a predefined phrase for your post."
                         onClick={async () => {
                             if(!isFormDisabled) {
-                                setStockPhrases(await getAllPhrases(cookies.token))
-                                await setModalState(true)
+                                if(stockPhrases.length == 0) {
+                                    setStockPhrases(await getAllPhrases(cookies.token))
+                                }
+                                setModalState(true)
                                 onOpen()
                             }
                         }}
@@ -107,7 +109,7 @@ function EditPostForm (props) {
                                     if(picture) {
                                         setPicture(null)
                                     } else {
-                                        await setModalState(false)
+                                        setModalState(false)
                                         onOpen()
                                     }
                                 }}
