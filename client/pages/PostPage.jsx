@@ -121,6 +121,7 @@ function PostPage(props) {
                     <div className="grid grid-cols-1 gap-8">
                         {heroPostComponent}
                         {commentComponents}
+                        <div className={cookies.darkMode ? "dark text-foreground bg-background h-screen" : ""}></div>
                     </div>
                 </div>
             )}
