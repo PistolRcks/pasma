@@ -73,13 +73,13 @@ function PostFeedPage(props) {
 
     if (!("token" in cookies)) {
         return (
-            <>
+            <div className={cookies.darkMode ? "dark text-foreground bg-background h-screen" : ""}>
                 <p>What are you doing here when you're not logged in?</p>
                 <br />
                 <Button color="primary">
                     <Link to={"/"}>Click here to return to the homepage.</Link>
                 </Button>
-            </>
+            </div>
         );
     } else {
         return (

@@ -64,15 +64,23 @@ function AccountCreationCard (props) {
     }, [username, emailAddress, password])
 
     return (
-        <React.Fragment>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} hideCloseButton={isFormDisabled} isDismissable={!isFormDisabled} size="xl" data-testid="create-account-modal">
+        <>
+            <Modal
+                className={cookies.darkMode ? "dark text-foreground bg-background" : ""}
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                hideCloseButton={isFormDisabled}
+                isDismissable={!isFormDisabled}
+                size="xl"
+                data-testid="create-account-modal"
+            >
             <ModalContent>
             {(onClose) => (
                 <React.Fragment>
-                    <ModalHeader></ModalHeader>
+                    <ModalHeader className={cookies.darkMode ? "dark text-foreground bg-background" : ""}></ModalHeader>
                     <ModalBody className="grid grid-flow-col auto-cols-max">
                         <div className="pl-2 pr-6 w-48">
-                            <Popover showArrow isOpen={isPopoverOpen} onOpenChange={(open) => setIsPopoverOpen(open)} placement="right">
+                            <Popover className={cookies.darkMode ? "dark text-foreground bg-background" : ""} showArrow isOpen={isPopoverOpen} onOpenChange={(open) => setIsPopoverOpen(open)} placement="right">
                                 <PopoverTrigger>
                                     <Skeleton className="rounded-full" isLoaded={profilePictures.length > 0}>
                                         <Image className="cursor-pointer" src={imagePath + profilePicture} width={180} radius="full" />
@@ -183,7 +191,7 @@ function AccountCreationCard (props) {
             )}
             </ModalContent>
         </Modal>
-        </React.Fragment>
+        </>
     )
 }
 

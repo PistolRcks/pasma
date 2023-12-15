@@ -17,6 +17,7 @@ const {
     DropdownItem,
 } = require("@nextui-org/react");
 const LoginModalButton = require("./LoginModalButton.jsx");
+const DarkModeSwitch = require("./DarkModeSwitch.jsx")
 const { logOut } = require("../dataHelper.js")
 
 function NavBar(props) {
@@ -74,11 +75,13 @@ function NavBar(props) {
                 </NavbarContent>
 
                 <NavbarContent justify="end">
+                    <NavbarItem><DarkModeSwitch/></NavbarItem>
                     <NavbarItem>
                         {loggedIn ? (
                             <Dropdown>
                                 <DropdownTrigger>
                                     <Button
+                                        className="flex self-center"
                                         isIconOnly
                                         radius="full"
                                         data-testid="navBarProfilePicture"

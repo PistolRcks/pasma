@@ -8,6 +8,7 @@ const {
     Outlet,
     RouterProvider
 } = require('react-router-dom');
+const { useCookies } = require('react-cookie')
 
 // Test components
 const ProfilePicture = require('../components/ProfilePicture.jsx');
@@ -62,8 +63,10 @@ const router = createBrowserRouter(
  * @returns The rendered router for the app.
  */
 function App (props) {
+    const [cookies] = useCookies()
+
     return (
-        <RouterProvider router={router} />
+        <div className={cookies.darkMode ? "dark text-foreground bg-background" : ""}><RouterProvider router={router} /></div>
     )
 }
 

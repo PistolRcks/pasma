@@ -86,7 +86,7 @@ function LoginModalButton(props) {
             >
                 {text}
             </Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="md">
+            <Modal className={cookies.darkMode ? "dark text-foreground bg-background" : ""} isOpen={isOpen} onOpenChange={onOpenChange} size="md">
                 <ModalContent>
                     {(onClose) => (
                         <>
