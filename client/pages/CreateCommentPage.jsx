@@ -25,54 +25,56 @@ function CreateCommentPage(props) {
     const [phrase, setPhrase] = useState(undefined);
 
     return (
-        <div className="grid justify-items-center mt-6">
-            <Card className="flex-auto w-1/2">
-                <CardHeader>
-                    <Button
-                        isDisabled={isFormDisabled}
-                        size="sm"
-                        radius="full"
-                        startContent={<ArrowBendUpLeft size={16} />}
-                        onClick={() => {
-                            navigate(`/post/${parentId}`);
-                        }}
-                    >
-                        Back to Post
-                    </Button>
-                </CardHeader>
-                <CardBody>
-                    <AddPhraseBox
-                        isDisabled={isFormDisabled}
-                        description="Click the field above to select a predefined phrase for your comment."
-                        getPhrases={() => getAllPhrases(cookies.token)}
-                        onSelectPhrase={setPhrase}
-                    />
-                </CardBody>
-                <CardFooter className="flex justify-between items-end">
-                    <Button
-                        isDisabled={
-                            (!phrase || isFormDisabled) &&
-                            !(phrase && !isFormDisabled)
-                        } //* XOR
-                        isLoading={isFormDisabled}
-                        color={phrase ? "primary" : "default"}
-                        radius="full"
-                        endContent={<PencilSimple className="h-6 w-6" />}
-                        onClick={() => {
-                            setIsFormDisabled(true);
-                            createComment(cookies.token, parentId, phrase)
-                                .then((data) => {
-                                    navigate(`/post/${parentId}`);
-                                })
-                                .catch((reason) => {
-                                    window.alert(reason);
-                                });
-                        }}
-                    >
-                        Create Comment
-                    </Button>
-                </CardFooter>
-            </Card>
+        <div className={cookies.darkMode ? "dark text-foreground bg-background h-screen" : ""}>
+            <div className="grid justify-items-center mt-6">
+                <Card className="flex-auto w-1/2">
+                    <CardHeader>
+                        <Button
+                            isDisabled={isFormDisabled}
+                            size="sm"
+                            radius="full"
+                            startContent={<ArrowBendUpLeft size={16} />}
+                            onClick={() => {
+                                navigate(`/post/${parentId}`);
+                            }}
+                        >
+                            Back to Post
+                        </Button>
+                    </CardHeader>
+                    <CardBody>
+                        <AddPhraseBox
+                            isDisabled={isFormDisabled}
+                            description="Click the field above to select a predefined phrase for your comment."
+                            getPhrases={() => getAllPhrases(cookies.token)}
+                            onSelectPhrase={setPhrase}
+                        />
+                    </CardBody>
+                    <CardFooter className="flex justify-between items-end">
+                        <Button
+                            isDisabled={
+                                (!phrase || isFormDisabled) &&
+                                !(phrase && !isFormDisabled)
+                            } //* XOR
+                            isLoading={isFormDisabled}
+                            color={phrase ? "primary" : "default"}
+                            radius="full"
+                            endContent={<PencilSimple className="h-6 w-6" />}
+                            onClick={() => {
+                                setIsFormDisabled(true);
+                                createComment(cookies.token, parentId, phrase)
+                                    .then((data) => {
+                                        navigate(`/post/${parentId}`);
+                                    })
+                                    .catch((reason) => {
+                                        window.alert(reason);
+                                    });
+                            }}
+                        >
+                            Create Comment
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </div>
         </div>
     );
 }
