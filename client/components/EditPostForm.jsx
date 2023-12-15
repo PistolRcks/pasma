@@ -124,7 +124,7 @@ function EditPostForm (props) {
                         endContent={<PencilSimple className="h-6 w-6"/>}
                         onClick={async () => {
                             await setIsFormDisabled(true)
-                            const status = await sendEditPost(cookies.token, id, phrase)
+                            await sendEditPost(cookies.token, id, phrase)
                             navigateTo("/feed")
                         }}
                     >Save</Button>

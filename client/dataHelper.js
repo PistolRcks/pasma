@@ -377,5 +377,5 @@ export async function sendEditPost(token, id, content) {
     }
 
     // Return the response
-    return await response.json();
+    return await response.text();
 }
