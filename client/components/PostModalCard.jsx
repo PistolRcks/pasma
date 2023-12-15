@@ -19,7 +19,7 @@ function PostModalCard (props) {
                         <Image
                             isPressable
                             isZoomed
-                            src={"pictures/stock_images/" + imageURL}
+                            src={"/pictures/stock_images/" + imageURL}
                         />
                     }
                 </CardBody>

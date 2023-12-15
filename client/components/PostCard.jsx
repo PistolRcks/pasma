@@ -5,6 +5,7 @@ const {
     CardFooter,
     Button,
     Image,
+    Tooltip,
 } = require("@nextui-org/react");
 const React = require("react");
 const { useState, useEffect } = require("react");
@@ -15,9 +16,11 @@ const {
     ChatText,
     UserCircleGear,
     CurrencyCircleDollar,
+    PencilSimple,
 } = require("@phosphor-icons/react");
 const { Link } = require("react-router-dom");
 const { flipDislike } = require("../dataHelper");
+const { useCookies } = require("react-cookie")
 
 /**
  * Generates a Card representing a Post.
@@ -49,6 +52,7 @@ function PostCard(props) {
     const [isDislikedState, setIsDislikedState] = useState(!!isDisliked);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [isDebouncing, setIsDebouncing] = useState(false);
+    const [cookies] = useCookies(["username"]);
 
     // Set 1 second debounce for when the dislike occurs
     useEffect(() => {
@@ -96,6 +100,17 @@ function PostCard(props) {
                         <p>{new Date(timestamp).toLocaleString()}</p>
                     </div>
                 </div>
+                {username == cookies.username ? (
+                    <Tooltip placement="top" content="Edit Post">
+                        <Button variant="bordered">
+                            <Link to={`/edit/${id}`}>
+                                <PencilSimple size={24} />
+                            </Link>
+                        </Button>
+                    </Tooltip>
+                ) : (
+                    <></>
+                )}
             </CardHeader>
             <CardBody>
                 <div className="grid grid-cols-1 justify-items-center gap-4">

@@ -24,6 +24,7 @@ const PostFeedPage = require('./PostFeedPage.jsx');
 const PostPage = require('./PostPage.jsx');
 const ProfilePage = require('./ProfilePage.jsx');
 const CreateCommentPage = require('./CreateCommentPage.jsx');
+const EditPostPage = require('./EditPostPage.jsx');
 
 // Error Pages
 const FourOhFourPage = require('./404Page.jsx');
@@ -42,6 +43,7 @@ const router = createBrowserRouter(
         >
             <Route path='/create' element={<CreatePostPage />}/>
             <Route path='/feed' element={/* Eventually, this should be a verified page */ <PostFeedPage />} />
+            <Route path='/edit/:id' element={<EditPostPage />} />
             <Route path='/post/:id' element={<PostPage />} />
             <Route path='/comment/:parentId' element={/* Eventually, this should be a verified page */ <CreateCommentPage />} />
             <Route path='/profile/:username' element={<ProfilePage />} />
@@ -59,7 +61,7 @@ const router = createBrowserRouter(
 /**
  * Renders the application itself. Routing happens here.
  * 
- * @param {object} props - Not required. 
+ * @param {object} props - Not required.
  * @returns The rendered router for the app.
  */
 function App (props) {
