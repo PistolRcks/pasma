@@ -101,7 +101,7 @@ function PostPage(props) {
     useEffect(loadData, []);
 
     return (
-        <>
+        <div className={cookies.darkMode ? "dark text-foreground bg-background h-screen" : ""}>
             {isFetching ? (
                 <Spinner className="fixed mx-auto inset-0" label="Loading Posts..." color="primary" />
             ) : (
@@ -126,11 +126,10 @@ function PostPage(props) {
                             Make a Comment
                         </Button>
                         {commentComponents}
-                        <div className={cookies.darkMode ? "dark text-foreground bg-background h-screen" : ""}></div>
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }
 
