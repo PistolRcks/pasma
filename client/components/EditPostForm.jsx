@@ -125,8 +125,10 @@ function EditPostForm (props) {
                         radius="full"
                         endContent={<PencilSimple className="h-6 w-6"/>}
                         onClick={async () => {
-                            await setIsFormDisabled(true)
-                            await sendEditPost(cookies.token, id, phrase)
+                            setIsFormDisabled(true)
+                            await sendEditPost(cookies.token, id, phrase).catch((reason) => {
+                                window.alert("Error editing post. Reason: " + reason.message)
+                            })
                             navigateTo("/feed")
                         }}
                     >Save</Button>

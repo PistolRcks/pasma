@@ -336,9 +336,7 @@ export async function createComment(token, id, content) {
         headers: {
             "Content-Type": "application/json",
         },
-    });
-    
-    console.log(JSON.stringify({token, id, content}))
+    })
 
     if (response.status !== 200) {
         throw new Error(`Error ${response.status} - ${await response.text()}`);
@@ -369,8 +367,6 @@ export async function sendEditPost(token, id, content) {
             "Content-Type": "application/json",
         },
     });
-    
-    console.log(JSON.stringify({token, id, content}))
 
     if (response.status !== 200) {
         throw new Error(`Error ${response.status} - ${await response.text()}`);
