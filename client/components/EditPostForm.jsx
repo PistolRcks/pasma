@@ -5,7 +5,7 @@ const { Button, Card, CardBody, CardHeader, CardFooter, Image, Modal, ModalBody,
 const { ArrowBendUpLeft, PencilSimple, X } = require('@phosphor-icons/react')
 const PostModalCard = require('./PostModalCard')
 const ImageIcon = require('@phosphor-icons/react').Image // Alias for Phosphor Icons "Image", since it shares the same name as NextUI's "Image"
-const { getIndividualPost, getAllPhrases, getAllStockImages } = require('../dataHelper.js')
+const { sendEditPost, getIndividualPost, getAllPhrases, getAllStockImages } = require('../dataHelper.js')
 
 /**
  * Renders the create post form.
@@ -124,18 +124,8 @@ function EditPostForm (props) {
                         endContent={<PencilSimple className="h-6 w-6"/>}
                         onClick={async () => {
                             await setIsFormDisabled(true)
-                            /*
-                            const newPost = {
-                                "token": cookies.token,
-                                "content": phrase,
-                                "picture": picture
-                            }
-                            const status = await createPost(newPost)
-                            if (status === 200) {
-                                navigateTo("/feed")
-                            }
-                            */
-                           navigateTo("/feed")
+                            const status = await sendEditPost(cookies.token, id, phrase)
+                            navigateTo("/feed")
                         }}
                     >Save</Button>
                 </CardFooter>
