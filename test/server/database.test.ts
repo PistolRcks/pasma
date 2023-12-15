@@ -71,7 +71,7 @@ describe('Database checks', () => {
         let testDBTables = await initDB(":memory:");
 
         testDBTables.all("SELECT name FROM sqlite_master WHERE type='table';", [], function (err: Error, rows: any[]) {
-            expect(rows).toEqual([{ name: 'Users' }, { name: 'Posts' }, { name: 'StockImages' }, { name: 'ProfilePictures' }, { name: 'PostPhrases' }, { name: 'sqlite_sequence' }, { name: 'PostDislikes' }]);
+            expect(rows).toEqual([{ name: 'ProfilePictures' }, { name: 'StockImages' }, { name: 'PostPhrases' }, { name: 'Users' }, { name: 'Posts' }, { name: 'PostDislikes' }]);
         });
     });
 });

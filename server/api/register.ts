@@ -28,6 +28,11 @@ export function register(req: Request, res: Response) {
             return;
         }
         
+        if (!req.body.username) {
+            res.status(400).send("Error: \"username\" field is blank!");
+            return;
+        }
+        
         // Is the password good?
         if (!verifyPassword(req.body.password)) {
             res.status(400).send("Error: Password is insecure. It must have at least 12 characters, one digit, and one special character.");
